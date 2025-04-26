@@ -26,6 +26,10 @@ Route::get('/reservasi', function () {
     return view('dashboard_user.reservasi');
 })->middleware(['auth', 'verified'])->name('reservasi');
 
+Route::get('/transaksi', function () {
+    return view('dashboard_user.transaksi');
+})->middleware(['auth', 'verified'])->name('transaksi');
+
 Route::get('oauth/google', [OauthController::class, 'redirectToProvider'])->name('oauth.google');  
 Route::get('oauth/google/callback', [OauthController::class, 'handleProviderCallback'])->name('oauth.google.callback');
 

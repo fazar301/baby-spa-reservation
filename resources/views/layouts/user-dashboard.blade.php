@@ -77,7 +77,7 @@
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
           <span class="font-medium">Reservasi</span>
         </a>
-        <a href="/transactions" class="flex items-center gap-3 rounded-lg px-4 py-3 {{ request()->is('transactions*') ? 'bg-babypink-50 text-babypink-600 font-medium shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} transition-all duration-200">
+        <a href="/transaksi" class="flex items-center gap-3 rounded-lg px-4 py-3 {{ request()->is('transaksi*') ? 'bg-babypink-50 text-babypink-600 font-medium shadow-sm' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900' }} transition-all duration-200">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-credit-card"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
           <span class="font-medium">Transaksi</span>
         </a>
