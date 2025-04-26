@@ -18,6 +18,11 @@ class Layanan extends Model
         'kategori_id',
     ];
 
+    public function getImageAttribute($value)
+    {
+        return $value ? asset('storage/' . $value) : null;
+    }
+
     public function kategori()
     {
         return $this->belongsTo(Kategori::class);

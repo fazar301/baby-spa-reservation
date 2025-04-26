@@ -19,8 +19,12 @@ Route::get('/dashboard', function () {
     if(Auth::user()->role == 'admin'){
         return redirect('/admin/');
     }
-    return view('dashboard');
+    return view('dashboard_user.home');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/reservasi', function () {
+    return view('dashboard_user.reservasi');
+})->middleware(['auth', 'verified'])->name('reservasi');
 
 Route::get('oauth/google', [OauthController::class, 'redirectToProvider'])->name('oauth.google');  
 Route::get('oauth/google/callback', [OauthController::class, 'handleProviderCallback'])->name('oauth.google.callback');
