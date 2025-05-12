@@ -1,3 +1,4 @@
+{{-- Layanan view - Created by yolapebriyeni --}}
 <x-main-layout>
     <div class="bg-pink-50 py-10">
         <div class="container mx-auto px-4">
