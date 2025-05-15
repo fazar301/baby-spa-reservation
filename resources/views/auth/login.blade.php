@@ -3,7 +3,7 @@
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
     <!--begin::Form-->
-<form class="form w-100" method="POST" action="{{ route('login') }}" data-kt-redirect-url="/dashboard">
+<form class="form w-100" method="POST" action="{{ route('login') }}">
     @csrf
     <!--begin::Heading-->
     <div class="text-center mb-11">
@@ -42,7 +42,23 @@
     <!--end::Input group=-->
     <div class="fv-row mb-3">
         <!--begin::Password-->
-        <x-text-input type="password" placeholder="Password" name="password" id="password" autocomplete="off" class="form-control bg-transparent pink-focus" />
+        <div class="position-relative mb-3">
+            <x-text-input type="password" placeholder="Password" name="password" id="password" autocomplete="off" class="form-control bg-transparent pink-focus" />
+            <span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2" data-kt-password-meter-control="visibility">
+                <i class="ki-duotone ki-eye-slash fs-2">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                </i>
+                <i class="ki-duotone ki-eye fs-2 d-none">
+                    <span class="path1"></span>
+                    <span class="path2"></span>
+                    <span class="path3"></span>
+                    <span class="path4"></span>
+                </i>
+            </span>
+        </div>
         <x-input-error :messages="$errors->get('password')" class="mt-2" />
         <!--end::Password-->
     </div>
@@ -85,4 +101,26 @@
     <!--end::Sign up-->
 </form>
 <!--end::Form-->
+
+{{-- Custom Javascript for password visibility toggle --}}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const passwordInput = document.getElementById('password');
+        const visibilityToggle = document.querySelector('[data-kt-password-meter-control="visibility"]');
+        const eyeIcon = visibilityToggle.querySelector('.ki-eye');
+        const eyeSlashIcon = visibilityToggle.querySelector('.ki-eye-slash');
+
+        visibilityToggle.addEventListener('click', function() {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('d-none');
+                eyeSlashIcon.classList.add('d-none');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.add('d-none');
+                eyeSlashIcon.classList.remove('d-none');
+            }
+        });
+    });
+</script>
 </x-auth-layout>

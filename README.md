@@ -139,3 +139,71 @@ If you discover a security vulnerability within Laravel, please send an e-mail t
 ## License
 
 The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Docker Setup
+
+### Prerequisites
+- Docker
+- Docker Compose
+
+### Getting Started with Docker
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd latumi-app
+```
+
+2. Copy the environment file:
+```bash
+cp .env.example .env
+```
+
+3. Start the Docker containers:
+```bash
+docker-compose up -d
+```
+
+4. Install dependencies and set up the application:
+```bash
+# Install PHP dependencies
+docker-compose exec app composer install
+
+# Install Node.js dependencies
+docker-compose exec app npm install
+
+# Generate application key
+docker-compose exec app php artisan key:generate
+
+# Run migrations
+docker-compose exec app php artisan migrate
+
+# Build assets
+docker-compose exec app npm run build
+```
+
+5. Access the application:
+- Web application: http://localhost:8000
+- MySQL database: localhost:3306
+
+### Useful Docker Commands
+
+- Stop containers:
+```bash
+docker-compose down
+```
+
+- View logs:
+```bash
+docker-compose logs -f
+```
+
+- Access container shell:
+```bash
+docker-compose exec app bash
+```
+
+- Rebuild containers:
+```bash
+docker-compose up -d --build
+```

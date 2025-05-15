@@ -10,7 +10,7 @@
         }
     </style>
     @vite('resources/css/app.css','resources/js/app.js')
-    <script>
+    {{-- <script>
         tailwind.config = {
             theme: {
                 extend: {
@@ -20,7 +20,7 @@
                 }
             }
         }
-    </script>
+    </script> --}}
 </head>
 <body class="flex min-h-screen flex-col">
     <!-- Navigation -->
@@ -32,8 +32,5 @@
 
     <!-- Footer -->
     <x-footer></x-footer>
-
-    {{-- <!-- Flowbite JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.2.0/flowbite.min.js"></script> --}}
 </body>
 </html>

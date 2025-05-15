@@ -9,6 +9,10 @@ class Layanan extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    
+    protected $casts = [
+        'manfaat' => 'array',
+    ];
 
     protected $fillable = [
         'nama_layanan',
@@ -17,11 +21,6 @@ class Layanan extends Model
         'image',
         'kategori_id',
     ];
-
-    public function getImageAttribute($value)
-    {
-        return $value ? asset('storage/' . $value) : null;
-    }
 
     public function kategori()
     {

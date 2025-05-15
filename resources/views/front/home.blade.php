@@ -10,7 +10,7 @@
                     Sentuhan lembut, air yang menenangkan, dan perawatan khusus yang dirancang khusus untuk bayi.
                 </p>
                 <div class="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
-                    <a href="#" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white rounded-lg bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-300">
+                    <a href="{{ route('reservasi.redirect') }}" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white rounded-lg bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-300">
                         Buat Reservasi
                     </a>
                     <a href="#" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100">
@@ -34,76 +34,62 @@
                 </p>
             </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20">
                 @foreach ($layanans as $layanan)
-                <!-- Service Card -->
-                <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow flex flex-col h-full">
-                    <a href="#">
-                        <img class="rounded-t-lg w-full h-48 object-cover" src="{{ $layanan->image }}" alt="Pijat Bayi" />
-                    </a>
-                    <div class="p-5 flex flex-col h-full">
-                        <div class="flex-grow">
-                            <a href="#">
-                                <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">{{ $layanan->nama_layanan }}</h5>
-                            </a>
-                            <p class="mb-3 font-normal text-gray-700">
-                                {{ $layanan->deskripsi }}
-                            </p>
-                        </div>
-                        <div class="mt-auto">
-                            <a href="/services/pijat-bayi" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-pink-500 rounded-lg hover:bg-pink-600 focus:ring-4 focus:outline-none focus:ring-pink-300">
-                                Pelajari lebih lanjut
-                                <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                                </svg>
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                <x-card 
+                    :image="'/storage/' . $layanan->image"
+                    :title="$layanan->nama_layanan"
+                    :kategori="$layanan->kategori ? $layanan->kategori->nama_kategori : 'Baby'"
+                    :price="number_format($layanan->harga_layanan, 0, ',', '.')"
+                    :description="$layanan->deskripsi"
+                    :benefits="$layanan->manfaat ?? []"
+                    :reservationUrl="route('reservasi.redirect')"
+                    :showBadge="false"
+                    :badgeText="'Populer'"
+                />
                 @endforeach
-                
-                {{-- <!-- Service Card 2 -->
-                <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow">
-                    <a href="#">
-                        <img class="rounded-t-lg w-full h-48 object-cover" src="https://placehold.co/600x400" alt="Hidroterapi" />
-                    </a>
-                    <div class="p-5">
-                        <a href="#">
-                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Hidroterapi</h5>
-                        </a>
-                        <p class="mb-3 font-normal text-gray-700">
-                            Sesi air hangat untuk meningkatkan kualitas tidur dan mengurangi stres.
-                        </p>
-                        <a href="/services/hidroterapi" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-pink-500 rounded-lg hover:bg-pink-600 focus:ring-4 focus:outline-none focus:ring-pink-300">
-                            Pelajari lebih lanjut
-                            <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Service Card 3 -->
-                <div class="max-w-sm bg-white border border-gray-200 rounded-lg shadow">
-                    <a href="#">
-                        <img class="rounded-t-lg w-full h-48 object-cover" src="https://placehold.co/600x400" alt="Sesi Mengambang" />
-                    </a>
-                    <div class="p-5">
-                        <a href="#">
-                            <h5 class="mb-2 text-2xl font-bold tracking-tight text-gray-900">Sesi Mengambang</h5>
-                        </a>
-                        <p class="mb-3 font-normal text-gray-700">
-                            Pengalaman mengambang yang aman untuk meningkatkan perkembangan sensorik.
-                        </p>
-                        <a href="/services/sesi-mengambang" class="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-pink-500 rounded-lg hover:bg-pink-600 focus:ring-4 focus:outline-none focus:ring-pink-300">
-                            Pelajari lebih lanjut
-                            <svg class="rtl:rotate-180 w-3.5 h-3.5 ms-2" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 10">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 5h12m0 0L9 1m4 4L9 9"/>
-                            </svg>
-                        </a>
-                    </div>
-                </div> --}}
             </div>
+            <a href="{{ route('layanan.index') }}" class="mt-10 text-pink-500 hover:text-pink-600 flex justify-center">
+                Lihat lebih banyak
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+            </a>
+        </div>
+    </section>
+    
+    <!-- Services Packet Section -->
+    <section id="services_packet" class="py-[130px] bg-white pt-[0]">
+        <div class="max-w-screen-xl px-4 mx-auto">
+            <div class="max-w-screen-md mx-auto mb-8 text-center">
+                <h2 class="mb-4 text-3xl font-extrabold tracking-tight text-gray-900">Paket Layanan Spa Bayi</h2>
+                <p class="text-gray-500 sm:text-xl">
+                    Nikmati kombinasi perawatan terbaik dalam satu paket hemat! Dirancang khusus untuk memberikan manfaat maksimal bagi si kecil dengan harga yang lebih terjangkau.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20">
+                @foreach ($paket_layanans as $paket_layanan)
+                <x-card 
+                    :image="'/storage/' . $paket_layanan->image"
+                    :title="$paket_layanan->nama_paket"
+                    :kategori="$paket_layanan->kategori ? $paket_layanan->kategori->nama_kategori : 'Baby'"
+                    :price="number_format($paket_layanan->harga_paket, 0, ',', '.')"
+                    :description="$paket_layanan->deskripsi"
+                    :benefits="[]"
+                    :includedLayanan="$paket_layanan->layanans"
+                    :reservationUrl="route('reservasi.redirect')"
+                    :showBadge="false"
+                    :badgeText="'Populer'"
+                />
+                @endforeach
+            </div>
+            <a href="{{ route('layanan.index', ['type' => 'paket']) }}" class="mt-10 text-pink-500 hover:text-pink-600 flex justify-center">
+                Lihat lebih banyak
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                </svg>
+            </a>
         </div>
     </section>
 
@@ -208,7 +194,7 @@
                 <p class="text-lg text-gray-700">Berikan hadiah relaksasi dan manfaat perkembangan untuk si kecil Anda.</p>
                 
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="#" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-300">
+                    <a href="{{ route('reservasi.redirect') }}" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-300">
                         Buat Reservasi
                     </a>
                     <a href="#" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100">

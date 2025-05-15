@@ -26,7 +26,6 @@ return new class extends Migration
                 indexName: 'reservasis_sesi_id'
             );
             $table->string('status');
-            $table->rememberToken();
             $table->timestamps();
         });
     }

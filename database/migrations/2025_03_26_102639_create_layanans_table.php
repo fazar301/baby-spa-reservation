@@ -17,6 +17,7 @@ class CreateLayanansTable extends Migration
             $table->decimal('harga_layanan', 10, 2);
             $table->text('deskripsi');
             $table->string('image');
+            $table->json('manfaat')->nullable();
             $table->foreignId('kategori_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

@@ -18,8 +18,7 @@ class OauthController extends Controller
     public function handleProviderCallback()
     {
         try {
-
-            $user = Socialite::driver('google')->stateless()->user();
+            $user = Socialite::driver('google')->user();
 
             //change this
             // $finduser = User::where('gauth_id', $user->id)->first();
@@ -32,6 +31,13 @@ class OauthController extends Controller
                     User::where('email', $finduser->email)->update(['email_verified_at' => now()]);
                 }
                 Auth::login($finduser);
+
+                // Check if there's an intended URL in the session
+                if (session()->has('intended')) {
+                    $intendedUrl = session()->get('intended');
+                    session()->forget('intended');
+                    return redirect()->to($intendedUrl);
+                }
 
                 return redirect('/dashboard');
 
@@ -47,6 +53,13 @@ class OauthController extends Controller
                 ]);
 
                 Auth::login($newUser);
+
+                // Check if there's an intended URL in the session
+                if (session()->has('intended')) {
+                    $intendedUrl = session()->get('intended');
+                    session()->forget('intended');
+                    return redirect()->to($intendedUrl);
+                }
 
                 return redirect('/dashboard');
             }

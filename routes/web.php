@@ -7,11 +7,14 @@ use App\Models\Layanan;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
-
+use App\Http\Controllers\ReservasiController;
+use App\Http\Controllers\LayananController;
+use App\Models\PaketLayanan;
 
 Route::get('/', function () {
-    $layanans = Layanan::all();
-    return view('front.home', ['layanans' => $layanans]);
+    $layanans = Layanan::limit(3)->get();
+    $paket_layanans = PaketLayanan::limit(3)->with('layanans')->get();
+    return view('front.home', ['layanans' => $layanans, 'paket_layanans' => $paket_layanans]);
 });
 
 Route::get('/dashboard', function () {
@@ -26,9 +29,28 @@ Route::get('/reservasi', function () {
     return view('dashboard_user.reservasi');
 })->middleware(['auth', 'verified'])->name('reservasi');
 
+Route::get('/reservasi/create', [ReservasiController::class, 'create'])
+    ->middleware(['auth', 'verified'])
+    ->name('reservasi.create');
+
+Route::post('/reservasi', [ReservasiController::class, 'store'])
+    ->middleware(['auth', 'verified'])
+    ->name('reservasi.store');
+
+// Add a new route to handle the reservation button click for unauthenticated users
+Route::get('/reservasi/redirect', function () {
+    if (!Auth::check()) {
+        session(['intended' => route('reservasi.create')]);
+        return redirect()->route('login');
+    }
+    return redirect()->route('reservasi.create');
+})->name('reservasi.redirect');
+
 Route::get('/transaksi', function () {
     return view('dashboard_user.transaksi');
 })->middleware(['auth', 'verified'])->name('transaksi');
+
+Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
 
 Route::get('oauth/google', [OauthController::class, 'redirectToProvider'])->name('oauth.google');  
 Route::get('oauth/google/callback', [OauthController::class, 'handleProviderCallback'])->name('oauth.google.callback');
@@ -38,7 +60,10 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
+Route::get('/logout', function(){
+    Auth::logout();
+    return redirect('/login');
+});
 Route::get('/email/verify', function () {
     return view('auth.verify-email');
 })->middleware('auth')->name('verification.notice');

@@ -8,21 +8,22 @@ use App\Models\Layanan;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use App\Filament\Resources\LayananResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Pelmered\FilamentMoneyField\Tables\Columns\MoneyColumn;
 use App\Filament\Resources\LayananResource\RelationManagers;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Select;
 use Pelmered\FilamentMoneyField\Forms\Components\MoneyInput;
-use Filament\Tables\Columns\ImageColumn;
-use Illuminate\Database\Eloquent\Collection;
-use Filament\Notifications\Notification;
-use Illuminate\Database\Eloquent\Model;
 
 class LayananResource extends Resource
 {
@@ -43,6 +44,16 @@ class LayananResource extends Resource
                     ->required()
                     ->label('Kategori'),
                 Textarea::make('deskripsi')->required(),
+                Repeater::make('manfaat')
+                ->label('Manfaat')
+                ->schema([
+                    TextInput::make('value')
+                        ->label('Manfaat')
+                        ->required(),
+                ])
+                ->default([])
+                ->addActionLabel('Tambah Manfaat')
+                ->columnSpanFull(),
                 FileUpload::make('image')
                     ->image()
                     ->maxSize(10000)
