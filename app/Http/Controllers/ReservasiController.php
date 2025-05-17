@@ -14,7 +14,7 @@ class ReservasiController extends Controller
     {
         $layanans = Layanan::all();
         $sesis = Sesi::all();
-        return view('dashboard_user.create_reservasi', compact('layanans', 'sesis'));
+        return view('front.reservasi-form', compact('layanans', 'sesis'));
     }
 
     public function store(Request $request)
@@ -23,6 +23,7 @@ class ReservasiController extends Controller
             'layanan_id' => 'required|exists:layanans,id',
             'sesi_id' => 'required|exists:sesis,id',
             'catatan' => 'nullable|string|max:255',
+            'alamat' => 'required|string|max:255',
         ]);
 
         $reservasi = new Reservasi();
