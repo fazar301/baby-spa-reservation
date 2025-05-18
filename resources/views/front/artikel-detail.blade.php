@@ -1,3 +1,4 @@
+{{-- Artikel view - Created by VionaYunitaPutri --}}
 <x-main-layout>
     <style>
         .article-content ul{
