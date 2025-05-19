@@ -10,6 +10,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\LayananController;
 use App\Models\PaketLayanan;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\TransaksiController;
+use App\Http\Controllers\PaymentController;
 
 Route::get('/', function () {
     $layanans = Layanan::limit(3)->get();
@@ -29,21 +32,12 @@ Route::get('/reservasi', function () {
     return view('dashboard_user.reservasi');
 })->middleware(['auth', 'verified'])->name('reservasi');
 
-Route::get('/reservasi/create', [ReservasiController::class, 'create'])
-    ->middleware(['auth', 'verified'])
-    ->name('reservasi.create');
-
-Route::post('/reservasi', [ReservasiController::class, 'store'])
-    ->middleware(['auth', 'verified'])
-    ->name('reservasi.store');
-
-// Add a new route to handle the reservation button click for unauthenticated users
 Route::get('/reservasi/redirect', function () {
     if (!Auth::check()) {
-        session(['intended' => route('reservasi.create')]);
+        session(['intended' => route('layanan.index')]);
         return redirect()->route('login');
     }
-    return redirect()->route('reservasi.create');
+    return redirect()->route('layanan.index');
 })->name('reservasi.redirect');
 
 Route::get('/transaksi', function () {
@@ -80,5 +74,35 @@ Route::post('/email/verification-notification', function (Request $request) {
     return back()->with('message', 'Verification link sent!');
 })->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
+// Reservation routes
+Route::middleware(['auth'])->group(function () {
+    // Get service ID from URL and show reservation form
+    Route::get('/reservasi/create/{type}/{slug}', [ReservationController::class, 'create'])
+        ->name('reservasi.create')
+        ->where('type', 'layanan|paket');
+    
+    // Store the reservation
+    Route::post('/reservasi', [ReservationController::class, 'store'])
+        ->name('reservasi.store');
+    
+    // Success page
+    Route::get('/reservasi/success', [ReservationController::class, 'success'])
+        ->name('reservasi.success');
+    
+    // Payment related routes (now handled by TransaksiController)
+    Route::get('/reservations/{reservation}/payment', [TransaksiController::class, 'showPayment'])
+        ->name('payment.show');
+    Route::post('/reservations/{reservation}/apply-voucher', [TransaksiController::class, 'applyVoucher'])
+        ->name('reservations.apply-voucher');
+    Route::post('/payment/process', [TransaksiController::class, 'processPayment'])
+        ->name('payment.process');
+    Route::post('/payment/callback', [TransaksiController::class, 'handleCallback'])
+        ->name('payment.callback');
+});
+
+// Payment Routes
+Route::post('/payment/verify', [PaymentController::class, 'verify'])->name('payment.verify');
+Route::post('/payment/notification', [PaymentController::class, 'handleNotification'])->name('payment.notification');
+Route::get('/reservasi/pending', [ReservasiController::class, 'pending'])->name('reservasi.pending');
 
 require __DIR__.'/auth.php';

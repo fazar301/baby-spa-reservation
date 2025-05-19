@@ -15,17 +15,18 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create admin user if not exists
-        User::firstOrCreate(
-            ['email' => 'admin@latumi.com'],
-            [
-                'name' => 'Admin',
-                'password' => Hash::make('password'),
-                'role' => 'admin'
-            ]
-        );
+        // User::firstOrCreate(
+        //     ['email' => 'admin@latumi.com'],
+        //     [
+        //         'name' => 'Admin',
+        //         'password' => Hash::make('password'),
+        //         'role' => 'admin'
+        //     ]
+        // );
 
         // Run other seeders
         $this->call([
+            DefaultUserSeeder::class,
             KategoriSeeder::class,
             LayananSeeder::class,
             PaketLayananSeeder::class,

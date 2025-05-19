@@ -11,8 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('layanans', function (Blueprint $table) {
-            // $table->json('manfaat')->nullable();
+        Schema::table('reservasis', function (Blueprint $table) {
+            $table->dropColumn('discount_amount');
+            $table->dropColumn('final_amount');
         });
     }
 
@@ -21,8 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('layanans', function (Blueprint $table) {
-            $table->dropColumn('manfaat');
+        Schema::table('reservasis', function (Blueprint $table) {
+            //
         });
     }
 };

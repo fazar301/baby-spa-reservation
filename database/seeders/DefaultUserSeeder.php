@@ -27,6 +27,7 @@ class DefaultUserSeeder extends Seeder
             'name' => 'Customer',
             'email' => 'customer@latumi.com',
             'password' => Hash::make('customer123'),
+            'email_verified_at' => now(),
             'role' => 'customer',
         ]);
     }

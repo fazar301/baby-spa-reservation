@@ -37,6 +37,9 @@ class PaketLayananResource extends Resource
                 TextInput::make('nama_paket')
                     ->required()
                     ->maxLength(255),
+                TextInput::make('slug')
+                    ->hidden()
+                    ->dehydrated(),
                 MoneyInput::make('harga_paket')
                     ->decimals(0)
                     ->numeric()

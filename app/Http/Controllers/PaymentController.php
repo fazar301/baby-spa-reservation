@@ -1,0 +1,127 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Transaksi;
+use App\Models\Reservation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+
+class PaymentController extends Controller
+{
+    public function verify(Request $request)
+    {
+        try {
+            $result = $request->all();
+            Log::info('Payment verification result:', $result);
+
+            DB::beginTransaction();
+
+            // Get transaction using order_id from Midtrans response
+            $transaction = Transaksi::where('order_id', $result['order_id'])->first();
+            
+            if (!$transaction) {
+                Log::error('Transaction not found for order_id: ' . $result['order_id']);
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found'
+                ], 404);
+            }
+
+            // Update transaction status based on Midtrans response
+            if ($result['transaction_status'] === 'settlement') {
+                $transaction->status = 'paid';
+                
+                // Update reservation status to confirmed
+                $reservation = Reservation::find($transaction->reservasi_id);
+                if ($reservation) {
+                    $reservation->status = 'confirmed';
+                    $reservation->save();
+                }
+            } else {
+                $transaction->status = $result['transaction_status'];
+            }
+            
+            $transaction->save();
+
+            DB::commit();
+
+            Log::info('Transaction and reservation updated successfully', [
+                'transaction_id' => $transaction->id,
+                'order_id' => $result['order_id'],
+                'status' => $result['transaction_status']
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Payment verified successfully',
+                'status' => $result['transaction_status']
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Payment verification error: ' . $e->getMessage(), [
+                'exception' => $e,
+                'request_data' => $request->all()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to verify payment'
+            ], 500);
+        }
+    }
+
+    public function handleNotification(Request $request)
+    {
+        try {
+            $payload = $request->all();
+            Log::info('Midtrans notification:', $payload);
+
+            $transaction = Transaksi::where('snap_token', $payload['snap_token'])->first();
+            
+            if (!$transaction) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found'
+                ], 404);
+            }
+
+            // Update transaction status and payment method
+            $transaction->status = $payload['transaction_status'];
+            if (isset($payload['payment_type'])) {
+                $transaction->metode = $payload['payment_type'];
+            }
+            $transaction->save();
+
+            // For QRIS payments, we need to handle the payment status differently
+            if ($payload['payment_type'] === 'qris') {
+                if ($payload['transaction_status'] === 'settlement') {
+                    // Payment is successful
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Payment successful'
+                    ]);
+                } elseif ($payload['transaction_status'] === 'pending') {
+                    // Payment is pending
+                    return response()->json([
+                        'success' => true,
+                        'message' => 'Payment pending'
+                    ]);
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Notification received'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Payment notification error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to process notification'
+            ], 500);
+        }
+    }
+} 

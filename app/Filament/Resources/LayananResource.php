@@ -38,6 +38,9 @@ class LayananResource extends Resource
         return $form
             ->schema([
                 TextInput::make('nama_layanan')->required(),
+                TextInput::make('slug')
+                    ->hidden()
+                    ->dehydrated(),
                 MoneyInput::make('harga_layanan')->decimals(0)->numeric()->required(),
                 Select::make('kategori_id')
                     ->relationship('kategori', 'nama_kategori')

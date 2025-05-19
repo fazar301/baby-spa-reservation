@@ -10,30 +10,12 @@ use Illuminate\Support\Facades\Auth;
 
 class ReservasiController extends Controller
 {
-    public function create()
-    {
-        $layanans = Layanan::all();
-        $sesis = Sesi::all();
-        return view('front.reservasi-form', compact('layanans', 'sesis'));
-    }
+    // Remove the create and store methods from this controller.
 
-    public function store(Request $request)
+    public function pending()
     {
-        $request->validate([
-            'layanan_id' => 'required|exists:layanans,id',
-            'sesi_id' => 'required|exists:sesis,id',
-            'catatan' => 'nullable|string|max:255',
-            'alamat' => 'required|string|max:255',
+        return view('front.pending-payment', [
+            'title' => 'Pembayaran Pending'
         ]);
-
-        $reservasi = new Reservasi();
-        $reservasi->user_id = Auth::id();
-        $reservasi->layanan_id = $request->layanan_id;
-        $reservasi->sesi_id = $request->sesi_id;
-        $reservasi->status = 'menunggu';
-        $reservasi->catatan = $request->catatan;
-        $reservasi->save();
-
-        return redirect()->route('reservasi')->with('success', 'Reservasi berhasil dibuat!');
     }
 } 

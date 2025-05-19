@@ -35,8 +35,21 @@
 
         <!-- Reservation Form -->
         <div class="bg-white rounded-lg shadow-lg p-8 mb-12 max-w-4xl mx-auto">
-            <form action="" method="POST">
+            <form action="/reservasi" method="POST" id="reservation-form">
                 @csrf
+                <input type="hidden" name="type" value="{{ $type }}">
+                <input type="hidden" name="service_id" value="{{ $service->id }}">
+                
+                <!-- Add error messages display -->
+                @if($errors->any())
+                <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+                    <ul class="text-sm text-red-600">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
                 
                 <!-- Hidden field for pre-selected service -->
                 @if(request()->has('service'))
@@ -56,36 +69,15 @@
                     </div>
                     <div class="flex flex-col items-center relative">
                         <div class="w-10 h-10 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center font-bold text-lg" id="step-2">2</div>
-                        <span class="text-sm font-medium mt-2 text-gray-500 absolute top-10" id="step-2-text">
-                            @if(request()->has('service'))
-                            Jadwal
-                            @else
-                            Layanan
-                            @endif
-                        </span>
+                        <span class="text-sm font-medium mt-2 text-gray-500 absolute top-10" id="step-2-text">Jadwal</span>
                     </div>
                     <div class="flex-1 h-1 bg-gray-200 mx-2">
                         <div class="h-full bg-pink-500 w-0" id="progress-bar-2"></div>
                     </div>
                     <div class="flex flex-col items-center relative">
                         <div class="w-10 h-10 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center font-bold text-lg" id="step-3">3</div>
-                        <span class="text-sm font-medium mt-2 text-gray-500 absolute top-10" id="step-3-text">
-                            @if(request()->has('service'))
-                            Konfirmasi
-                            @else
-                            Jadwal
-                            @endif
-                        </span>
+                        <span class="text-sm font-medium mt-2 text-gray-500 absolute top-10" id="step-3-text">Konfirmasi</span>
                     </div>
-                    @if(!request()->has('service'))
-                    <div class="flex-1 h-1 bg-gray-200 mx-2">
-                        <div class="h-full bg-pink-500 w-0" id="progress-bar-3"></div>
-                    </div>
-                    <div class="flex flex-col items-center relative">
-                        <div class="w-10 h-10 bg-gray-200 text-gray-500 rounded-full flex items-center justify-center font-bold text-lg" id="step-4">4</div>
-                        <span class="text-sm font-medium mt-2 text-gray-500 absolute top-10" id="step-4-text">Konfirmasi</span>
-                    </div>
-                    @endif
                 </div>
 
                 <!-- Step 1: Personal Information -->
@@ -105,6 +97,7 @@
                             <div class="mb-4">
                                 <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon <span class="text-red-500">*</span></label>
                                 <input type="tel" id="phone" name="noHP" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" value="{{ auth()->user()->noHP }}" required>
+                                <input type="hidden" name="email" value="{{ auth()->user()->email }}" id="email">
                                 <p class="text-xs text-gray-500 mt-1">Contoh: 08123456789</p>
                             </div>
                             
@@ -119,68 +112,134 @@
                             <h3 class="text-lg font-medium text-gray-700 mb-4">Informasi Bayi</h3>
                             
                             <div class="mb-4">
-                                <label for="baby_name" class="block text-sm font-medium text-gray-700 mb-1">Nama Bayi <span class="text-red-500">*</span></label>
-                                <input type="text" id="baby_name" name="baby_name" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="baby_birthdate" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir Bayi <span class="text-red-500">*</span></label>
-                                <input type="date" id="baby_birthdate" name="baby_birthdate" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required max="{{ date('Y-m-d') }}">
-                                <p class="text-xs text-gray-500 mt-1">Usia bayi akan dihitung otomatis</p>
-                                <div class="mt-2 text-sm text-gray-700">
-                                    <span>Usia: </span><span id="calculated-age">-</span>
-                                </div>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label for="birth_weight" class="block text-sm font-medium text-gray-700 mb-1">Berat Lahir (kg) <span class="text-red-500">*</span></label>
-                                    <div class="relative">
-                                        <input 
-                                            type="number" 
-                                            id="birth_weight" 
-                                            name="birth_weight" 
-                                            step="0.01" 
-                                            min="0.5" 
-                                            max="6" 
-                                            placeholder="2.5" 
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" 
-                                        >
-                                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
-                                            kg
-                                        </div>
-                                    </div>
-                                </div>
-                                <div>
-                                    <label for="current_weight" class="block text-sm font-medium text-gray-700 mb-1">Berat Sekarang (kg) <span class="text-red-500">*</span></label>
-                                    <div class="relative">
-                                        <input 
-                                            type="number" 
-                                            id="current_weight" 
-                                            name="current_weight" 
-                                            step="0.01" 
-                                            min="0.5" 
-                                            max="20" 
-                                            placeholder="5.2" 
-                                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" 
-                                        >
-                                        <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
-                                            kg
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="mb-4">
-                                <label for="baby_gender" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin <span class="text-red-500">*</span></label>
-                                <div class="flex gap-4">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Pilih Data Bayi <span class="text-red-500">*</span></label>
+                                <div class="flex flex-col space-y-2">
                                     <label class="inline-flex items-center">
-                                        <input type="radio" name="baby_gender" value="laki-laki" class="form-radio h-4 w-4 text-pink-500" required>
-                                        <span class="ml-2">Laki-laki</span>
+                                        <input type="radio" name="baby_data_option" value="new" class="form-radio h-4 w-4 text-pink-500" checked>
+                                        <span class="ml-2">Input Data Bayi Baru</span>
                                     </label>
                                     <label class="inline-flex items-center">
-                                        <input type="radio" name="baby_gender" value="perempuan" class="form-radio h-4 w-4 text-pink-500">
-                                        <span class="ml-2">Perempuan</span>
+                                        <input type="radio" name="baby_data_option" value="existing" class="form-radio h-4 w-4 text-pink-500">
+                                        <span class="ml-2">Gunakan Data Bayi yang Sudah Ada</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div id="existing-baby-section" class="mb-4 hidden">
+                                <label for="existing_baby" class="block text-sm font-medium text-gray-700 mb-1">Pilih Bayi <span class="text-red-500">*</span></label>
+                                <select id="existing_baby" name="existing_baby" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus">
+                                    <option value="">Pilih Data Bayi</option>
+                                    <!-- This would be populated from the database -->
+                                    {{-- <option value="1" data-name="Andi Pratama" data-birthdate="2023-05-15" data-gender="laki-laki" data-birth-weight="3.2" data-current-weight="8.5">Andi Pratama (1 tahun 0 bulan)</option>
+                                    <option value="2" data-name="Budi Santoso" data-birthdate="2023-08-20" data-gender="laki-laki" data-birth-weight="2.9" data-current-weight="7.1">Budi Santoso (9 bulan)</option>
+                                    <option value="3" data-name="Citra Dewi" data-birthdate="2023-02-10" data-gender="perempuan" data-birth-weight="3.0" data-current-weight="9.2">Citra Dewi (1 tahun 3 bulan)</option> --}}
+                                    @foreach($bayis as $bayi)
+                                    <option
+                                        value="{{ $bayi->id }}"
+                                        data-name="{{ $bayi->nama }}"
+                                        data-birthdate="{{ \Carbon\Carbon::parse($bayi->tanggal_lahir)->format('Y-m-d') }}"
+                                        data-gender="{{ $bayi->jenis_kelamin }}"
+                                        data-birth-weight="{{ $bayi->berat_lahir }}"
+                                        data-current-weight="{{ $bayi->berat_sekarang }}"
+                                    >
+                                    @php
+                                        $diff = \Carbon\Carbon::parse($bayi->tanggal_lahir)->diff(\Carbon\Carbon::now());
+                                        $umur = '';
+
+                                        if ($diff->y) {
+                                            $umur .= $diff->y . ' tahun';
+                                        }
+
+                                        if ($diff->m) {
+                                            $umur .= ($umur ? ' ' : '') . $diff->m . ' bulan';
+                                        }
+
+                                        if (!$umur) {
+                                            $umur = 'Kurang dari 1 bulan';
+                                        }
+                                    @endphp
+
+                                    {{ $bayi->nama }} ({{ $umur }})
+
+                                    </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            
+                            <div id="new-baby-section">
+                                <div class="mb-4">
+                                    <label for="nama_bayi" class="block text-sm font-medium text-gray-700 mb-1">Nama Bayi <span class="text-red-500">*</span></label>
+                                    <input type="text" id="nama_bayi" name="nama_bayi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="tanggal_lahir" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir Bayi <span class="text-red-500">*</span></label>
+                                    <input type="date" id="tanggal_lahir" name="tanggal_lahir" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required max="{{ date('Y-m-d') }}">
+                                    <p class="text-xs text-gray-500 mt-1">Usia bayi akan dihitung otomatis</p>
+                                    <div class="mt-2 text-sm text-gray-700">
+                                        <span>Usia: </span><span id="calculated-age">-</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label for="berat_lahir" class="block text-sm font-medium text-gray-700 mb-1">Berat Lahir (kg) <span class="text-red-500">*</span></label>
+                                        <div class="relative">
+                                            <input 
+                                                type="number" 
+                                                id="berat_lahir" 
+                                                name="berat_lahir" 
+                                                step="0.01" 
+                                                min="0.5" 
+                                                max="6" 
+                                                placeholder="2.5" 
+                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" 
+                                                required
+                                            >
+                                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                                                kg
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label for="berat_sekarang" class="block text-sm font-medium text-gray-700 mb-1">Berat Sekarang (kg) <span class="text-red-500">*</span></label>
+                                        <div class="relative">
+                                            <input 
+                                                type="number" 
+                                                id="berat_sekarang" 
+                                                name="berat_sekarang" 
+                                                step="0.01" 
+                                                min="0.5" 
+                                                max="20" 
+                                                placeholder="5.2" 
+                                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" 
+                                                required
+                                            >
+                                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none text-gray-500">
+                                                kg
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label for="jenis_kelamin" class="block text-sm font-medium text-gray-700 mb-1">Jenis Kelamin <span class="text-red-500">*</span></label>
+                                    <div class="flex gap-4">
+                                        <label class="inline-flex items-center">
+                                            <input type="radio" name="jenis_kelamin" value="laki-laki" class="form-radio h-4 w-4 text-pink-500" required>
+                                            <span class="ml-2">Laki-laki</span>
+                                        </label>
+                                        <label class="inline-flex items-center">
+                                            <input type="radio" name="jenis_kelamin" value="perempuan" class="form-radio h-4 w-4 text-pink-500">
+                                            <span class="ml-2">Perempuan</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <label class="flex items-center">
+                                        <input type="checkbox" name="save_baby_data" id="save_baby_data" class="form-checkbox h-4 w-4 text-pink-500" value="1">
+                                        <span class="ml-2 text-sm text-gray-700">Simpan data bayi untuk reservasi berikutnya</span>
                                     </label>
                                 </div>
                             </div>
@@ -192,204 +251,40 @@
                     </div>
                 </div>
 
-                <!-- Step 2: Service Selection (only if not pre-selected) -->
-                @if(!request()->has('service'))
+                <!-- Step 2: Schedule Selection -->
                 <div id="step-2-content" class="mb-8 hidden">
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Pilih Layanan</h2>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Pilih Jadwal</h2>
                     
-                    <div class="mb-6">
-                        <label for="service_category" class="block text-sm font-medium text-gray-700 mb-2">Kategori Layanan <span class="text-red-500">*</span></label>
-                        <select id="service_category" name="service_category" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required>
-                            <option value="">Pilih Kategori</option>
-                            <option value="baby_services">Layanan Bayi</option>
-                            <option value="baby_packages">Paket Bayi</option>
-                            <option value="kids_health">Paket Kids Health</option>
-                            <option value="mom_services">Layanan Ibu Hamil</option>
-                            <option value="mom_packages">Paket Ibu Hamil</option>
-                            <option value="education_packages">Paket Edukasi</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <label for="service_type" class="block text-sm font-medium text-gray-700 mb-2">Jenis Layanan <span class="text-red-500">*</span></label>
-                        <select id="service_type" name="service_type" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required disabled>
-                            <option value="">Pilih Jenis Layanan</option>
-                        </select>
-                    </div>
-                    
-                    <!-- Dynamic Service Options -->
-                    <div id="baby_services_options" class="hidden service-options">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <label class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-pink-50 transition">
-                                <input type="radio" name="service" value="baby_massage" class="hidden service-radio">
-                                <div class="flex justify-between">
-                                    <div>
-                                        <h4 class="font-semibold text-gray-800">Baby Massage</h4>
-                                        <p class="text-sm text-gray-600">Pijat lembut untuk bayi</p>
-                                    </div>
-                                    <span class="text-pink-600 font-bold">Rp 70K</span>
-                                </div>
-                                <div class="mt-2 w-full h-1 bg-pink-500 opacity-0 transition-opacity service-indicator"></div>
-                            </label>
-                            
-                            <label class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-pink-50 transition">
-                                <input type="radio" name="service" value="baby_spa" class="hidden service-radio">
-                                <div class="flex justify-between">
-                                    <div>
-                                        <h4 class="font-semibold text-gray-800">Baby SPA (berenang)</h4>
-                                        <p class="text-sm text-gray-600">Terapi air untuk bayi</p>
-                                    </div>
-                                    <span class="text-pink-600 font-bold">Rp 70K</span>
-                                </div>
-                                <div class="mt-2 w-full h-1 bg-pink-500 opacity-0 transition-opacity service-indicator"></div>
-                            </label>
-                            
-                            <label class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-pink-50 transition">
-                                <input type="radio" name="service" value="baby_gym" class="hidden service-radio">
-                                <div class="flex justify-between">
-                                    <div>
-                                        <h4 class="font-semibold text-gray-800">Gym</h4>
-                                        <p class="text-sm text-gray-600">Latihan motorik untuk bayi</p>
-                                    </div>
-                                    <span class="text-pink-600 font-bold">Rp 30K</span>
-                                </div>
-                                <div class="mt-2 w-full h-1 bg-pink-500 opacity-0 transition-opacity service-indicator"></div>
-                            </label>
-                            
-                            <label class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-pink-50 transition">
-                                <input type="radio" name="service" value="baby_therapy" class="hidden service-radio">
-                                <div class="flex justify-between">
-                                    <div>
-                                        <h4 class="font-semibold text-gray-800">Baby Terapi</h4>
-                                        <p class="text-sm text-gray-600">Terapi khusus untuk bayi</p>
-                                    </div>
-                                    <span class="text-pink-600 font-bold">Rp 85K</span>
-                                </div>
-                                <div class="mt-2 w-full h-1 bg-pink-500 opacity-0 transition-opacity service-indicator"></div>
-                            </label>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                        <div>
+                            <label for="tanggal_reservasi" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Reservasi <span class="text-red-500">*</span></label>
+                            <input type="date" id="tanggal_reservasi" name="tanggal_reservasi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required min="{{ date('Y-m-d') }}">
+                        </div>
+                        
+                        <div>
+                            <label for="sesi_id" class="block text-sm font-medium text-gray-700 mb-1">Waktu Reservasi <span class="text-red-500">*</span></label>
+                            <select id="sesi_id" name="sesi_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required>
+                                <option value="">Pilih Waktu</option>
+                                @foreach($sesis as $sesi)
+                                    <option value="{{ $sesi->id }}">{{ \Carbon\Carbon::parse($sesi->jam)->format('H:i') }}</option>
+                                @endforeach
+                            </select>
                         </div>
                     </div>
                     
-                    <div id="baby_packages_options" class="hidden service-options">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <label class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-pink-50 transition">
-                                <input type="radio" name="service" value="baby_massage_spa_gym" class="hidden service-radio">
-                                <div>
-                                    <h4 class="font-semibold text-gray-800">Baby Massage, Spa, Gym</h4>
-                                    <ul class="text-sm text-gray-600 mt-2 space-y-1">
-                                        <li class="flex items-center">
-                                            <svg class="w-4 h-4 text-pink-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                            </svg>
-                                            Baby Massage
-                                        </li>
-                                        <li class="flex items-center">
-                                            <svg class="w-4 h-4 text-pink-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                            </svg>
-                                            Baby Spa
-                                        </li>
-                                        <li class="flex items-center">
-                                            <svg class="w-4 h-4 text-pink-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                            </svg>
-                                            Gym
-                                        </li>
-                                    </ul>
-                                    <div class="mt-3 text-right">
-                                        <span class="text-pink-600 font-bold">Rp 140K</span>
-                                    </div>
-                                </div>
-                                <div class="mt-2 w-full h-1 bg-pink-500 opacity-0 transition-opacity service-indicator"></div>
-                            </label>
-                            
-                            <label class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:bg-pink-50 transition">
-                                <input type="radio" name="service" value="baby_spa_susu" class="hidden service-radio">
-                                <div>
-                                    <h4 class="font-semibold text-gray-800">Baby Spa Susu</h4>
-                                    <ul class="text-sm text-gray-600 mt-2 space-y-1">
-                                        <li class="flex items-center">
-                                            <svg class="w-4 h-4 text-pink-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                            </svg>
-                                            Spa dengan susu
-                                        </li>
-                                        <li class="flex items-center">
-                                            <svg class="w-4 h-4 text-pink-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                            </svg>
-                                            Perawatan kulit bayi
-                                        </li>
-                                    </ul>
-                                    <div class="mt-3 text-right">
-                                        <span class="text-pink-600 font-bold">Rp 90K</span>
-                                    </div>
-                                </div>
-                                <div class="mt-2 w-full h-1 bg-pink-500 opacity-0 transition-opacity service-indicator"></div>
-                            </label>
-                        </div>
+                    <div class="mb-6">
+                        <label for="catatan" class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan</label>
+                        <textarea id="catatan" name="catatan" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus"></textarea>
                     </div>
-                    
-                    <!-- Other service options would be added similarly -->
                     
                     <div class="flex justify-between">
                         <button type="button" id="back-to-step-1" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition">Kembali</button>
                         <button type="button" id="next-to-step-3" class="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">Lanjutkan</button>
                     </div>
                 </div>
-                @endif
 
-                <!-- Step 2 or 3: Schedule Selection (depending on whether service is pre-selected) -->
-                <div id="step-{{ request()->has('service') ? '2' : '3' }}-content" class="mb-8 hidden">
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-6">Pilih Jadwal</h2>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                        <div>
-                            <label for="appointment_date" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Reservasi <span class="text-red-500">*</span></label>
-                            <input type="date" id="appointment_date" name="appointment_date" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required min="{{ date('Y-m-d') }}">
-                        </div>
-                        
-                        <div>
-                            <label for="appointment_time" class="block text-sm font-medium text-gray-700 mb-1">Waktu Reservasi <span class="text-red-500">*</span></label>
-                            <select id="appointment_time" name="appointment_time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required>
-                                <option value="">Pilih Waktu</option>
-                                <option value="09:00">09:00</option>
-                                <option value="10:00">10:00</option>
-                                <option value="11:00">11:00</option>
-                                <option value="13:00">13:00</option>
-                                <option value="14:00">14:00</option>
-                                <option value="15:00">15:00</option>
-                                <option value="16:00">16:00</option>
-                                <option value="17:00">17:00</option>
-                            </select>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <label for="branch" class="block text-sm font-medium text-gray-700 mb-1">Cabang <span class="text-red-500">*</span></label>
-                        <select id="branch" name="branch" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required>
-                            <option value="">Pilih Cabang</option>
-                            <option value="jakarta_selatan">Jakarta Selatan</option>
-                            <option value="jakarta_barat">Jakarta Barat</option>
-                            <option value="jakarta_utara">Jakarta Utara</option>
-                            <option value="jakarta_timur">Jakarta Timur</option>
-                            <option value="jakarta_pusat">Jakarta Pusat</option>
-                        </select>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <label for="notes" class="block text-sm font-medium text-gray-700 mb-1">Catatan Tambahan</label>
-                        <textarea id="notes" name="notes" rows="4" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" placeholder="Informasi tambahan atau permintaan khusus..."></textarea>
-                    </div>
-                    
-                    <div class="flex justify-between">
-                        <button type="button" id="back-to-step-{{ request()->has('service') ? '1' : '2' }}" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition">Kembali</button>
-                        <button type="button" id="next-to-step-{{ request()->has('service') ? '3' : '4' }}" class="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">Lanjutkan</button>
-                    </div>
-                </div>
-
-                <!-- Step 3 or 4: Confirmation (depending on whether service is pre-selected) -->
-                <div id="step-{{ request()->has('service') ? '3' : '4' }}-content" class="mb-8 hidden">
+                <!-- Step 3: Confirmation -->
+                <div id="step-3-content" class="mb-8 hidden">
                     <h2 class="text-2xl font-semibold text-gray-800 mb-6">Konfirmasi Reservasi</h2>
                     
                     <div class="bg-pink-50 rounded-lg p-6 mb-6">
@@ -417,14 +312,8 @@
                             <div>
                                 <h4 class="font-medium text-gray-700">Layanan</h4>
                                 <ul class="mt-2 space-y-1 text-sm">
-                                    @if(request()->has('service'))
-                                    <li><span class="font-medium">Layanan:</span> {{ request('name') }}</li>
-                                    <li><span class="font-medium">Harga:</span> <span class="text-pink-600 font-bold">{{ 'Rp ' . number_format(request('price', 0), 0, ',', '.') }}</span></li>
-                                    @else
-                                    <li><span class="font-medium">Kategori:</span> <span id="summary-service-category"></span></li>
-                                    <li><span class="font-medium">Layanan:</span> <span id="summary-service"></span></li>
-                                    <li><span class="font-medium">Harga:</span> <span id="summary-price" class="text-pink-600 font-bold"></span></li>
-                                    @endif
+                                    <li><span class="font-medium">Layanan:</span> {{ $type === 'layanan' ? $service->nama_layanan : $service->nama_paket }}</li>
+                                    <li><span class="font-medium">Harga:</span> <span class="text-pink-600 font-bold">Rp {{ number_format($type === 'layanan' ? $service->harga_layanan : $service->harga_paket, 0, ',', '.') }}</span></li>
                                 </ul>
                             </div>
                             
@@ -433,7 +322,6 @@
                                 <ul class="mt-2 space-y-1 text-sm">
                                     <li><span class="font-medium">Tanggal:</span> <span id="summary-date"></span></li>
                                     <li><span class="font-medium">Waktu:</span> <span id="summary-time"></span></li>
-                                    <li><span class="font-medium">Cabang:</span> <span id="summary-branch"></span></li>
                                 </ul>
                             </div>
                         </div>
@@ -446,13 +334,13 @@
                     
                     <div class="mb-6">
                         <label class="flex items-center">
-                            <input type="checkbox" name="terms_agreement" class="form-checkbox h-5 w-5 text-pink-500" required>
-                            <span class="ml-2 text-sm text-gray-700">Saya menyetujui <a href="#" class="text-pink-500 hover:underline">syarat dan ketentuan</a> yang berlaku</span>
+                            <input type="checkbox" name="terms" class="form-checkbox h-5 w-5 text-pink-500" required>
+                            <span class="ml-2 text-sm text-gray-700">Saya setuju dengan syarat dan ketentuan reservasi</span>
                         </label>
                     </div>
                     
                     <div class="flex justify-between">
-                        <button type="button" id="back-to-step-{{ request()->has('service') ? '2' : '3' }}" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition">Kembali</button>
+                        <button type="button" id="back-to-step-2" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition">Kembali</button>
                         <button type="submit" class="px-6 py-2 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">Konfirmasi Reservasi</button>
                     </div>
                 </div>
@@ -551,377 +439,406 @@
     </div>
 </div>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Step navigation
-        const step1Content = document.getElementById('step-1-content');
-        @if(request()->has('service'))
-        const step2Content = document.getElementById('step-2-content');
-        const step3Content = document.getElementById('step-3-content');
-        
-        const step2 = document.getElementById('step-2');
-        const step3 = document.getElementById('step-3');
-        
-        const step2Text = document.getElementById('step-2-text');
-        const step3Text = document.getElementById('step-3-text');
-        
-        const progressBar1 = document.getElementById('progress-bar-1');
-        const progressBar2 = document.getElementById('progress-bar-2');
-        @else
-        const step2Content = document.getElementById('step-2-content');
-        const step3Content = document.getElementById('step-3-content');
-        const step4Content = document.getElementById('step-4-content');
-        
-        const step2 = document.getElementById('step-2');
-        const step3 = document.getElementById('step-3');
-        const step4 = document.getElementById('step-4');
-        
-        const step2Text = document.getElementById('step-2-text');
-        const step3Text = document.getElementById('step-3-text');
-        const step4Text = document.getElementById('step-4-text');
-        
-        const progressBar1 = document.getElementById('progress-bar-1');
-        const progressBar2 = document.getElementById('progress-bar-2');
-        const progressBar3 = document.getElementById('progress-bar-3');
-        @endif
-        
-        // Next buttons
-        document.getElementById('next-to-step-2').addEventListener('click', function() {
-            // Validate step 1
-            const parentName = document.getElementById('parent_name').value;
-            const phone = document.getElementById('phone').value;
-            const babyName = document.getElementById('baby_name').value;
-            const babyBirthdate = document.getElementById('baby_birthdate').value;
-            const babyGender = document.querySelector('input[name="baby_gender"]:checked');
-            
-            if (!parentName || !phone || !babyName || !babyBirthdate || !babyGender) {
-                alert('Mohon lengkapi semua field yang wajib diisi.');
-                return;
-            }
-            
-            // Move to step 2
-            step1Content.classList.add('hidden');
-            step2Content.classList.remove('hidden');
-            
-            // Update progress
-            step2.classList.remove('bg-gray-200', 'text-gray-500');
-            step2.classList.add('bg-pink-500', 'text-white');
-            step2Text.classList.remove('text-gray-500');
-            step2Text.classList.add('text-pink-500');
-            progressBar1.classList.add('w-full');
-        });
-        
-        @if(!request()->has('service'))
-        document.getElementById('next-to-step-3').addEventListener('click', function() {
-            // Validate step 2
-            const serviceCategory = document.getElementById('service_category').value;
-            const serviceType = document.getElementById('service_type').value;
-            const serviceSelected = document.querySelector('input[name="service"]:checked');
-            
-            if (!serviceCategory || !serviceType || !serviceSelected) {
-                alert('Mohon pilih layanan yang diinginkan.');
-                return;
-            }
-            
-            // Move to step 3
-            step2Content.classList.add('hidden');
-            step3Content.classList.remove('hidden');
-            
-            // Update progress
-            step3.classList.remove('bg-gray-200', 'text-gray-500');
-            step3.classList.add('bg-pink-500', 'text-white');
-            step3Text.classList.remove('text-gray-500');
-            step3Text.classList.add('text-pink-500');
-            progressBar2.classList.add('w-full');
-        });
-        @endif
-        
-        document.getElementById('next-to-step-{{ request()->has('service') ? '3' : '4' }}').addEventListener('click', function() {
-            // Validate step 3
-            const appointmentDate = document.getElementById('appointment_date').value;
-            const appointmentTime = document.getElementById('appointment_time').value;
-            const branch = document.getElementById('branch').value;
-            
-            if (!appointmentDate || !appointmentTime || !branch) {
-                alert('Mohon pilih jadwal dan cabang untuk reservasi.');
-                return;
-            }
-            
-            // Update summary
-            document.getElementById('summary-parent-name').textContent = document.getElementById('parent_name').value;
-            document.getElementById('summary-phone').textContent = document.getElementById('phone').value;
-            document.getElementById('summary-email').textContent = document.getElementById('email').value || '-';
-            
-            document.getElementById('summary-baby-name').textContent = document.getElementById('baby_name').value;
-            document.getElementById('summary-baby-age').textContent = document.getElementById('calculated-age').textContent;
-            document.getElementById('summary-baby-gender').textContent = document.querySelector('input[name="baby_gender"]:checked').value;
-            
-            @if(!request()->has('service'))
-            const serviceCategorySelect = document.getElementById('service_category');
-            document.getElementById('summary-service-category').textContent = serviceCategorySelect.options[serviceCategorySelect.selectedIndex].text;
-            
-            const serviceSelected = document.querySelector('input[name="service"]:checked');
-            const serviceLabel = serviceSelected.closest('label').querySelector('h4').textContent;
-            document.getElementById('summary-service').textContent = serviceLabel;
-            
-            const priceElement = serviceSelected.closest('label').querySelector('.text-pink-600');
-            document.getElementById('summary-price').textContent = priceElement.textContent;
-            @endif
-            
-            const appointmentDateObj = new Date(appointmentDate);
-            const formattedDate = appointmentDateObj.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-            document.getElementById('summary-date').textContent = formattedDate;
-            
-            document.getElementById('summary-time').textContent = appointmentTime;
-            
-            const branchSelect = document.getElementById('branch');
-            document.getElementById('summary-branch').textContent = branchSelect.options[branchSelect.selectedIndex].text;
-            
-            document.getElementById('summary-notes').textContent = document.getElementById('notes').value || '-';
-            
-            // Move to step 4
-            step{{ request()->has('service') ? '2' : '3' }}Content.classList.add('hidden');
-            step{{ request()->has('service') ? '3' : '4' }}Content.classList.remove('hidden');
-            
-            // Update progress
-            @if(request()->has('service'))
-            step3.classList.remove('bg-gray-200', 'text-gray-500');
-            step3.classList.add('bg-pink-500', 'text-white');
-            step3Text.classList.remove('text-gray-500');
-            step3Text.classList.add('text-pink-500');
-            progressBar2.classList.add('w-full');
-            @else
-            step4.classList.remove('bg-gray-200', 'text-gray-500');
-            step4.classList.add('bg-pink-500', 'text-white');
-            step4Text.classList.remove('text-gray-500');
-            step4Text.classList.add('text-pink-500');
-            progressBar3.classList.add('w-full');
-            @endif
-        });
-        
-        // Back buttons
-        @if(!request()->has('service'))
-        document.getElementById('back-to-step-1').addEventListener('click', function() {
-            step2Content.classList.add('hidden');
-            step1Content.classList.remove('hidden');
-            
-            // Update progress
-            step2.classList.remove('bg-pink-500', 'text-white');
-            step2.classList.add('bg-gray-200', 'text-gray-500');
-            step2Text.classList.remove('text-pink-500');
-            step2Text.classList.add('text-gray-500');
-            progressBar1.classList.remove('w-full');
-        });
-        
-        document.getElementById('back-to-step-2').addEventListener('click', function() {
-            step3Content.classList.add('hidden');
-            step2Content.classList.remove('hidden');
-            
-            // Update progress
-            step3.classList.remove('bg-pink-500', 'text-white');
-            step3.classList.add('bg-gray-200', 'text-gray-500');
-            step3Text.classList.remove('text-pink-500');
-            step3Text.classList.add('text-gray-500');
-            progressBar2.classList.remove('w-full');
-        });
-        
-        document.getElementById('back-to-step-3').addEventListener('click', function() {
-            step4Content.classList.add('hidden');
-            step3Content.classList.remove('hidden');
-            
-            // Update progress
-            step4.classList.remove('bg-pink-500', 'text-white');
-            step4.classList.add('bg-gray-200', 'text-gray-500');
-            step4Text.classList.remove('text-pink-500');
-            step4Text.classList.add('text-gray-500');
-            progressBar3.classList.remove('w-full');
-        });
-        @else
-        document.getElementById('back-to-step-1').addEventListener('click', function() {
-            step2Content.classList.add('hidden');
-            step1Content.classList.remove('hidden');
-            
-            // Update progress
-            step2.classList.remove('bg-pink-500', 'text-white');
-            step2.classList.add('bg-gray-200', 'text-gray-500');
-            step2Text.classList.remove('text-pink-500');
-            step2Text.classList.add('text-gray-500');
-            progressBar1.classList.remove('w-full');
-        });
-        
-        document.getElementById('back-to-step-2').addEventListener('click', function() {
-            step3Content.classList.add('hidden');
-            step2Content.classList.remove('hidden');
-            
-            // Update progress
-            step3.classList.remove('bg-pink-500', 'text-white');
-            step3.classList.add('bg-gray-200', 'text-gray-500');
-            step3Text.classList.remove('text-pink-500');
-            step3Text.classList.add('text-gray-500');
-            progressBar2.classList.remove('w-full');
-        });
-        @endif
-        
-        @if(!request()->has('service'))
-        // Service category selection
-        const serviceCategorySelect = document.getElementById('service_category');
-        const serviceTypeSelect = document.getElementById('service_type');
-        const serviceOptions = document.querySelectorAll('.service-options');
-        
-        serviceCategorySelect.addEventListener('change', function() {
-            // Reset service type
-            serviceTypeSelect.innerHTML = '<option value="">Pilih Jenis Layanan</option>';
-            serviceTypeSelect.disabled = false;
-            
-            // Hide all service options
-            serviceOptions.forEach(option => {
-                option.classList.add('hidden');
-            });
-            
-            // Show options based on category
-            const category = this.value;
-            
-            if (category === 'baby_services') {
-                // Add options for baby services
-                const options = [
-                    { value: 'massage', text: 'Baby Massage' },
-                    { value: 'spa', text: 'Baby Spa' },
-                    { value: 'gym', text: 'Baby Gym' },
-                    { value: 'therapy', text: 'Baby Terapi' }
-                ];
-                
-                options.forEach(option => {
-                    const optionElement = document.createElement('option');
-                    optionElement.value = option.value;
-                    optionElement.textContent = option.text;
-                    serviceTypeSelect.appendChild(optionElement);
-                });
-                
-                // Show baby services options
-                document.getElementById('baby_services_options').classList.remove('hidden');
-            } else if (category === 'baby_packages') {
-                // Add options for baby packages
-                const options = [
-                    { value: 'massage_spa_gym', text: 'Baby Massage, Spa, Gym' },
-                    { value: 'spa_susu', text: 'Baby Spa Susu' },
-                    { value: 'spa_secang', text: 'Baby Spa Secang' }
-                ];
-                
-                options.forEach(option => {
-                    const optionElement = document.createElement('option');
-                    optionElement.value = option.value;
-                    optionElement.textContent = option.text;
-                    serviceTypeSelect.appendChild(optionElement);
-                });
-                
-                // Show baby packages options
-                document.getElementById('baby_packages_options').classList.remove('hidden');
-            }
-            // Add other categories similarly
-        });
-        
-        // Service type selection
-        serviceTypeSelect.addEventListener('change', function() {
-            // Reset service selection
-            const serviceRadios = document.querySelectorAll('.service-radio');
-            serviceRadios.forEach(radio => {
-                radio.checked = false;
-            });
-            
-            const serviceIndicators = document.querySelectorAll('.service-indicator');
-            serviceIndicators.forEach(indicator => {
-                indicator.classList.add('opacity-0');
-            });
-            
-            // Highlight corresponding service option
-            const serviceType = this.value;
-            
-            if (serviceType) {
-                const serviceRadio = document.querySelector(`input[value="baby_${serviceType}"]`);
-                if (serviceRadio) {
-                    serviceRadio.checked = true;
-                    serviceRadio.closest('label').querySelector('.service-indicator').classList.remove('opacity-0');
-                }
-            }
-        });
-        
-        // Service selection
-        const serviceLabels = document.querySelectorAll('.service-radio');
-        serviceLabels.forEach(radio => {
-            radio.addEventListener('change', function() {
-                // Reset all indicators
-                const serviceIndicators = document.querySelectorAll('.service-indicator');
-                serviceIndicators.forEach(indicator => {
-                    indicator.classList.add('opacity-0');
-                });
-                
-                // Show indicator for selected service
-                if (this.checked) {
-                    this.closest('label').querySelector('.service-indicator').classList.remove('opacity-0');
-                }
-            });
-        });
-        @endif
+document.addEventListener('DOMContentLoaded', function() {
+    // Declare all variables only once at the top
+    const form = document.getElementById('reservation-form');
+    const step1Content = document.getElementById('step-1-content');
+    const step2Content = document.getElementById('step-2-content');
+    const step3Content = document.getElementById('step-3-content');
+    const step2 = document.getElementById('step-2');
+    const step3 = document.getElementById('step-3');
+    const step2Text = document.getElementById('step-2-text');
+    const step3Text = document.getElementById('step-3-text');
+    const progressBar1 = document.getElementById('progress-bar-1');
+    const progressBar2 = document.getElementById('progress-bar-2');
 
-        // Calculate baby age from birthdate
-        const babyBirthdateInput = document.getElementById('baby_birthdate');
-        const calculatedAgeSpan = document.getElementById('calculated-age');
-
-        babyBirthdateInput.addEventListener('change', function() {
-            const birthdate = new Date(this.value);
-            const today = new Date();
+    // Handle form submission
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Validate all required fields
+        const requiredFields = form.querySelectorAll('[required]');
+        let isValid = true;
+        let firstInvalidField = null;
+        
+        requiredFields.forEach(field => {
+            if (!field.value) {
+                isValid = false;
+                field.classList.add('border-red-500');
+                if (!firstInvalidField) {
+                    firstInvalidField = field;
+                }
+            } else {
+                field.classList.remove('border-red-500');
+            }
+        });
+        
+        // Validate terms checkbox
+        const termsCheckbox = form.querySelector('input[name="terms"]');
+        if (!termsCheckbox.checked) {
+            isValid = false;
+            termsCheckbox.classList.add('border-red-500');
+            if (!firstInvalidField) {
+                firstInvalidField = termsCheckbox;
+            }
+        } else {
+            termsCheckbox.classList.remove('border-red-500');
+        }
+        
+        if (!isValid) {
+            // Show error message in the error display div
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'mb-4 p-4 bg-red-50 border border-red-200 rounded-lg';
+            errorDiv.innerHTML = '<ul class="text-sm text-red-600"><li>Mohon lengkapi semua field yang wajib diisi dan setujui syarat dan ketentuan.</li></ul>';
             
-            if (isNaN(birthdate.getTime())) {
-                calculatedAgeSpan.textContent = '-';
-                return;
+            // Remove any existing error messages
+            const existingError = form.querySelector('.bg-red-50');
+            if (existingError) {
+                existingError.remove();
             }
             
-            let years = today.getFullYear() - birthdate.getFullYear();
-            let months = today.getMonth() - birthdate.getMonth();
+            // Insert the error message at the top of the form
+            form.insertBefore(errorDiv, form.firstChild);
             
+            if (firstInvalidField) {
+                firstInvalidField.focus();
+            }
+            return;
+        }
+        
+        // If all validations pass, submit the form using fetch
+        const formData = new FormData(form);
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Redirect to success page or show success message
+                window.location.href = data.redirect || '/reservasi/success';
+            } else {
+                // Show error message
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'mb-4 p-4 bg-red-50 border border-red-200 rounded-lg';
+                errorDiv.innerHTML = `<ul class="text-sm text-red-600"><li>${data.message || 'Terjadi kesalahan saat memproses reservasi.'}</li></ul>`;
+                
+                // Remove any existing error messages
+                const existingError = form.querySelector('.bg-red-50');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                // Insert the error message at the top of the form
+                form.insertBefore(errorDiv, form.firstChild);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Show error message
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'mb-4 p-4 bg-red-50 border border-red-200 rounded-lg';
+            errorDiv.innerHTML = '<ul class="text-sm text-red-600"><li>Terjadi kesalahan saat memproses reservasi. Silakan coba lagi.</li></ul>';
+            
+            // Remove any existing error messages
+            const existingError = form.querySelector('.bg-red-50');
+            if (existingError) {
+                existingError.remove();
+            }
+            
+            // Insert the error message at the top of the form
+            form.insertBefore(errorDiv, form.firstChild);
+        });
+    });
+
+    // Next buttons
+    document.getElementById('next-to-step-2').addEventListener('click', function() {
+        // Validate step 1
+        const parentName = document.getElementById('parent_name').value;
+        const phone = document.getElementById('phone').value;
+        const babyName = document.getElementById('nama_bayi').value;
+        const babyBirthdate = document.getElementById('tanggal_lahir').value;
+        const babyGender = document.querySelector('input[name="jenis_kelamin"]:checked');
+        
+        if (!parentName || !phone || !babyName || !babyBirthdate || !babyGender) {
+            alert('Mohon lengkapi semua field yang wajib diisi.');
+            return;
+        }
+        
+        // Move to step 2
+        step1Content.classList.add('hidden');
+        step2Content.classList.remove('hidden');
+        
+        // Update progress
+        step2.classList.remove('bg-gray-200', 'text-gray-500');
+        step2.classList.add('bg-pink-500', 'text-white');
+        step2Text.classList.remove('text-gray-500');
+        step2Text.classList.add('text-pink-500');
+        progressBar1.classList.add('w-full');
+    });
+    
+    document.getElementById('next-to-step-3').addEventListener('click', function() {
+        // Validate step 2
+        const appointmentDate = document.getElementById('tanggal_reservasi').value;
+        const sessionSelect = document.getElementById('sesi_id');
+        const selectedSession = sessionSelect.options[sessionSelect.selectedIndex];
+        
+        if (!appointmentDate || !sessionSelect.value) {
+            alert('Mohon pilih jadwal untuk reservasi.');
+            return;
+        }
+        
+        // Update summary
+        document.getElementById('summary-parent-name').textContent = document.getElementById('parent_name').value;
+        document.getElementById('summary-phone').textContent = document.getElementById('phone').value;
+        document.getElementById('summary-email').textContent = document.getElementById('email')?.value || '-';
+        
+        document.getElementById('summary-baby-name').textContent = document.getElementById('nama_bayi').value;
+        document.getElementById('summary-baby-age').textContent = document.getElementById('calculated-age').textContent;
+        document.getElementById('summary-baby-gender').textContent = document.querySelector('input[name="jenis_kelamin"]:checked').value;
+        
+        const appointmentDateObj = new Date(appointmentDate);
+        const formattedDate = appointmentDateObj.toLocaleDateString('id-ID', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        document.getElementById('summary-date').textContent = formattedDate;
+        
+        document.getElementById('summary-time').textContent = selectedSession.text;
+        
+        document.getElementById('summary-notes').textContent = document.getElementById('catatan').value || '-';
+        
+        // Move to step 3
+        step2Content.classList.add('hidden');
+        step3Content.classList.remove('hidden');
+        
+        // Update progress
+        step3.classList.remove('bg-gray-200', 'text-gray-500');
+        step3.classList.add('bg-pink-500', 'text-white');
+        step3Text.classList.remove('text-gray-500');
+        step3Text.classList.add('text-pink-500');
+        progressBar2.classList.add('w-full');
+    });
+    
+    // Back buttons
+    document.getElementById('back-to-step-1').addEventListener('click', function() {
+        step2Content.classList.add('hidden');
+        step1Content.classList.remove('hidden');
+        
+        // Update progress
+        step2.classList.remove('bg-pink-500', 'text-white');
+        step2.classList.add('bg-gray-200', 'text-gray-500');
+        step2Text.classList.remove('text-pink-500');
+        step2Text.classList.add('text-gray-500');
+        progressBar1.classList.remove('w-full');
+    });
+    
+    document.getElementById('back-to-step-2').addEventListener('click', function() {
+        step3Content.classList.add('hidden');
+        step2Content.classList.remove('hidden');
+        
+        // Update progress
+        step3.classList.remove('bg-pink-500', 'text-white');
+        step3.classList.add('bg-gray-200', 'text-gray-500');
+        step3Text.classList.remove('text-pink-500');
+        step3Text.classList.add('text-gray-500');
+        progressBar2.classList.remove('w-full');
+    });
+
+    // Calculate baby age from birthdate
+    const babyBirthdateInput = document.getElementById('tanggal_lahir');
+    const calculatedAgeSpan = document.getElementById('calculated-age');
+
+    babyBirthdateInput.addEventListener('change', function() {
+        const birthdate = new Date(this.value);
+        const today = new Date();
+        
+        if (isNaN(birthdate.getTime())) {
+            calculatedAgeSpan.textContent = '-';
+            return;
+        }
+        
+        let years = today.getFullYear() - birthdate.getFullYear();
+        let months = today.getMonth() - birthdate.getMonth();
+        
+        if (months < 0) {
+            years--;
+            months += 12;
+        }
+        
+        // Check if birthday hasn't occurred yet this month
+        if (today.getDate() < birthdate.getDate()) {
+            months--;
             if (months < 0) {
                 years--;
                 months += 12;
             }
-            
-            // Check if birthday hasn't occurred yet this month
-            if (today.getDate() < birthdate.getDate()) {
-                months--;
-                if (months < 0) {
-                    years--;
-                    months += 12;
-                }
+        }
+        
+        let ageString = '';
+        if (years > 0) {
+            ageString = years + ' tahun';
+            if (months > 0) {
+                ageString += ' ' + months + ' bulan';
             }
-            
-            let ageString = '';
-            if (years > 0) {
-                ageString = years + ' tahun';
-                if (months > 0) {
-                    ageString += ' ' + months + ' bulan';
+        } else {
+            ageString = months + ' bulan';
+        }
+        
+        calculatedAgeSpan.textContent = ageString;
+        
+        // Add hidden fields for the calculated age
+        const ageYearsInput = document.getElementById('age_years') || document.createElement('input');
+        ageYearsInput.type = 'hidden';
+        ageYearsInput.id = 'age_years';
+        ageYearsInput.name = 'age_years';
+        ageYearsInput.value = years;
+        
+        const ageMonthsInput = document.getElementById('age_months') || document.createElement('input');
+        ageMonthsInput.type = 'hidden';
+        ageMonthsInput.id = 'age_months';
+        ageMonthsInput.name = 'age_months';
+        ageMonthsInput.value = months;
+        
+        if (!document.getElementById('age_years')) {
+            babyBirthdateInput.parentNode.appendChild(ageYearsInput);
+            babyBirthdateInput.parentNode.appendChild(ageMonthsInput);
+        }
+    });
+
+    // Handle baby data option selection
+    const babyDataOptions = document.querySelectorAll('input[name="baby_data_option"]');
+    const existingBabySection = document.getElementById('existing-baby-section');
+    const newBabySection = document.getElementById('new-baby-section');
+    const existingBabySelect = document.getElementById('existing_baby');
+
+    babyDataOptions.forEach(option => {
+        option.addEventListener('change', function() {
+            if (this.value === 'existing') {
+                existingBabySection.classList.remove('hidden');
+                
+                // Make existing baby fields required and new baby fields not required
+                existingBabySelect.required = true;
+                
+                // Make new baby fields not required
+                document.getElementById('nama_bayi').required = false;
+                document.getElementById('tanggal_lahir').required = false;
+                document.getElementById('berat_lahir').required = false;
+                document.getElementById('berat_sekarang').required = false;
+                document.querySelectorAll('input[name="jenis_kelamin"]').forEach(radio => {
+                    radio.required = false;
+                });
+                
+                // Hide new baby section if an existing baby is selected
+                if (existingBabySelect.value) {
+                    newBabySection.classList.add('hidden');
                 }
             } else {
-                ageString = months + ' bulan';
-            }
-            
-            calculatedAgeSpan.textContent = ageString;
-            
-            // Add hidden fields for the calculated age
-            const ageYearsInput = document.getElementById('age_years') || document.createElement('input');
-            ageYearsInput.type = 'hidden';
-            ageYearsInput.id = 'age_years';
-            ageYearsInput.name = 'age_years';
-            ageYearsInput.value = years;
-            
-            const ageMonthsInput = document.getElementById('age_months') || document.createElement('input');
-            ageMonthsInput.type = 'hidden';
-            ageMonthsInput.id = 'age_months';
-            ageMonthsInput.name = 'age_months';
-            ageMonthsInput.value = months;
-            
-            if (!document.getElementById('age_years')) {
-                babyBirthdateInput.parentNode.appendChild(ageYearsInput);
-                babyBirthdateInput.parentNode.appendChild(ageMonthsInput);
+                existingBabySection.classList.add('hidden');
+                newBabySection.classList.remove('hidden');
+                
+                // Make existing baby fields not required and new baby fields required
+                existingBabySelect.required = false;
+                
+                // Make new baby fields required
+                document.getElementById('nama_bayi').required = true;
+                document.getElementById('tanggal_lahir').required = true;
+                document.getElementById('berat_lahir').required = true;
+                document.getElementById('berat_sekarang').required = true;
+                document.querySelectorAll('input[name="jenis_kelamin"]')[0].required = true;
             }
         });
     });
+
+    // Handle existing baby selection
+    existingBabySelect.addEventListener('change', function() {
+        if (this.value) {
+            const selectedOption = this.options[this.selectedIndex];
+            
+            // Auto-fill form with selected baby's data
+            document.getElementById('nama_bayi').value = selectedOption.dataset.name;
+            document.getElementById('tanggal_lahir').value = selectedOption.dataset.birthdate;
+            document.getElementById('berat_lahir').value = selectedOption.dataset.birthWeight;
+            document.getElementById('berat_sekarang').value = selectedOption.dataset.currentWeight;
+            
+            // Set gender radio button
+            const genderRadios = document.querySelectorAll('input[name="jenis_kelamin"]');
+            genderRadios.forEach(radio => {
+                if (radio.value === selectedOption.dataset.gender) {
+                    radio.checked = true;
+                }
+            });
+            
+            // Trigger the birthdate change event to calculate age
+            const event = new Event('change');
+            document.getElementById('tanggal_lahir').dispatchEvent(event);
+            
+            // Show the new baby section with pre-filled data
+            newBabySection.classList.remove('hidden');
+        } else {
+            // Clear form if no baby is selected
+            document.getElementById('nama_bayi').value = '';
+            document.getElementById('tanggal_lahir').value = '';
+            document.getElementById('berat_lahir').value = '';
+            document.getElementById('berat_sekarang').value = '';
+            document.querySelectorAll('input[name="jenis_kelamin"]').forEach(radio => {
+                radio.checked = false;
+            });
+            document.getElementById('calculated-age').textContent = '-';
+        }
+    });
+
+    // Weight validation
+    const birthWeightInput = document.getElementById('berat_lahir');
+    const currentWeightInput = document.getElementById('berat_sekarang');
+
+    // Validate birth weight
+    birthWeightInput.addEventListener('change', function() {
+        const birthWeight = parseFloat(this.value);
+        if (isNaN(birthWeight) || birthWeight <= 0) {
+            alert('Berat lahir harus lebih dari 0 kg.');
+            this.value = '';
+            return;
+        }
+
+        if (birthWeight > 6) {
+            alert('Berat lahir tidak boleh lebih dari 6 kg.');
+            this.value = '';
+            return;
+        }
+
+        // Check if current weight is already entered
+        const currentWeight = parseFloat(currentWeightInput.value);
+        if (currentWeight && birthWeight > currentWeight) {
+            alert('Berat lahir tidak boleh lebih besar dari berat sekarang.');
+            this.value = '';
+        }
+    });
+
+    // Validate current weight
+    currentWeightInput.addEventListener('change', function() {
+        const currentWeight = parseFloat(this.value);
+        if (isNaN(currentWeight) || currentWeight <= 0) {
+            alert('Berat sekarang harus lebih dari 0 kg.');
+            this.value = '';
+            return;
+        }
+
+        if (currentWeight > 20) {
+            alert('Berat sekarang tidak boleh lebih dari 20 kg.');
+            this.value = '';
+            return;
+        }
+
+        // Check if birth weight is already entered
+        const birthWeight = parseFloat(birthWeightInput.value);
+        if (birthWeight && birthWeight > currentWeight) {
+            alert('Berat sekarang harus lebih besar dari berat lahir.');
+            this.value = '';
+        }
+    });
+});
 </script>
 </x-main-layout>

@@ -7,17 +7,21 @@
                 @csrf
                 
                 <!-- Layanan Selection -->
-                <div class="mb-6">
-                    <label for="layanan_id" class="block text-sm font-medium text-gray-700 mb-2">Pilih Layanan</label>
-                    <select name="layanan_id" id="layanan_id" class="w-full rounded-md border-gray-300 shadow-sm focus:border-babypink-500 focus:ring-babypink-500">
-                        <option value="">Pilih layanan...</option>
-                        @foreach($layanans as $layanan)
-                            <option value="{{ $layanan->id }}">{{ $layanan->nama_layanan }}</option>
-                        @endforeach
+                <div class="mb-4">
+                    <label for="service" class="block text-sm font-medium text-gray-700">Pilih Layanan</label>
+                    <select id="service" name="service" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500">
+                        <option value="">Pilih Layanan</option>
+                        <optgroup label="Layanan">
+                            @foreach($layanans as $layanan)
+                                <option value="layanan:{{ $layanan->slug }}">{{ $layanan->nama_layanan }} - Rp {{ number_format($layanan->harga_layanan, 0, ',', '.') }}</option>
+                            @endforeach
+                        </optgroup>
+                        <optgroup label="Paket Layanan">
+                            @foreach($paketLayanans as $paket)
+                                <option value="paket:{{ $paket->slug }}">{{ $paket->nama_paket }} - Rp {{ number_format($paket->harga_paket, 0, ',', '.') }}</option>
+                            @endforeach
+                        </optgroup>
                     </select>
-                    @error('layanan_id')
-                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                    @enderror
                 </div>
 
                 <!-- Sesi Selection -->
@@ -52,4 +56,24 @@
             </form>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            const select = form.querySelector('select[name="service"]');
+            const button = form.querySelector('button[type="submit"]');
+
+            select.addEventListener('change', function() {
+                button.disabled = !this.value;
+            });
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (select.value) {
+                    const [type, slug] = select.value.split(':');
+                    window.location.href = `{{ route('reservasi.create', ['type' => '', 'slug' => '']) }}`.replace('type=', `type=${type}`).replace('slug=', `slug=${slug}`);
+                }
+            });
+        });
+    </script>
 </x-user-dashboard> 

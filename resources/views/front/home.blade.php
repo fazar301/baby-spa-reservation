@@ -10,7 +10,7 @@
                     Sentuhan lembut, air yang menenangkan, dan perawatan khusus yang dirancang khusus untuk bayi.
                 </p>
                 <div class="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
-                    <a href="{{ route('reservasi.redirect') }}" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white rounded-lg bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-300">
+                    <a href="{{ route('layanan.index') }}" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-white rounded-lg bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-300">
                         Buat Reservasi
                     </a>
                     <a href="#" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100">
@@ -43,7 +43,7 @@
                     :price="number_format($layanan->harga_layanan, 0, ',', '.')"
                     :description="$layanan->deskripsi"
                     :benefits="$layanan->manfaat ?? []"
-                    :reservationUrl="route('reservasi.redirect')"
+                    :reservationUrl="route('reservasi.create', ['type' => 'layanan', 'slug' => $layanan->slug])"
                     :showBadge="false"
                     :badgeText="'Populer'"
                 />
@@ -78,7 +78,7 @@
                     :description="$paket_layanan->deskripsi"
                     :benefits="[]"
                     :includedLayanan="$paket_layanan->layanans"
-                    :reservationUrl="route('reservasi.redirect')"
+                    :reservationUrl="route('reservasi.create', ['type' => 'paket', 'slug' => $paket_layanan->slug])"
                     :showBadge="false"
                     :badgeText="'Populer'"
                 />
