@@ -96,9 +96,12 @@
                             
                             <div class="mb-4">
                                 <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Nomor Telepon <span class="text-red-500">*</span></label>
-                                <input type="tel" id="phone" name="noHP" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" value="{{ auth()->user()->noHP }}" required>
+                                <input type="tel" id="phone" name="noHP" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus @error('noHP') border-red-500 @enderror" value="{{ auth()->user()->noHP }}" required>
                                 <input type="hidden" name="email" value="{{ auth()->user()->email }}" id="email">
                                 <p class="text-xs text-gray-500 mt-1">Contoh: 08123456789</p>
+                                @error('noHP')
+                                    <p class="text-sm text-red-500 mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
                             
                             <div class="mb-4">
@@ -718,6 +721,7 @@ document.addEventListener('DOMContentLoaded', function() {
         option.addEventListener('change', function() {
             if (this.value === 'existing') {
                 existingBabySection.classList.remove('hidden');
+                newBabySection.classList.add('hidden');
                 
                 // Make existing baby fields required and new baby fields not required
                 existingBabySelect.required = true;
@@ -730,11 +734,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.querySelectorAll('input[name="jenis_kelamin"]').forEach(radio => {
                     radio.required = false;
                 });
-                
-                // Hide new baby section if an existing baby is selected
-                if (existingBabySelect.value) {
-                    newBabySection.classList.add('hidden');
-                }
             } else {
                 existingBabySection.classList.add('hidden');
                 newBabySection.classList.remove('hidden');

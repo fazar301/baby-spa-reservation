@@ -16,6 +16,7 @@ return new class extends Migration
             $table->enum('jenis_kelamin', ['laki-laki', 'perempuan']);
             $table->decimal('berat_lahir', 5, 2);
             $table->decimal('berat_sekarang', 5, 2);
+            $table->boolean('is_temporary')->default(false);
             $table->timestamps();
         });
     }

@@ -18,12 +18,14 @@ class Bayi extends Model
         'jenis_kelamin',
         'berat_lahir',
         'berat_sekarang',
+        'is_temporary',
     ];
 
     protected $casts = [
         'tanggal_lahir' => 'date',
         'berat_lahir' => 'decimal:2',
         'berat_sekarang' => 'decimal:2',
+        'is_temporary' => 'boolean',
     ];
 
     public function user()

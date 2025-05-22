@@ -10,7 +10,7 @@
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-2.5 top-2.5 text-gray-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         <input type="text" placeholder="Cari reservasi..." class="w-full pl-8 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-babypink-500 focus:border-transparent">
     </div>
-    <form class="flex gap-2 items-center" method="GET" action="" onsubmit="event.preventDefault(); if(this.layanan_id.value) window.location.href = '{{ route('reservasi.create', '') }}/' + this.layanan_id.value;">
+    <form class="flex gap-2 items-center" method="GET" id="reservation-form">
         <div class="mb-4">
             <label for="service" class="block text-sm font-medium text-gray-700">Pilih Layanan</label>
             <select id="service" name="service" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500">
@@ -235,7 +235,7 @@
             // Initialize with upcoming tab
             switchTab('upcoming');
 
-            const form = document.querySelector('form');
+            const form = document.getElementById('reservation-form');
             const select = form.querySelector('select[name="service"]');
             const button = form.querySelector('button[type="submit"]');
 
@@ -247,7 +247,8 @@
                 e.preventDefault();
                 if (select.value) {
                     const [type, slug] = select.value.split(':');
-                    window.location.href = `{{ route('reservasi.create', ['type' => '', 'slug' => '']) }}`.replace('type=', `type=${type}`).replace('slug=', `slug=${slug}`);
+                    const url = `/reservasi/create/${type}/${slug}`;
+                    window.location.href = url;
                 }
             });
         });

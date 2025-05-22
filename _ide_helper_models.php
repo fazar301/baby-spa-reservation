@@ -37,6 +37,7 @@ namespace App\Models{
  * @property string $jenis_kelamin
  * @property numeric $berat_lahir
  * @property numeric $berat_sekarang
+ * @property bool $is_temporary
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Reservation> $reservasis
@@ -49,6 +50,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bayi whereBeratSekarang($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bayi whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bayi whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Bayi whereIsTemporary($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bayi whereJenisKelamin($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bayi whereNama($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Bayi whereTanggalLahir($value)
@@ -89,6 +91,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $nama_layanan
+ * @property string $slug
  * @property string $harga_layanan
  * @property string $deskripsi
  * @property string $image
@@ -111,6 +114,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Layanan whereKategoriId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Layanan whereManfaat($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Layanan whereNamaLayanan($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Layanan whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Layanan whereUpdatedAt($value)
  */
 	class Layanan extends \Eloquent {}
@@ -122,6 +126,7 @@ namespace App\Models{
  *
  * @property int $id
  * @property string $nama_paket
+ * @property string $slug
  * @property string $harga_paket
  * @property string $deskripsi
  * @property string $image
@@ -142,6 +147,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaketLayanan whereImage($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaketLayanan whereKategoriId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaketLayanan whereNamaPaket($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|PaketLayanan whereSlug($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|PaketLayanan whereUpdatedAt($value)
  */
 	class PaketLayanan extends \Eloquent {}
@@ -154,6 +160,7 @@ namespace App\Models{
  * @property int $id
  * @property int $user_id
  * @property int $layanan_id
+ * @property string $type
  * @property int $sesi_id
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -163,7 +170,6 @@ namespace App\Models{
  * @property string $waktu_reservasi
  * @property string $harga
  * @property string|null $catatan
- * @property string $type
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi query()
@@ -191,6 +197,7 @@ namespace App\Models{
  * @property int $id
  * @property int $user_id
  * @property int $layanan_id
+ * @property string $type
  * @property int $sesi_id
  * @property string $status
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -200,7 +207,6 @@ namespace App\Models{
  * @property string $waktu_reservasi
  * @property numeric $harga
  * @property string|null $catatan
- * @property string $type
  * @property-read \App\Models\Bayi|null $bayi
  * @property-read \App\Models\Layanan $layanan
  * @property-read \App\Models\PaketLayanan $paketLayanan

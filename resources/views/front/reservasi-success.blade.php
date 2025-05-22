@@ -19,6 +19,11 @@
                     <a href="{{ route('dashboard') }}" class="inline-block px-6 py-3 bg-pink-500 text-white rounded-lg hover:bg-pink-600 transition">
                         Kembali ke Dashboard
                     </a>
+                    @if(isset($reservation) && $reservation->id)
+                    <a href="{{ route('reservasi.invoice', $reservation->id) }}" class="inline-block px-6 py-3 border border-pink-500 text-pink-500 rounded-lg hover:bg-pink-50 transition ml-4">
+                        Unduh Invoice
+                    </a>
+                    @endif
                     <a href="{{ route('layanan.index') }}" class="inline-block px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition ml-4">
                         Lihat Layanan Lainnya
                     </a>

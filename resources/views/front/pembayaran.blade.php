@@ -91,13 +91,13 @@
                                     <div class="mt-3 pl-7">
                                         <p class="text-sm text-gray-600">Pembayaran online melalui berbagai metode pembayaran yang tersedia di Midtrans</p>
                                         <div class="flex flex-wrap gap-2 mt-2">
-                                            <img src="{{ asset('images/payment/visa.png') }}" alt="Visa" class="h-8">
-                                            <img src="{{ asset('images/payment/mastercard.png') }}" alt="Mastercard" class="h-8">
-                                            <img src="{{ asset('images/payment/bca.png') }}" alt="BCA" class="h-8">
-                                            <img src="{{ asset('images/payment/mandiri.png') }}" alt="Mandiri" class="h-8">
-                                            <img src="{{ asset('images/payment/gopay.png') }}" alt="GoPay" class="h-8">
-                                            <img src="{{ asset('images/payment/ovo.png') }}" alt="OVO" class="h-8">
-                                            <img src="{{ asset('images/payment/qris.png') }}" alt="QRIS" class="h-8">
+                                            <img src="{{ asset('images/payment/visa.svg') }}" alt="Visa" class="max-w-[50px] object-contain me-2">
+                                            <img src="{{ asset('images/payment/mastercard.png') }}" alt="Mastercard" class="max-w-[50px] object-contain me-2">
+                                            <img src="{{ asset('images/payment/bca.png') }}" alt="BCA" class="max-w-[50px] object-contain me-2">
+                                            <img src="{{ asset('images/payment/mandiri.svg.png') }}" alt="Mandiri" class="max-w-[50px] object-contain me-2">
+                                            <img src="{{ asset('images/payment/gopay.webp') }}" alt="GoPay" class="max-w-[50px] object-contain me-2">
+                                            <img src="{{ asset('images/payment/ovo.png') }}" alt="OVO" class="max-w-[50px] object-contain me-2">
+                                            <img src="{{ asset('images/payment/qris.webp') }}" alt="QRIS" class="max-w-[50px] object-contain me-2">
                                         </div>
                                     </div>
                                 </div>

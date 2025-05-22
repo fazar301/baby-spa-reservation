@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Models\Bayi;
 use App\Models\Sesi;
 use App\Models\Layanan;
-use App\Models\PaketLayanan;
 use App\Models\Reservation;
+use App\Models\PaketLayanan;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Session;
 
 class ReservationController extends Controller
 {
@@ -26,7 +28,9 @@ class ReservationController extends Controller
             return redirect()->route('layanan.index')->with('error', 'Layanan tidak ditemukan.');
         }
 
-        $bayis = Bayi::where('user_id', Auth::user()->id)->get();
+        $bayis = Bayi::where('user_id', Auth::user()->id)
+            ->where('is_temporary', false)
+            ->get();
         $sesis = Sesi::orderBy('jam')->get();
         return view('front.reservasi-form', compact('service', 'type', 'sesis', 'bayis'));
     }
@@ -40,13 +44,15 @@ class ReservationController extends Controller
                 'type' => 'required|in:layanan,paket',
                 'service_id' => 'required',
                 'sesi_id' => 'required|exists:sesis,id',
-                'nama_bayi' => 'required',
-                'tanggal_lahir' => 'required|date',
+                'nama_bayi' => 'required|string|max:255',
+                'tanggal_lahir' => 'required|date|before_or_equal:today',
                 'jenis_kelamin' => 'required|in:laki-laki,perempuan',
                 'berat_lahir' => 'required|numeric|min:0.5|max:6',
                 'berat_sekarang' => 'required|numeric|min:0.5|max:20',
                 'save_baby_data' => 'nullable|boolean',
                 'terms' => 'required|accepted',
+                'parent_name' => 'required|string|max:255',
+                'noHP' => 'required|string|max:20|unique:users,noHP,' . Auth::id(),
             ], [
                 'type.required' => 'Tipe layanan harus dipilih.',
                 'type.in' => 'Tipe layanan tidak valid.',
@@ -57,7 +63,7 @@ class ReservationController extends Controller
                 'sesi_id.exists' => 'Sesi tidak valid.',
                 'nama_bayi.required' => 'Nama bayi harus diisi.',
                 'tanggal_lahir.required' => 'Tanggal lahir bayi harus diisi.',
-                'tanggal_lahir.date' => 'Format tanggal lahir tidak valid.',
+                'tanggal_lahir.before_or_equal' => 'Tanggal lahir tidak boleh lebih dari hari ini.',
                 'jenis_kelamin.required' => 'Jenis kelamin harus dipilih.',
                 'jenis_kelamin.in' => 'Jenis kelamin tidak valid.',
                 'berat_lahir.required' => 'Berat lahir harus diisi.',
@@ -70,6 +76,9 @@ class ReservationController extends Controller
                 'berat_sekarang.max' => 'Berat sekarang maksimal 20 kg.',
                 'terms.required' => 'Anda harus menyetujui syarat dan ketentuan.',
                 'terms.accepted' => 'Anda harus menyetujui syarat dan ketentuan.',
+                'parent_name.required' => 'Nama orang tua harus diisi.',
+                'noHP.required' => 'Nomor telepon harus diisi.',
+                'noHP.unique' => 'Nomor telepon ini sudah digunakan oleh pengguna lain.',
             ]);
 
             if ($request->type === 'layanan') {
@@ -107,6 +116,7 @@ class ReservationController extends Controller
             } else {
                 // Set a temporary user_id for the reservation
                 $bayi->user_id = Auth::user()->id;
+                $bayi->is_temporary = true;
             }
             $bayi->nama = $request->nama_bayi;
             $bayi->tanggal_lahir = $request->tanggal_lahir;
@@ -153,7 +163,32 @@ class ReservationController extends Controller
 
     public function success()
     {
-        return view('front.reservasi-success');
+        // Retrieve reservation ID from session
+        $reservationId = Session::get('reservation_id');
+
+        $reservation = null;
+        if ($reservationId) {
+            // Fetch the reservation with necessary relationships
+            $reservation = Reservation::with(['user', 'layanan', 'paketLayanan', 'bayi'])->find($reservationId);
+
+            // Optionally, clear the reservation_id from session after retrieving
+            // Session::forget('reservation_id');
+        }
+
+        // Pass the reservation object to the view
+        return view('front.reservasi-success', compact('reservation'));
+    }
+
+    public function downloadInvoice(Reservation $reservation)
+    {
+        // Load any related data needed for the invoice (user, service/package, etc.)
+        $reservation->load(['user', 'layanan', 'paketLayanan', 'bayi']); // Adjust relationships as needed
+
+        // Create a dedicated Blade view for the invoice PDF
+        $pdf = Pdf::loadView('pdf.invoice', compact('reservation'));
+
+        // Download the PDF
+        return $pdf->download('invoice_' . $reservation->id . '.pdf');
     }
 
     public function showPayment(Reservation $reservation)

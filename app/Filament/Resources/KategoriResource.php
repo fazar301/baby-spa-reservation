@@ -30,7 +30,11 @@ class KategoriResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('nama_kategori')
                     ->required()
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->unique(ignoreRecord: true)
+                    ->validationMessages([
+                        'unique' => 'Nama kategori ini sudah digunakan.',
+                    ]),
             ]);
     }
 

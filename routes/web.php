@@ -29,7 +29,9 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/reservasi', function () {
-    return view('dashboard_user.reservasi');
+    $layanans = \App\Models\Layanan::all();
+    $paketLayanans = \App\Models\PaketLayanan::all();
+    return view('dashboard_user.reservasi', compact('layanans', 'paketLayanans'));
 })->middleware(['auth', 'verified'])->name('reservasi');
 
 Route::get('/reservasi/redirect', function () {
@@ -88,7 +90,7 @@ Route::middleware(['auth'])->group(function () {
     // Success page
     Route::get('/reservasi/success', [ReservationController::class, 'success'])
         ->name('reservasi.success');
-    
+    Route::get('/reservations/{reservation}/invoice', [ReservationController::class, 'downloadInvoice'])->name('reservasi.invoice');
     // Payment related routes (now handled by TransaksiController)
     Route::get('/reservations/{reservation}/payment', [TransaksiController::class, 'showPayment'])
         ->name('payment.show');

@@ -64,7 +64,12 @@ class VoucherResource extends Resource
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('discount_amount')
-                    ->money('IDR'),
+                    ->formatStateUsing(function ($record) {
+                        if ($record->discount_type === 'percentage') {
+                            return $record->discount_amount . '%';
+                        }
+                        return 'Rp ' . number_format($record->discount_amount, 0, ',', '.');
+                    }),
                 Tables\Columns\TextColumn::make('discount_type')
                     ->formatStateUsing(fn (string $state): string => match ($state) {
                         'percentage' => 'Persentase',
