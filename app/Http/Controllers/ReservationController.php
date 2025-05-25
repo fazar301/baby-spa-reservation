@@ -200,4 +200,11 @@ class ReservationController extends Controller
 
         return view('front.pembayaran', compact('reservation'));
     }
+    
+    public function pending()
+    {
+        return view('front.pending-payment', [
+            'title' => 'Pembayaran Pending'
+        ]);
+    }
 } 

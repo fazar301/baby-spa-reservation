@@ -105,6 +105,6 @@ Route::middleware(['auth'])->group(function () {
 // Payment Routes
 Route::post('/payment/verify', [PaymentController::class, 'verify'])->name('payment.verify');
 Route::post('/payment/notification', [PaymentController::class, 'handleNotification'])->name('payment.notification');
-Route::get('/reservasi/pending', [ReservasiController::class, 'pending'])->name('reservasi.pending');
+Route::get('/reservasi/pending', [ReservationController::class, 'pending'])->name('reservasi.pending');
 
 require __DIR__.'/auth.php';
