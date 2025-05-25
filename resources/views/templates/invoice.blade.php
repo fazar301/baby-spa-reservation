@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice - Baby Spa Blade</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+        
+        .invoice-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px;
+            background: white;
+        }
+        
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 3px solid #ec4899;
+        }
+        
+        .company-info {
+            flex: 1;
+        }
+        
+        .company-logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 15px;
+        }
+        
+        .company-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ec4899;
+            margin-bottom: 5px;
+        }
+        
+        .company-tagline {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .company-details {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+        
+        .invoice-meta {
+            text-align: right;
+            flex: 1;
+        }
+        
+        .invoice-title {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .invoice-number {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        
+        .invoice-date {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .invoice-status {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        
+        .status-paid {
+            background: #dcfce7;
+            color: #166534;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-cancelled {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+        
+        .invoice-parties {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+        
+        .party-section {
+            flex: 1;
+            margin-right: 40px;
+        }
+        
+        .party-section:last-child {
+            margin-right: 0;
+        }
+        
+        .party-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: #ec4899;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .party-details {
+            background: #fdf2f8;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #ec4899;
+        }
+        
+        .party-name {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        
+        .party-info {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+        
+        .invoice-items {
+            margin-bottom: 40px;
+        }
+        
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .items-table th {
+            background: #ec4899;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        
+        .items-table td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 14px;
+        }
+        
+        .items-table tr:nth-child(even) {
+            background: #fdf2f8;
+        }
+        
+        .item-description {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .item-details {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+        }
+        
+        .text-right {
+            text-align: right;
+        }
+        
+        .invoice-summary {
+            margin-left: auto;
+            width: 300px;
+            background: #f9fafb;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+        
+        .summary-row.total {
+            border-top: 2px solid #ec4899;
+            padding-top: 15px;
+            margin-top: 15px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #ec4899;
+        }
+        
+        .invoice-notes {
+            margin-top: 40px;
+            padding: 20px;
+            background: #f0f9ff;
+            border-radius: 8px;
+            border-left: 4px solid #0ea5e9;
+        }
+        
+        .notes-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #0369a1;
+            margin-bottom: 10px;
+        }
+        
+        .notes-content {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .invoice-footer {
+            margin-top: 50px;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            text-align: center;
+            font-size: 12px;
+            color: #666;
+        }
+        
+        .footer-thanks {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ec4899;
+            margin-bottom: 10px;
+        }
+        
+        @media print {
+            body {
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+            
+            .invoice-container {
+                padding: 20px;
+                box-shadow: none;
+            }
+            
+            .no-print {
+                display: none;
+            }
+        }
+        
+        .download-actions {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #ec4899;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #db2777;
+        }
+        
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+    </style>
+</head>
+<body>
+    <div class="download-actions no-print">
+        <button onclick="window.print()" class="btn btn-secondary">Print Invoice</button>
+        <a href="{{ route('invoice.download', $payment->id) }}" class="btn btn-primary">Download PDF</a>
+    </div>
+
+    <div class="invoice-container">
+        <!-- Invoice Header -->
+        <div class="invoice-header">
+            <div class="company-info">
+                <img src="/images/baby-spa-logo.png" alt="Baby Spa Blade Logo" class="company-logo">
+                <div class="company-name">Baby Spa Blade</div>
+                <div class="company-tagline">Perawatan Terbaik untuk Si Kecil</div>
+                <div class="company-details">
+                    Jl. Kemang Raya No. 123, Jakarta Selatan 12560<br>
+                    Telp: (021) 7890-1234 | WhatsApp: 0812-3456-7890<br>
+                    Email: info@babyspa-blade.com | www.babyspa-blade.com
+                </div>
+            </div>
+            <div class="invoice-meta">
+                <div class="invoice-title">INVOICE</div>
+                <div class="invoice-number">#{{ str_pad($payment->id, 6, '0', STR_PAD_LEFT) }}</div>
+                <div class="invoice-date">{{ $payment->created_at->format('d F Y') }}</div>
+                <div class="invoice-status {{ $payment->status === 'paid' ? 'status-paid' : ($payment->status === 'pending' ? 'status-pending' : 'status-cancelled') }}">
+                    {{ $payment->status === 'paid' ? 'LUNAS' : ($payment->status === 'pending' ? 'MENUNGGU PEMBAYARAN' : 'DIBATALKAN') }}
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Parties -->
+        <div class="invoice-parties">
+            <div class="party-section">
+                <div class="party-title">Tagihan Kepada</div>
+                <div class="party-details">
+                    <div class="party-name">{{ $reservation->parent_name }}</div>
+                    <div class="party-info">{{ $reservation->email }}</div>
+                    <div class="party-info">{{ $reservation->phone }}</div>
+                    @if($reservation->address)
+                        <div class="party-info">{{ $reservation->address }}</div>
+                    @endif
+                </div>
+            </div>
+            <div class="party-section">
+                <div class="party-title">Detail Bayi</div>
+                <div class="party-details">
+                    <div class="party-name">{{ $reservation->baby_name }}</div>
+                    <div class="party-info">Usia: {{ $reservation->baby_age_formatted }}</div>
+                    @if($reservation->baby_birth_weight)
+                        <div class="party-info">Berat Lahir: {{ $reservation->baby_birth_weight }} kg</div>
+                    @endif
+                    @if($reservation->baby_current_weight)
+                        <div class="party-info">Berat Sekarang: {{ $reservation->baby_current_weight }} kg</div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <!-- Invoice Items -->
+        <div class="invoice-items">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th style="width: 50%">Layanan</th>
+                        <th style="width: 20%">Tanggal & Waktu</th>
+                        <th style="width: 15%" class="text-right">Harga</th>
+                        <th style="width: 15%" class="text-right">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="item-description">{{ $reservation->service_name }}</div>
+                            <div class="item-details">
+                                Lokasi: {{ $this->getBranchName($reservation->branch) }}<br>
+                                Terapis: {{ $reservation->therapist_name ?? 'Akan ditentukan' }}
+                            </div>
+                        </td>
+                        <td>
+                            {{ $reservation->formatted_appointment_date }}<br>
+                            <small>{{ $reservation->appointment_time }} WIB</small>
+                        </td>
+                        <td class="text-right">{{ 'Rp ' . number_format($reservation->service_price, 0, ',', '.') }}</td>
+                        <td class="text-right">{{ 'Rp ' . number_format($reservation->service_price, 0, ',', '.') }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- Invoice Summary -->
+            <div class="invoice-summary">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span>{{ 'Rp ' . number_format($reservation->service_price, 0, ',', '.') }}</span>
+                </div>
+                @if($payment->discount_amount > 0)
+                    <div class="summary-row">
+                        <span>Diskon ({{ $payment->voucher_code }}):</span>
+                        <span>-{{ 'Rp ' . number_format($payment->discount_amount, 0, ',', '.') }}</span>
+                    </div>
+                @endif
+                <div class="summary-row">
+                    <span>PPN (11%):</span>
+                    <span>{{ 'Rp ' . number_format(($payment->amount - ($payment->discount_amount ?? 0)) * 0.11, 0, ',', '.') }}</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total:</span>
+                    <span>{{ 'Rp ' . number_format($payment->amount, 0, ',', '.') }}</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Information -->
+        <div class="invoice-notes">
+            <div class="notes-title">Informasi Pembayaran</div>
+            <div class="notes-content">
+                <strong>Metode Pembayaran:</strong> 
+                {{ $payment->payment_method === 'cash' ? 'Tunai di Tempat' : 'Transfer Online (Midtrans)' }}<br>
+                
+                @if($payment->payment_method === 'cash')
+                    <strong>Status:</strong> Pembayaran akan dilakukan saat kedatangan di Baby Spa Blade.<br>
+                @else
+                    <strong>Status:</strong> {{ $payment->status === 'paid' ? 'Pembayaran telah diterima' : 'Menunggu konfirmasi pembayaran' }}<br>
+                @endif
+                
+                <strong>Tanggal Invoice:</strong> {{ $payment->created_at->format('d F Y, H:i') }} WIB<br>
+                
+                @if($payment->paid_at)
+                    <strong>Tanggal Pembayaran:</strong> {{ $payment->paid_at->format('d F Y, H:i') }} WIB<br>
+                @endif
+            </div>
+        </div>
+
+        <!-- Terms and Conditions -->
+        <div class="invoice-notes" style="background: #fef7ff; border-left-color: #ec4899;">
+            <div class="notes-title" style="color: #ec4899;">Syarat dan Ketentuan</div>
+            <div class="notes-content">
+                1. Pembayaran tunai dilakukan saat kedatangan di Baby Spa Blade.<br>
+                2. Pembatalan reservasi dapat dilakukan maksimal 24 jam sebelum jadwal.<br>
+                3. Keterlambatan lebih dari 15 menit dapat mengakibatkan pembatalan otomatis.<br>
+                4. Harap membawa perlengkapan bayi yang diperlukan (popok, baju ganti).<br>
+                5. Untuk pertanyaan, hubungi customer service kami di (021) 7890-1234.
+            </div>
+        </div>
+
+        <!-- Invoice Footer -->
+        <div class="invoice-footer">
+            <div class="footer-thanks">Terima kasih telah mempercayai Baby Spa Blade!</div>
+            <p>Invoice ini dibuat secara otomatis dan sah tanpa tanda tangan.</p>
+            <p>Baby Spa Blade - Perawatan Terbaik untuk Si Kecil</p>
+        </div>
+    </div>
+
+    <script>
+        // Auto-print functionality for direct print requests
+        if (window.location.search.includes('print=true')) {
+            window.onload = function() {
+                window.print();
+            }
+        }
+    </script>
+</body>
+</html>

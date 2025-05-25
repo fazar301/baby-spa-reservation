@@ -107,4 +107,8 @@ Route::post('/payment/verify', [PaymentController::class, 'verify'])->name('paym
 Route::post('/payment/notification', [PaymentController::class, 'handleNotification'])->name('payment.notification');
 Route::get('/reservasi/pending', [ReservationController::class, 'pending'])->name('reservasi.pending');
 
+Route::get('/test-template', function(){
+    return view('templates.invoice');
+});
+
 require __DIR__.'/auth.php';
