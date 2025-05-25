@@ -40,7 +40,51 @@ class ReservationController extends Controller
         try {
             DB::beginTransaction();
 
-            $validated = $request->validate([
+            // Calculate baby's age
+            $tanggal_lahir = \Carbon\Carbon::parse($request->tanggal_lahir);
+            $umur_bayi = $tanggal_lahir->age;
+            $umur_bayi_bulan = $tanggal_lahir->diffInMonths(now());
+
+            // Get service and validate age
+            if ($request->type === 'layanan') {
+                $service = Layanan::with('kategori')->findOrFail($request->service_id);
+            } else {
+                $service = PaketLayanan::with('kategori')->findOrFail($request->service_id);
+            }
+
+            // Validate age based on service category
+            if ($service->kategori) {
+                $is_valid_age = false;
+                switch ($service->kategori->nama_kategori) {
+                    case 'Baby':
+                        if ($umur_bayi_bulan <= 12) {
+                            $is_valid_age = true;
+                        }
+                        break;
+                    case 'Kids':
+                        if ($umur_bayi >= 1 && $umur_bayi <= 3) {
+                            $is_valid_age = true;
+                        }
+                        break;
+                    case 'Children':
+                        if ($umur_bayi >= 3) {
+                            $is_valid_age = true;
+                        }
+                        break;
+                }
+
+                if (!$is_valid_age) {
+                    if ($request->ajax() || $request->wantsJson()) {
+                        return response()->json([
+                            'success' => false,
+                            'message' => 'Umur bayi tidak sesuai dengan persyaratan layanan yang dipilih.'
+                        ], 422);
+                    }
+                    return back()->withInput()->with('error', 'Umur bayi tidak sesuai dengan persyaratan layanan yang dipilih.');
+                }
+            }
+
+            $validator = \Validator::make($request->all(), [
                 'type' => 'required|in:layanan,paket',
                 'service_id' => 'required',
                 'sesi_id' => 'required|exists:sesis,id',
@@ -80,6 +124,17 @@ class ReservationController extends Controller
                 'noHP.required' => 'Nomor telepon harus diisi.',
                 'noHP.unique' => 'Nomor telepon ini sudah digunakan oleh pengguna lain.',
             ]);
+
+            if ($validator->fails()) {
+                if ($request->ajax() || $request->wantsJson()) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Validasi gagal',
+                        'errors' => $validator->errors()
+                    ], 422);
+                }
+                return back()->withErrors($validator)->withInput();
+            }
 
             if ($request->type === 'layanan') {
                 $service = Layanan::findOrFail($request->service_id);

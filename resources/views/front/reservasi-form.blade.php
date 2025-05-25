@@ -23,6 +23,17 @@
                     <div>
                         <h3 class="text-lg font-semibold text-gray-800">Layanan yang Dipilih</h3>
                         <p class="text-gray-600">{{ request('name') }}</p>
+                        @if($service->kategori)
+                            <p class="text-sm text-gray-500 mt-1">
+                                @if($service->kategori->nama_kategori == 'Baby')
+                                    Usia yang dibutuhkan: 0-12 bulan
+                                @elseif($service->kategori->nama_kategori == 'Kids')
+                                    Usia yang dibutuhkan: 1-3 tahun
+                                @elseif($service->kategori->nama_kategori == 'Children')
+                                    Usia yang dibutuhkan: 3+ tahun
+                                @endif
+                            </p>
+                        @endif
                     </div>
                 </div>
                 <div class="text-right">
@@ -517,10 +528,18 @@ document.addEventListener('DOMContentLoaded', function() {
             body: formData,
             headers: {
                 'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value,
-                'X-Requested-With': 'XMLHttpRequest'
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
             }
         })
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                return response.json().then(data => {
+                    throw new Error(data.message || 'Terjadi kesalahan saat memproses reservasi.');
+                });
+            }
+            return response.json();
+        })
         .then(data => {
             if (data.success) {
                 // Redirect to success page or show success message
@@ -546,7 +565,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // Show error message
             const errorDiv = document.createElement('div');
             errorDiv.className = 'mb-4 p-4 bg-red-50 border border-red-200 rounded-lg';
-            errorDiv.innerHTML = '<ul class="text-sm text-red-600"><li>Terjadi kesalahan saat memproses reservasi. Silakan coba lagi.</li></ul>';
+            errorDiv.innerHTML = `<ul class="text-sm text-red-600"><li>${error.message || 'Terjadi kesalahan saat memproses reservasi. Silakan coba lagi.'}</li></ul>`;
             
             // Remove any existing error messages
             const existingError = form.querySelector('.bg-red-50');
