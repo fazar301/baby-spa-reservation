@@ -47,9 +47,15 @@ class VoucherResource extends Resource
                     ->numeric()
                     ->minValue(1),
                 Forms\Components\DatePicker::make('start_date')
-                    ->required(),
+                    ->required()
+                    ->label('Tanggal Mulai'),
                 Forms\Components\DatePicker::make('end_date')
-                    ->required(),
+                    ->required()
+                    ->afterOrEqual('start_date')
+                    ->label('Tanggal Berakhir')
+                    ->validationMessages([
+                        'after_or_equal' => 'Tanggal berakhir harus sama dengan atau lebih baru dari tanggal mulai.',
+                    ]),
                 Forms\Components\Toggle::make('is_active')
                     ->required(),
             ]);
