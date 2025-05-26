@@ -320,8 +320,9 @@ class ReservationController extends Controller
         // Get all sessions
         $allSesis = Sesi::orderBy('jam')->get();
         
-        // Get reservations for the specific date
+        // Get active reservations for the specific date (excluding cancelled ones)
         $bookedSessions = Reservation::where('tanggal_reservasi', $date)
+            ->whereNotIn('status', ['cancelled'])
             ->pluck('sesi_id')
             ->toArray();
         
