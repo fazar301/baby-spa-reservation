@@ -124,4 +124,39 @@ class PaymentController extends Controller
             ], 500);
         }
     }
+
+    public function cancel(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $snapToken = $request->snap_token;
+            $transaction = Transaksi::where('snap_token', $snapToken)->first();
+
+            if (!$transaction) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found'
+                ], 404);
+            }
+
+            // Delete the transaction
+            $transaction->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Transaction cancelled successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Payment cancellation error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to cancel transaction'
+            ], 500);
+        }
+    }
 } 

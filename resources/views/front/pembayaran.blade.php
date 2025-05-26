@@ -318,7 +318,39 @@ document.addEventListener('DOMContentLoaded', function() {
                     },
                     onPending: function(result) {
                         console.log('Snap onPending result:', result);
-                        window.location.href = '{{ route('reservasi.pending') }}';
+                        // Check if the window was closed
+                        console.log(result.transaction_status); 
+                        console.log(result.payment_type);
+                        if (result.transaction_status === 'pending') {
+                            // Window was closed without completing payment
+                            fetch('/payment/cancel', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                                },
+                                body: JSON.stringify({ snap_token: data.snap_token })
+                            })
+                            .then(response => response.json())
+                            .then(result => {
+                                if (result.success) {
+                                    alert('Pembayaran dibatalkan. Silakan coba lagi jika Anda ingin melanjutkan pembayaran.');
+                                } else {
+                                    alert('Terjadi kesalahan saat membatalkan pembayaran. Silakan hubungi customer service.');
+                                }
+                                payButton.disabled = false;
+                                payButton.textContent = 'Bayar Sekarang';
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
+                                alert('Terjadi kesalahan saat membatalkan pembayaran. Silakan hubungi customer service.');
+                                payButton.disabled = false;
+                                payButton.textContent = 'Bayar Sekarang';
+                            });
+                        } else {
+                            // Payment is actually pending (e.g., bank transfer)
+                            window.location.href = '{{ route('reservasi.pending') }}';
+                        }
                     },
                     onError: function(result) {
                         alert('Pembayaran gagal! Silakan coba lagi.');
@@ -326,9 +358,31 @@ document.addEventListener('DOMContentLoaded', function() {
                         payButton.textContent = 'Bayar Sekarang';
                     },
                     onClose: function() {
-                        alert('Pembayaran dibatalkan. Silakan coba lagi jika Anda ingin melanjutkan pembayaran.');
-                        payButton.disabled = false;
-                        payButton.textContent = 'Bayar Sekarang';
+                        // Send request to delete transaction
+                        fetch('/payment/cancel', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                            },
+                            body: JSON.stringify({ snap_token: data.snap_token })
+                        })
+                        .then(response => response.json())
+                        .then(result => {
+                            if (result.success) {
+                                alert('Pembayaran dibatalkan. Silakan coba lagi jika Anda ingin melanjutkan pembayaran.');
+                            } else {
+                                alert('Terjadi kesalahan saat membatalkan pembayaran. Silakan hubungi customer service.');
+                            }
+                            payButton.disabled = false;
+                            payButton.textContent = 'Bayar Sekarang';
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            alert('Terjadi kesalahan saat membatalkan pembayaran. Silakan hubungi customer service.');
+                            payButton.disabled = false;
+                            payButton.textContent = 'Bayar Sekarang';
+                        });
                     }
                 });
 

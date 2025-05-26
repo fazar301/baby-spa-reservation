@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Validator;
 use App\Models\Bayi;
 use App\Models\Sesi;
 use App\Models\Layanan;
@@ -113,7 +114,7 @@ class ReservationController extends Controller
                 }
             }
 
-            $validator = \Validator::make($request->all(), [
+            $validator = Validator::make($request->all(), [
                 'type' => 'required|in:layanan,paket',
                 'service_id' => 'required',
                 'sesi_id' => 'required|exists:sesis,id',

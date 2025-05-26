@@ -263,8 +263,14 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon $tanggal
  * @property numeric $jumlah
  * @property numeric $discount_amount
- * @property string $status
- * @property string $metode
+ * @property string $transaction_status
+ * @property string $payment_type
+ * @property string|null $transaction_time
+ * @property string|null $fraud_status
+ * @property string|null $payment_code
+ * @property string|null $pdf_url
+ * @property string|null $expired_at
+ * @property string|null $settlement_time
  * @property string|null $snap_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -274,14 +280,20 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereDiscountAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereExpiredAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereFraudStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereJumlah($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereMetode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereOrderId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi wherePaymentCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi wherePaymentType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi wherePdfUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereReservasiId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereSettlementTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereSnapToken($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereTanggal($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereTransactionStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereTransactionTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereUpdatedAt($value)
  */
 	class Transaksi extends \Eloquent {}

@@ -119,6 +119,7 @@ Route::middleware(['auth'])->group(function () {
 // Payment Routes
 Route::post('/payment/verify', [PaymentController::class, 'verify'])->name('payment.verify');
 Route::post('/payment/notification', [PaymentController::class, 'handleNotification'])->name('payment.notification');
+Route::post('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
 Route::get('/reservasi/pending', [ReservationController::class, 'pending'])->name('reservasi.pending');
 
 Route::get('/test-template', function(){
