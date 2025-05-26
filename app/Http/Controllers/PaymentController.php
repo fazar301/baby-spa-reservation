@@ -42,7 +42,7 @@ class PaymentController extends Controller
             } else {
                 $transaction->status = $result['transaction_status'];
             }
-            
+            $transaction->metode = $result['payment_type'];
             $transaction->save();
 
             DB::commit();
