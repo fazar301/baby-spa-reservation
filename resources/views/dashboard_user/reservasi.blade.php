@@ -1,17 +1,19 @@
 <x-user-dashboard>
-    <h1 class="text-2xl font-bold mb-6 mt-8 md:mt-0">Reservasi</h1>
-        
-    @php
-        $layanans = \App\Models\Layanan::all();
-    @endphp
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold md:mt-0">Reservasi</h1>
+        <div class="flex items-center gap-4">
+          <x-notification-button :count="3" />
+          <x-profile-dropdown username="Akun Saya" />
+        </div>
+      </div>
     <!-- Search and New Reservation -->
     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div class="relative w-full md:w-64">
         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-2.5 top-2.5 text-gray-500"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
         <input type="text" placeholder="Cari reservasi..." class="w-full pl-8 pr-4 py-2 rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-babypink-500 focus:border-transparent">
     </div>
-    <form class="flex gap-2 items-center" method="GET" id="reservation-form">
-        <div class="mb-4">
+    <form class="flex flex-col md:flex-row gap-4 w-full md:w-auto" method="GET" id="reservation-form">
+        <div class="w-full md:w-64">
             <label for="service" class="block text-sm font-medium text-gray-700">Pilih Layanan</label>
             <select id="service" name="service" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500">
                 <option value="">Pilih Layanan</option>
@@ -27,7 +29,9 @@
                 </optgroup>
             </select>
         </div>
-        <button type="submit" class="px-4 py-2 bg-babypink-500 hover:bg-babypink-600 text-white rounded-md" disabled>Pilih & Reservasi</button>
+        <div class="flex items-end">
+            <button type="submit" class="w-full md:w-auto px-4 py-2 bg-babypink-500 hover:bg-babypink-600 text-white rounded-md" disabled>Pilih & Reservasi</button>
+        </div>
     </form>
     </div>
 

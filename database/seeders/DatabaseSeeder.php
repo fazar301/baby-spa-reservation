@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Sesi;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -23,6 +24,18 @@ class DatabaseSeeder extends Seeder
         //         'role' => 'admin'
         //     ]
         // );
+
+        Sesi::create(['jam' => '08:00']);
+        Sesi::create(['jam' => '09:00']);
+        Sesi::create(['jam' => '10:00']);
+        Sesi::create(['jam' => '11:00']);
+        Sesi::create(['jam' => '12:00']);
+        Sesi::create(['jam' => '13:00']);   
+        Sesi::create(['jam' => '14:00']);
+        Sesi::create(['jam' => '15:00']);
+        Sesi::create(['jam' => '16:00']);
+        Sesi::create(['jam' => '17:00']);
+        
 
         // Run other seeders
         $this->call([

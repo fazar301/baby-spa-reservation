@@ -2,7 +2,7 @@
     <x-user-dashboard>
         
     
-      <h1 class="text-2xl font-bold mb-6 mt-8 md:mt-0">Layanan</h1>
+      <h1 class="text-2xl font-bold mb-6 md:mt-0">Layanan</h1>
       
       <!-- Search -->
       <div class="relative w-full max-w-md mx-auto mb-6">

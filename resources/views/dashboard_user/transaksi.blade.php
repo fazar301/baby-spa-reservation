@@ -36,31 +36,10 @@
     
       <!-- Dashboard Header with Profile and Notification Buttons -->
       <div class="flex items-center justify-between mb-6">
-        <h1 class="text-2xl font-bold mb-6 mt-8 md:mt-0">Transaksi</h1>
+        <h1 class="text-2xl font-bold md:mt-0">Transaksi</h1>
         <div class="flex items-center gap-4">
-          {{-- <!-- Notification Button -->
-          <button class="relative p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
-            <span class="absolute -top-1 -right-1 bg-babypink-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
-              3
-            </span>
-          </button> --}}
-          
-          <!-- User Profile Dropdown -->
-          <div class="relative" id="userDropdown">
-            <button class="p-2 rounded-full border border-gray-300 hover:bg-gray-50 transition-colors" id="userDropdownButton">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            </button>
-            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-50 dropdown-content" id="userDropdownContent">
-              <div class="py-1 px-4 border-b">
-                <p class="text-sm font-medium">Akun Saya</p>
-              </div>
-              <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Profil</a>
-              <a href="settings.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Pengaturan</a>
-              <div class="border-t"></div>
-              <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Keluar</a>
-            </div>
-          </div>
+          <x-notification-button :count="3" />
+          <x-profile-dropdown username="Akun Saya" />
         </div>
       </div>
       
@@ -190,33 +169,6 @@
   <script>
     // Sidebar Toggle Functionality
     document.addEventListener('DOMContentLoaded', function() {
-      const sidebarTrigger = document.getElementById('sidebarTrigger');
-      const closeSidebar = document.getElementById('closeSidebar');
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('sidebarOverlay');
-      
-      function openSidebar() {
-        sidebar.classList.remove('-translate-x-full');
-        overlay.classList.remove('hidden');
-      }
-      
-      function closeSidebarFunc() {
-        sidebar.classList.add('-translate-x-full');
-        overlay.classList.add('hidden');
-      }
-      
-      sidebarTrigger.addEventListener('click', openSidebar);
-      closeSidebar.addEventListener('click', closeSidebarFunc);
-      overlay.addEventListener('click', closeSidebarFunc);
-      
-      // User Dropdown Functionality
-      const userDropdownButton = document.getElementById('userDropdownButton');
-      const userDropdownContent = document.getElementById('userDropdownContent');
-      
-      userDropdownButton.addEventListener('click', function(e) {
-        e.stopPropagation();
-        userDropdownContent.classList.toggle('show');
-      });
 
       // Transaction data
       const transactions = [
@@ -439,7 +391,7 @@
             
             // Close all other dropdowns
             document.querySelectorAll('.dropdown-content').forEach(content => {
-              if (content !== dropdownContent && content !== userDropdownContent) {
+              if (content !== dropdownContent && content !== dropdownContent) {
                 content.classList.remove('show');
               }
             });

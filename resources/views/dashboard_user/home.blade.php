@@ -1,8 +1,13 @@
 <x-user-dashboard>
-
-    <h1 class="text-2xl font-bold mb-6 mt-8 md:mt-0">Dasbor Pelanggan</h1>
-        
-    <!-- Stats Cards -->
+    <div class="flex items-center justify-between mb-6">
+        <h1 class="text-2xl font-bold md:mt-0">Beranda</h1>
+        <div class="flex items-center gap-4">
+          <x-notification-button :count="3" />
+          <x-profile-dropdown username="Akun Saya" />
+        </div>
+      </div> 
+    
+      <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <!-- Stat Card 1 -->
         <div class="bg-white rounded-xl shadow-sm p-6">

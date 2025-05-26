@@ -29,8 +29,8 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/reservasi', function () {
-    $layanans = \App\Models\Layanan::all();
-    $paketLayanans = \App\Models\PaketLayanan::all();
+    $layanans = Layanan::all();
+    $paketLayanans = PaketLayanan::all();
     return view('dashboard_user.reservasi', compact('layanans', 'paketLayanans'));
 })->middleware(['auth', 'verified'])->name('reservasi');
 
@@ -45,6 +45,10 @@ Route::get('/reservasi/redirect', function () {
 Route::get('/transaksi', function () {
     return view('dashboard_user.transaksi');
 })->middleware(['auth', 'verified'])->name('transaksi');
+
+Route::get('/settings', function () {
+    return view('dashboard_user.setting');
+})->middleware(['auth', 'verified'])->name('settings');
 
 Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');
 
@@ -90,6 +94,15 @@ Route::middleware(['auth'])->group(function () {
     // Success page
     Route::get('/reservasi/success', [ReservationController::class, 'success'])
         ->name('reservasi.success');
+
+    // Index page for reservations
+    Route::get('/reservasi', [ReservationController::class, 'index'])
+        ->name('reservasi.index');
+
+    // API endpoint for checking available sessions
+    Route::get('/api/available-sessions', [ReservationController::class, 'getAvailableSessions'])
+        ->name('api.available-sessions');
+
     Route::get('/reservations/{reservation}/invoice', [ReservationController::class, 'downloadInvoice'])->name('reservasi.invoice');
     // Payment related routes (now handled by TransaksiController)
     Route::get('/reservations/{reservation}/payment', [TransaksiController::class, 'showPayment'])

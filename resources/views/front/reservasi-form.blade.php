@@ -272,7 +272,18 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                         <div>
                             <label for="tanggal_reservasi" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Reservasi <span class="text-red-500">*</span></label>
-                            <input type="date" id="tanggal_reservasi" name="tanggal_reservasi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required min="{{ date('Y-m-d') }}">
+                            <select id="tanggal_reservasi" name="tanggal_reservasi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required>
+                                <option value="">Pilih Tanggal</option>
+                                @php
+                                    $today = \Carbon\Carbon::now();
+                                    for ($i = 0; $i < 7; $i++) {
+                                        $date = $today->copy()->addDays($i);
+                                        $formattedDate = $date->format('Y-m-d');
+                                        $displayDate = $date->locale('id')->isoFormat('dddd, D MMMM YYYY');
+                                        echo "<option value=\"$formattedDate\">$displayDate</option>";
+                                    }
+                                @endphp
+                            </select>
                         </div>
                         
                         <div>
@@ -280,9 +291,12 @@
                             <select id="sesi_id" name="sesi_id" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required>
                                 <option value="">Pilih Waktu</option>
                                 @foreach($sesis as $sesi)
-                                    <option value="{{ $sesi->id }}">{{ \Carbon\Carbon::parse($sesi->jam)->format('H:i') }}</option>
+                                    <option value="{{ $sesi->id }}" data-time="{{ \Carbon\Carbon::parse($sesi->jam)->format('H:i') }}">
+                                        {{ \Carbon\Carbon::parse($sesi->jam)->format('H:i') }}
+                                    </option>
                                 @endforeach
                             </select>
+                            <p class="text-xs text-gray-500 mt-1">Waktu yang tersedia akan berubah sesuai dengan tanggal yang dipilih</p>
                         </div>
                     </div>
                     
@@ -856,6 +870,50 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Berat sekarang harus lebih besar dari berat lahir.');
             this.value = '';
         }
+    });
+
+    // Add event listener for date change
+    const tanggalReservasiSelect = document.getElementById('tanggal_reservasi');
+    const sesiSelect = document.getElementById('sesi_id');
+    const allSesiOptions = Array.from(sesiSelect.options);
+
+    tanggalReservasiSelect.addEventListener('change', function() {
+        const selectedDate = this.value;
+        
+        // Clear current options except the first one
+        while (sesiSelect.options.length > 1) {
+            sesiSelect.remove(1);
+        }
+
+        // Add back all options
+        allSesiOptions.forEach(option => {
+            if (option.value) { // Skip the first "Pilih Waktu" option
+                sesiSelect.add(option.cloneNode(true));
+            }
+        });
+
+        // Fetch available sessions for the selected date
+        fetch(`/api/available-sessions?date=${selectedDate}`)
+            .then(response => response.json())
+            .then(data => {
+                // Remove unavailable sessions
+                Array.from(sesiSelect.options).forEach(option => {
+                    if (option.value && !data.available_sessions.includes(parseInt(option.value))) {
+                        option.remove();
+                    }
+                });
+
+                // If no sessions are available, show a message
+                if (sesiSelect.options.length <= 1) {
+                    const noSessionsOption = document.createElement('option');
+                    noSessionsOption.disabled = true;
+                    noSessionsOption.textContent = 'Tidak ada sesi yang tersedia untuk tanggal ini';
+                    sesiSelect.add(noSessionsOption);
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching available sessions:', error);
+            });
     });
 });
 </script>

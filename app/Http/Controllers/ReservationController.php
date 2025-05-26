@@ -31,7 +31,36 @@ class ReservationController extends Controller
         $bayis = Bayi::where('user_id', Auth::user()->id)
             ->where('is_temporary', false)
             ->get();
-        $sesis = Sesi::orderBy('jam')->get();
+
+        // Get all sessions
+        $allSesis = Sesi::orderBy('jam')->get();
+        
+        // Get today's date
+        $today = now()->format('Y-m-d');
+        
+        // Get all reservations for the next 7 days
+        $reservations = Reservation::where('tanggal_reservasi', '>=', $today)
+            ->where('tanggal_reservasi', '<=', now()->addDays(7)->format('Y-m-d'))
+            ->get()
+            ->groupBy(function($reservation) {
+                return $reservation->tanggal_reservasi . '_' . $reservation->sesi_id;
+            });
+
+        // Filter out sessions that are already booked
+        $sesis = $allSesis->filter(function($sesi) use ($reservations) {
+            // For each date in the next 7 days
+            for ($i = 0; $i < 7; $i++) {
+                $date = now()->addDays($i)->format('Y-m-d');
+                $key = $date . '_' . $sesi->id;
+                
+                // If this session is not booked for this date, it's available
+                if (!isset($reservations[$key])) {
+                    return true;
+                }
+            }
+            return false;
+        });
+
         return view('front.reservasi-form', compact('service', 'type', 'sesis', 'bayis'));
     }
 
@@ -260,6 +289,48 @@ class ReservationController extends Controller
     {
         return view('front.pending-payment', [
             'title' => 'Pembayaran Pending'
+        ]);
+    }
+
+    public function index()
+    {
+        $reservations = Reservation::where('user_id', Auth::id())
+            ->with(['layanan', 'paketLayanan', 'bayi', 'sesi'])
+            ->orderBy('created_at', 'desc')
+            ->get();
+        $layanans = Layanan::all();
+        $paketLayanans = PaketLayanan::all();
+        return view('dashboard_user.reservasi', [
+            'reservations' => $reservations,
+            'layanans' => $layanans,
+            'paketLayanans' => $paketLayanans,
+            'title' => 'Daftar Reservasi'
+        ]);
+    }
+
+    public function getAvailableSessions(Request $request)
+    {
+        $date = $request->query('date');
+        
+        if (!$date) {
+            return response()->json(['error' => 'Date is required'], 400);
+        }
+
+        // Get all sessions
+        $allSesis = Sesi::orderBy('jam')->get();
+        
+        // Get reservations for the specific date
+        $bookedSessions = Reservation::where('tanggal_reservasi', $date)
+            ->pluck('sesi_id')
+            ->toArray();
+        
+        // Filter out booked sessions
+        $availableSessions = $allSesis->filter(function($sesi) use ($bookedSessions) {
+            return !in_array($sesi->id, $bookedSessions);
+        })->pluck('id')->toArray();
+
+        return response()->json([
+            'available_sessions' => $availableSessions
         ]);
     }
 } 
