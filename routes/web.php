@@ -46,8 +46,9 @@ Route::get('/transaksi', function () {
     return view('dashboard_user.transaksi');
 })->middleware(['auth', 'verified'])->name('transaksi');
 
-Route::get('/settings', function () {
-    return view('dashboard_user.setting');
+Route::get('/settings', function () {  
+    $user = Auth::user();
+    return view('dashboard_user.setting', compact('user'));
 })->middleware(['auth', 'verified'])->name('settings');
 
 Route::get('/layanan', [LayananController::class, 'index'])->name('layanan.index');

@@ -5,7 +5,7 @@
           <x-notification-button :count="3" />
           <x-profile-dropdown username="Akun Saya" />
         </div>
-      </div>
+    </div>
     <!-- Search and New Reservation -->
     <div class="mb-6 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
     <div class="relative w-full md:w-64">
