@@ -34,7 +34,10 @@ class PaketLayananResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('nama_paket')
+                TextInput::make('nama_paket')->unique(ignoreRecord: true)
+                    ->validationMessages([
+                        'unique' => 'Nama layanan sudah digunakan',
+                    ])
                     ->required()
                     ->maxLength(255),
                 TextInput::make('slug')
@@ -42,8 +45,18 @@ class PaketLayananResource extends Resource
                     ->dehydrated(),
                 MoneyInput::make('harga_paket')
                     ->decimals(0)
-                    ->numeric()
-                    ->required(),
+                    ->required()
+                    ->afterStateHydrated(function ($component, $state) {
+                        if ($state) {
+                            $component->state($state);
+                        }
+                    })
+                    ->dehydrateStateUsing(function ($state) {
+                        if (is_string($state)) {
+                            return (int) str_replace(['.', 'Rp', ' '], '', $state);
+                        }
+                        return $state;
+                    }),
                 Select::make('kategori_id')
                     ->relationship('kategori', 'nama_kategori')
                     ->required()
@@ -71,7 +84,10 @@ class PaketLayananResource extends Resource
                 TextColumn::make('nama_paket')
                     ->searchable(),
                 MoneyColumn::make('harga_paket')
-                    ->decimals(0),
+                    ->decimals(0)
+                    ->currency('IDR')
+                    ->locale('ID_id')
+                    ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.')),
                 TextColumn::make('kategori.nama_kategori')
                     ->label('Kategori'),
                 TextColumn::make('deskripsi')
