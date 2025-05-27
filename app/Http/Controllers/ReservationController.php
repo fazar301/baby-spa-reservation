@@ -189,7 +189,6 @@ class ReservationController extends Controller
             $reservation->type = $request->type;
             $reservation->sesi_id = $request->sesi_id;
             $reservation->tanggal_reservasi = $request->tanggal_reservasi;
-            $reservation->waktu_reservasi = $sesi->jam;
             $reservation->status = 'pending';
             $reservation->harga = $harga;
             $reservation->catatan = $request->catatan;

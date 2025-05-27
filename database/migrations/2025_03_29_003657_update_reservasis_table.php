@@ -11,7 +11,6 @@ return new class extends Migration
         Schema::table('reservasis', function (Blueprint $table) {
             $table->foreignId('bayi_id')->nullable()->constrained('bayis')->onDelete('set null');
             $table->date('tanggal_reservasi');
-            $table->string('waktu_reservasi');
             $table->decimal('harga', 10, 2);
             $table->text('catatan')->nullable();
             $table->enum('status', ['pending', 'confirmed', 'cancelled', 'completed'])->default('pending')->change();
@@ -25,7 +24,6 @@ return new class extends Migration
             $table->dropColumn([
                 'bayi_id',
                 'tanggal_reservasi',
-                'waktu_reservasi',
                 'harga',
                 'catatan'
             ]);

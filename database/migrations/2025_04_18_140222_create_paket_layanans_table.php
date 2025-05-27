@@ -14,7 +14,7 @@ class CreatePaketLayanansTable extends Migration
         Schema::create('paket_layanans', function (Blueprint $table) {
             $table->id();
             $table->string('nama_paket');
-            $table->decimal('harga_paket', 10, 2);
+            $table->integer('harga_paket');
             $table->text('deskripsi');
             $table->string('image');
             $table->foreignId('kategori_id')->constrained()->onDelete('cascade');

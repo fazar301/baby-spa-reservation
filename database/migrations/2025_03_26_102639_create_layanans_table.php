@@ -14,7 +14,7 @@ class CreateLayanansTable extends Migration
         Schema::create('layanans', function (Blueprint $table) {
             $table->id();
             $table->string('nama_layanan');
-            $table->decimal('harga_layanan', 10, 2);
+            $table->integer('harga_layanan');
             $table->text('deskripsi');
             $table->string('image');
             $table->json('manfaat')->nullable();
