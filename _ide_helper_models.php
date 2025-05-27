@@ -209,6 +209,7 @@ namespace App\Models{
  * @property-read \App\Models\PaketLayanan $paketLayanan
  * @property-read \App\Models\Layanan $service
  * @property-read \App\Models\Sesi $sesi
+ * @property-read \App\Models\Transaksi|null $transaksi
  * @property-read \App\Models\User $user
  * @property-read \App\Models\Voucher|null $voucher
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation newModelQuery()

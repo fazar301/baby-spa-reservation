@@ -63,4 +63,9 @@ class Reservation extends Model
     {
         return $this->belongsTo(Voucher::class);
     }
+
+    public function transaksi()
+    {
+        return $this->hasOne(Transaksi::class, 'reservasi_id');
+    }
 } 

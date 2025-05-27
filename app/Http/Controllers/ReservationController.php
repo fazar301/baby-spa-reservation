@@ -265,11 +265,27 @@ class ReservationController extends Controller
 
     public function downloadInvoice(Reservation $reservation)
     {
-        // Load any related data needed for the invoice (user, service/package, etc.)
-        $reservation->load(['user', 'layanan', 'paketLayanan', 'bayi']); // Adjust relationships as needed
+        // Load any related data needed for the invoice
+        $reservation->load(['user', 'layanan', 'paketLayanan', 'bayi', 'transaksi']);
+
+        // Get the payment data
+        $payment = $reservation->transaksi;
+
+        // Format the data for the template
+        $reservation->parent_name = $reservation->user->name;
+        $reservation->email = $reservation->user->email;
+        $reservation->phone = $reservation->user->noHP;
+        $reservation->baby_name = $reservation->bayi->nama;
+        $reservation->baby_age_formatted = $reservation->bayi->tanggal_lahir->age . ' tahun ' . $reservation->bayi->tanggal_lahir->diffInMonths(now()) % 12 . ' bulan';
+        $reservation->baby_birth_weight = $reservation->bayi->berat_lahir;
+        $reservation->baby_current_weight = $reservation->bayi->berat_sekarang;
+        $reservation->service_name = $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket;
+        $reservation->service_price = $reservation->harga;
+        $reservation->formatted_appointment_date = \Carbon\Carbon::parse($reservation->tanggal_reservasi)->locale('id')->isoFormat('dddd, D MMMM Y');
+        $reservation->appointment_time = $reservation->sesi->jam;
 
         // Create a dedicated Blade view for the invoice PDF
-        $pdf = Pdf::loadView('pdf.invoice', compact('reservation'));
+        $pdf = Pdf::loadView('templates.invoice', compact('reservation', 'payment'));
 
         // Download the PDF
         return $pdf->download('invoice_' . $reservation->id . '.pdf');
