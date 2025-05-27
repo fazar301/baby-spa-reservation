@@ -269,6 +269,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Get form data
         const formData = new FormData(this);
+        const paymentMethod = formData.get('payment_method');
         
         // Send payment request
         fetch(this.action, {
@@ -282,47 +283,87 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                // Open Midtrans Snap
-                window.snap.pay(data.snap_token, {
-                    onSuccess: function(result) {
-                        console.log('Snap onSuccess result:', result);
-                        // Send payment result to backend for verification
-                        fetch('/payment/verify', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                            },
-                            body: JSON.stringify(result)
-                        })
-                        .then(response => {
-                            console.log('Verification response:', response);
-                            return response.json();
-                        })
-                        .then(data => {
-                            console.log('Verification data:', data);
-                            if (data.success) {
-                                window.location.href = '{{ route('reservasi.success') }}';
-                            } else {
+                if (paymentMethod === 'cash') {
+                    // For cash payments, redirect directly to success page
+                    window.location.href = '{{ route('reservasi.success') }}';
+                } else {
+                    // For Midtrans payments, open Snap
+                    window.snap.pay(data.snap_token, {
+                        onSuccess: function(result) {
+                            console.log('Snap onSuccess result:', result);
+                            // Send payment result to backend for verification
+                            fetch('/payment/verify', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json',
+                                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                                },
+                                body: JSON.stringify(result)
+                            })
+                            .then(response => {
+                                console.log('Verification response:', response);
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log('Verification data:', data);
+                                if (data.success) {
+                                    window.location.href = '{{ route('reservasi.success') }}';
+                                } else {
+                                    alert('Terjadi kesalahan saat memverifikasi pembayaran. Silakan hubungi customer service.');
+                                    payButton.disabled = false;
+                                    payButton.textContent = 'Bayar Sekarang';
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error:', error);
                                 alert('Terjadi kesalahan saat memverifikasi pembayaran. Silakan hubungi customer service.');
                                 payButton.disabled = false;
                                 payButton.textContent = 'Bayar Sekarang';
+                            });
+                        },
+                        onPending: function(result) {
+                            console.log('Snap onPending result:', result);
+                            // Check if the window was closed
+                            console.log(result.transaction_status); 
+                            console.log(result.payment_type);
+                            if (result.transaction_status === 'pending') {
+                                // Window was closed without completing payment
+                                fetch('/payment/cancel', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                                    },
+                                    body: JSON.stringify({ snap_token: data.snap_token })
+                                })
+                                .then(response => response.json())
+                                .then(result => {
+                                    if (result.success) {
+                                        alert('Pembayaran dibatalkan. Silakan coba lagi jika Anda ingin melanjutkan pembayaran.');
+                                    } else {
+                                        alert('Terjadi kesalahan saat membatalkan pembayaran. Silakan hubungi customer service.');
+                                    }
+                                    payButton.disabled = false;
+                                    payButton.textContent = 'Bayar Sekarang';
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    alert('Terjadi kesalahan saat membatalkan pembayaran. Silakan hubungi customer service.');
+                                    payButton.disabled = false;
+                                    payButton.textContent = 'Bayar Sekarang';
+                                });
+                            } else {
+                                // Payment is actually pending (e.g., bank transfer)
+                                window.location.href = '{{ route('reservasi.pending') }}';
                             }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Terjadi kesalahan saat memverifikasi pembayaran. Silakan hubungi customer service.');
+                        },
+                        onError: function(result) {
+                            alert('Pembayaran gagal! Silakan coba lagi.');
                             payButton.disabled = false;
                             payButton.textContent = 'Bayar Sekarang';
-                        });
-                    },
-                    onPending: function(result) {
-                        console.log('Snap onPending result:', result);
-                        // Check if the window was closed
-                        console.log(result.transaction_status); 
-                        console.log(result.payment_type);
-                        if (result.transaction_status === 'pending') {
-                            // Window was closed without completing payment
+                        },
+                        onClose: function() {
+                            // Send request to delete transaction
                             fetch('/payment/cancel', {
                                 method: 'POST',
                                 headers: {
@@ -347,76 +388,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                 payButton.disabled = false;
                                 payButton.textContent = 'Bayar Sekarang';
                             });
-                        } else {
-                            // Payment is actually pending (e.g., bank transfer)
-                            window.location.href = '{{ route('reservasi.pending') }}';
                         }
-                    },
-                    onError: function(result) {
-                        alert('Pembayaran gagal! Silakan coba lagi.');
-                        payButton.disabled = false;
-                        payButton.textContent = 'Bayar Sekarang';
-                    },
-                    onClose: function() {
-                        // Send request to delete transaction
-                        fetch('/payment/cancel', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                            },
-                            body: JSON.stringify({ snap_token: data.snap_token })
-                        })
-                        .then(response => response.json())
-                        .then(result => {
-                            if (result.success) {
-                                alert('Pembayaran dibatalkan. Silakan coba lagi jika Anda ingin melanjutkan pembayaran.');
-                            } else {
-                                alert('Terjadi kesalahan saat membatalkan pembayaran. Silakan hubungi customer service.');
-                            }
-                            payButton.disabled = false;
-                            payButton.textContent = 'Bayar Sekarang';
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            alert('Terjadi kesalahan saat membatalkan pembayaran. Silakan hubungi customer service.');
-                            payButton.disabled = false;
-                            payButton.textContent = 'Bayar Sekarang';
-                        });
-                    }
-                });
-
-                // Function to poll payment status
-                function startPollingPaymentStatus(snapToken) {
-                    const pollInterval = setInterval(() => {
-                        fetch('/payment/verify', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-                            },
-                            body: JSON.stringify({ snap_token: snapToken })
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success && data.status === 'settlement') {
-                                clearInterval(pollInterval);
-                                window.location.href = '{{ route('reservasi.success') }}';
-                            } else if (data.success && data.status === 'expire') {
-                                clearInterval(pollInterval);
-                                alert('Pembayaran telah kedaluwarsa. Silakan coba lagi.');
-                                payButton.disabled = false;
-                                payButton.textContent = 'Bayar Sekarang';
-                            }
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                            clearInterval(pollInterval);
-                            alert('Terjadi kesalahan saat memeriksa status pembayaran. Silakan hubungi customer service.');
-                            payButton.disabled = false;
-                            payButton.textContent = 'Bayar Sekarang';
-                        });
-                    }, 5000); // Poll every 5 seconds
+                    });
                 }
             } else {
                 alert(data.message || 'Terjadi kesalahan saat memproses pembayaran.');

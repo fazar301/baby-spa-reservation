@@ -46,7 +46,13 @@ class TransaksiResource extends Resource
                         'expired' => 'Expired',
                         'failed' => 'Failed',
                     ])
-                    ->required(),
+                    ->required()
+                    ->disabled(fn (Transaksi $record) => $record?->metode !== 'cash')
+                    ->afterStateUpdated(function ($state, Transaksi $record) {
+                        if ($state === 'paid' && $record->metode === 'cash') {
+                            $record->reservasi->update(['status' => 'confirmed']);
+                        }
+                    }),
                 Forms\Components\TextInput::make('metode')
                     ->required(),
                 Forms\Components\TextInput::make('order_id')
@@ -131,6 +137,8 @@ class TransaksiResource extends Resource
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn (Transaksi $record) => $record->metode === 'cash'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -10,7 +10,7 @@
                     Sentuhan lembut, air yang menenangkan, dan perawatan khusus yang dirancang khusus untuk bayi.
                 </p>
                 <div class="space-y-4 sm:flex sm:space-y-0 sm:space-x-4">
-                    <a href="{{ route('reservasi.redirect', ['type' => 'layanan', 'slug' => 'baby-spa']) }}" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-300">
+                    <a href="{{ route('layanan.index') }}" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-300">
                         Buat Reservasi
                     </a>
                     <a href="#" class="inline-flex items-center justify-center px-5 py-3 text-base font-medium text-center text-gray-900 border border-gray-300 rounded-lg hover:bg-gray-100 focus:ring-4 focus:ring-gray-100">
@@ -194,7 +194,7 @@
                 <p class="text-lg text-gray-700">Berikan hadiah relaksasi dan manfaat perkembangan untuk si kecil Anda.</p>
                 
                 <div class="flex flex-col sm:flex-row justify-center gap-4">
-                    <a href="{{ route('reservasi.redirect', ['type' => 'layanan', 'slug' => 'baby-spa']) }}" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-300">
+                    <a href="{{ route('layanan.index') }}" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-pink-500 hover:bg-pink-600 focus:ring-4 focus:ring-pink-300">
                         Buat Reservasi
                     </a>
                     <a href="#" class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-gray-900 rounded-lg border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:ring-gray-100">

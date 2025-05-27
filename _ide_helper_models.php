@@ -92,7 +92,7 @@ namespace App\Models{
  * @property int $id
  * @property string $nama_layanan
  * @property string $slug
- * @property string $harga_layanan
+ * @property int $harga_layanan
  * @property string $deskripsi
  * @property string $image
  * @property array<array-key, mixed>|null $manfaat
@@ -127,7 +127,7 @@ namespace App\Models{
  * @property int $id
  * @property string $nama_paket
  * @property string $slug
- * @property string $harga_paket
+ * @property int $harga_paket
  * @property string $deskripsi
  * @property string $image
  * @property int $kategori_id
@@ -167,7 +167,6 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $bayi_id
  * @property string $tanggal_reservasi
- * @property string $waktu_reservasi
  * @property string $harga
  * @property string|null $catatan
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi newModelQuery()
@@ -185,7 +184,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi whereWaktuReservasi($value)
  */
 	class Reservasi extends \Eloquent {}
 }
@@ -204,7 +202,6 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $bayi_id
  * @property \Illuminate\Support\Carbon $tanggal_reservasi
- * @property string $waktu_reservasi
  * @property numeric $harga
  * @property string|null $catatan
  * @property-read \App\Models\Bayi|null $bayi
@@ -229,7 +226,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereUserId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereWaktuReservasi($value)
  */
 	class Reservation extends \Eloquent {}
 }
@@ -263,14 +259,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon $tanggal
  * @property numeric $jumlah
  * @property numeric $discount_amount
- * @property string $transaction_status
- * @property string $payment_type
- * @property string|null $transaction_time
- * @property string|null $fraud_status
- * @property string|null $payment_code
- * @property string|null $pdf_url
- * @property string|null $expired_at
- * @property string|null $settlement_time
+ * @property string $status
+ * @property string $metode
  * @property string|null $snap_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -280,20 +270,14 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereDiscountAmount($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereExpiredAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereFraudStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereJumlah($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereMetode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereOrderId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi wherePaymentCode($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi wherePaymentType($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi wherePdfUrl($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereReservasiId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereSettlementTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereSnapToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereTanggal($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereTransactionStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereTransactionTime($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereUpdatedAt($value)
  */
 	class Transaksi extends \Eloquent {}

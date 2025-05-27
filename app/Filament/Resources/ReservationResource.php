@@ -36,9 +36,31 @@ class ReservationResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('sesi_id')
                     ->relationship('sesi', 'jam')
-                    ->required(),
+                    ->required()
+                    ->options(function (Forms\Get $get) {
+                        $date = $get('tanggal_reservasi');
+                        if (!$date) {
+                            return \App\Models\Sesi::orderBy('jam')->pluck('jam', 'id');
+                        }
+
+                        // Get all sessions
+                        $allSesis = \App\Models\Sesi::orderBy('jam')->get();
+                        
+                        // Get active reservations for the specific date (excluding cancelled ones and current reservation)
+                        $bookedSessions = \App\Models\Reservation::where('tanggal_reservasi', $date)
+                            ->whereNotIn('status', ['cancelled'])
+                            ->where('id', '!=', $get('id')) // Exclude current reservation
+                            ->pluck('sesi_id')
+                            ->toArray();
+                        
+                        // Filter out booked sessions
+                        return $allSesis->filter(function($sesi) use ($bookedSessions) {
+                            return !in_array($sesi->id, $bookedSessions);
+                        })->pluck('jam', 'id');
+                    }),
                 Forms\Components\DatePicker::make('tanggal_reservasi')
-                    ->required(),
+                    ->required()
+                    ->live(), // Make it live to trigger session options update
                 Forms\Components\Select::make('status')
                     ->options([
                         'pending' => 'Pending',
