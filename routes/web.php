@@ -34,14 +34,6 @@ Route::get('/reservasi', function () {
     return view('dashboard_user.reservasi', compact('layanans', 'paketLayanans'));
 })->middleware(['auth', 'verified'])->name('reservasi');
 
-Route::get('/reservasi/redirect', function () {
-    if (!Auth::check()) {
-        session(['intended' => route('layanan.index')]);
-        return redirect()->route('login');
-    }
-    return redirect()->route('layanan.index');
-})->name('reservasi.redirect');
-
 Route::get('/transaksi', function () {
     return view('dashboard_user.transaksi');
 })->middleware(['auth', 'verified'])->name('transaksi');
@@ -115,6 +107,15 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/payment/callback', [TransaksiController::class, 'handleCallback'])
         ->name('payment.callback');
 });
+
+// Add this route outside the auth middleware group
+Route::get('/reservasi/redirect/{type}/{slug}', function ($type, $slug) {
+    if (!Auth::check()) {
+        session(['intended' => route('reservasi.create', ['type' => $type, 'slug' => $slug])]);
+        return redirect()->route('login');
+    }
+    return redirect()->route('reservasi.create', ['type' => $type, 'slug' => $slug]);
+})->name('reservasi.redirect')->where('type', 'layanan|paket');
 
 // Payment Routes
 Route::post('/payment/verify', [PaymentController::class, 'verify'])->name('payment.verify');

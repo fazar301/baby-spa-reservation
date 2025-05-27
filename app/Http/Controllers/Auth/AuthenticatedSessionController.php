@@ -28,14 +28,17 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
-        // Check if there's an intended URL in the session
+        // Tambahkan log untuk debugging
+        \Log::info('Session intended sebelum login:', ['intended' => $request->session()->get('intended')]);
+
         if ($request->session()->has('intended')) {
             $intendedUrl = $request->session()->get('intended');
             $request->session()->forget('intended');
+            \Log::info('Redirect ke intended:', ['url' => $intendedUrl]);
             return redirect()->to($intendedUrl);
         }
 
-        // If no intended URL, redirect to dashboard
+        \Log::info('Tidak ada intended, redirect ke dashboard');
         return redirect()->route('dashboard');
     }
 
