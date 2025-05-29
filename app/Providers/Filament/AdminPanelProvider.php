@@ -59,6 +59,8 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->userMenuItems([
                 // 'logout' => MenuItem::make()->label('Log out Keluar'),
-            ]);
+            ])
+            ->databaseNotifications()
+            ->databaseNotificationsPolling('2s');
     }
 }

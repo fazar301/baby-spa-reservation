@@ -65,10 +65,11 @@ class TransaksiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('tanggal', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('id')
+                //     ->label('ID')
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('reservasi.user.name')
                     ->label('Nama Pelanggan')
                     ->searchable()
@@ -78,7 +79,7 @@ class TransaksiResource extends Resource
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tanggal')
-                    ->dateTime('d M Y H:i')
+                    ->date('d M Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('jumlah')
                     ->money('IDR')

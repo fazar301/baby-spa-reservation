@@ -81,10 +81,11 @@ class ReservationResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultSort('tanggal_reservasi', 'desc')
             ->columns([
-                Tables\Columns\TextColumn::make('id')
-                    ->label('ID')
-                    ->sortable(),
+                // Tables\Columns\TextColumn::make('id')
+                //     ->label('ID')
+                //     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Nama Pelanggan')
                     ->searchable()
@@ -102,6 +103,7 @@ class ReservationResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('sesi.jam')
                     ->label('Waktu Reservasi')
+                    ->time('H:i')
                     ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
                     ->colors([

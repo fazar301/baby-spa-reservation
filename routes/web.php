@@ -13,6 +13,7 @@ use App\Models\PaketLayanan;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\PaymentController;
+use Filament\Notifications\Notification;
 
 Route::get('/', function () {
     $layanans = Layanan::limit(3)->get();
@@ -125,6 +126,15 @@ Route::get('/reservasi/pending', [ReservationController::class, 'pending'])->nam
 
 Route::get('/test-template', function(){
     return view('templates.invoice');
+});
+
+Route::get('/test-notification', function(){
+    $recipient = Auth::user();
+    Notification::make()
+        ->title('Test Notification')
+        ->body('This is a test notification')
+        ->sendToDatabase($recipient);
+    return redirect()->back()->with('success', 'Notification sent successfully');
 });
 
 require __DIR__.'/auth.php';

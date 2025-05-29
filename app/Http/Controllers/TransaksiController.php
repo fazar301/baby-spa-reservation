@@ -2,16 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Reservation;
-use App\Models\Transaksi;
+use Carbon\Carbon;
+use Midtrans\Snap;
+use App\Models\User;
+use Midtrans\Config;
 use App\Models\Voucher;
+use App\Models\Transaksi;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Carbon\Carbon;
-use Midtrans\Config;
-use Midtrans\Snap;
+use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
 
 class TransaksiController extends Controller
 {
@@ -108,6 +110,15 @@ class TransaksiController extends Controller
 
             DB::commit();
 
+            if($transaksi->method == 'cash'){
+                // Send notification to admin
+                $customer = Auth::user();
+                $recipient = User::where('role', 'admin')->first()->get();
+                Notification::make()
+                ->title('Reservasi Baru Diterima')
+                ->body('Pelanggan(Cash) ' . $customer->name . ' telah melakukan reservasi untuk hari ' . \Carbon\Carbon::parse($reservation->tanggal_reservasi)->locale('id')->isoFormat('dddd, D MMMM Y') . ' pada jam ' . substr($reservation->sesi->jam, 0, 5) . '. Silakan cek detail reservasi.')
+                ->sendToDatabase($recipient);
+            }
             return response()->json([
                 'success' => true,
                 'snap_token' => $snapToken,

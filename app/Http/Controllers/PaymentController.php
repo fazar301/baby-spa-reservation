@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use App\Models\Transaksi;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Filament\Notifications\Notification;
 
 class PaymentController extends Controller
 {
@@ -38,6 +41,14 @@ class PaymentController extends Controller
                 if ($reservation) {
                     $reservation->status = 'confirmed';
                     $reservation->save();
+                    
+                     // Send notification to admin
+                     $customer = Auth::user();
+                     $recipient = User::where('role', 'admin')->first()->get();
+                     Notification::make()
+                     ->title('Reservasi Baru Diterima')
+                     ->body('Pelanggan ' . $customer->name . ' telah melakukan reservasi untuk hari ' . \Carbon\Carbon::parse($reservation->tanggal_reservasi)->locale('id')->isoFormat('dddd, D MMMM Y') . ' pada jam ' . substr($reservation->sesi->jam, 0, 5) . '. Silakan cek detail reservasi.')
+                     ->sendToDatabase($recipient);
                 }
             } else {
                 $transaction->status = $result['transaction_status'];

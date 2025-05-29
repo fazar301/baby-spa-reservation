@@ -341,8 +341,18 @@ class ReservationController extends Controller
             ->pluck('sesi_id')
             ->toArray();
         
-        // Filter out booked sessions
-        $availableSessions = $allSesis->filter(function($sesi) use ($bookedSessions) {
+        // Check if the date is a Friday
+        $isFriday = \Carbon\Carbon::parse($date)->dayOfWeek === 5; // 5 represents Friday
+        
+        // Filter out booked sessions and sessions before 14:00 on Fridays
+        $availableSessions = $allSesis->filter(function($sesi) use ($bookedSessions, $isFriday) {
+            // If it's Friday, only allow sessions after 14:00
+            if ($isFriday) {
+                $sessionTime = \Carbon\Carbon::createFromFormat('H:i:s', $sesi->jam);
+                if ($sessionTime->format('H:i') < '14:00') {
+                    return false;
+                }
+            }
             return !in_array($sesi->id, $bookedSessions);
         })->pluck('id')->toArray();
 
