@@ -4,6 +4,7 @@
     x-data="notificationDropdown()" 
     class="relative"
     @click.away="isOpen = false"
+    x-init="startPolling()"
 >
     <button 
         @click="isOpen = !isOpen"
@@ -53,7 +54,7 @@
             <template x-for="notification in notifications" :key="notification.id">
                 <div 
                     class="p-0 hover:bg-gray-50 cursor-pointer"
-                    :class="{ 'bg-blue-50': !notification.isRead }"
+                    :class="{ 'bg-blue-50': !notification.read_at }"
                 >
                     <div class="w-full p-3 relative">
                         <div class="flex items-start justify-between">
@@ -61,20 +62,20 @@
                                 <div class="flex items-center gap-2 mb-1">
                                     <h4 
                                         class="text-sm font-medium"
-                                        :class="!notification.isRead ? 'text-gray-900' : 'text-gray-700'"
-                                        x-text="notification.title"
+                                        :class="!notification.read_at ? 'text-gray-900' : 'text-gray-700'"
+                                        x-text="notification.data.title"
                                     ></h4>
                                     <div 
-                                        x-show="!notification.isRead"
+                                        x-show="!notification.read_at"
                                         class="w-2 h-2 bg-babypink-500 rounded-full"
                                     ></div>
                                 </div>
-                                <p class="text-xs text-gray-600 mb-1" x-text="notification.message"></p>
-                                <p class="text-xs text-gray-400" x-text="notification.time"></p>
+                                <p class="text-xs text-gray-600 mb-1" x-text="notification.data.message"></p>
+                                <p class="text-xs text-gray-400" x-text="notification.data.time"></p>
                             </div>
                             <div class="flex gap-1">
                                 <button
-                                    x-show="!notification.isRead"
+                                    x-show="!notification.read_at"
                                     @click.stop="markAsRead(notification.id)"
                                     class="h-6 w-6 p-0 hover:bg-green-100 rounded flex items-center justify-center"
                                 >
@@ -100,8 +101,11 @@
 
         <!-- Footer - Fixed -->
         <div x-show="notifications.length > 0" class="border-t border-gray-200 bg-white">
-            <button class="w-full p-3 text-center text-sm text-babypink-600 hover:text-babypink-700 hover:bg-gray-50">
-                Lihat semua notifikasi
+            <button 
+                @click="deleteAllNotifications()"
+                class="w-full p-3 text-center text-sm text-babypink-600 hover:text-babypink-700 hover:bg-gray-50"
+            >
+                Hapus semua notifikasi
             </button>
         </div>
     </div>
@@ -112,60 +116,115 @@
     function notificationDropdown() {
         return {
             isOpen: false,
-            notifications: [
-                {
-                    id: '1',
-                    title: 'Reservasi Dikonfirmasi',
-                    message: 'Reservasi baby spa untuk anak Anda telah dikonfirmasi',
-                    time: '5 menit yang lalu',
-                    isRead: false,
-                    type: 'success'
-                },
-                {
-                    id: '2',
-                    title: 'Pembayaran Berhasil',
-                    message: 'Pembayaran untuk layanan baby massage telah diterima',
-                    time: '1 jam yang lalu',
-                    isRead: false,
-                    type: 'success'
-                },
-                {
-                    id: '3',
-                    title: 'Reminder Jadwal',
-                    message: 'Jangan lupa reservasi Anda besok pukul 10:00',
-                    time: '2 jam yang lalu',
-                    isRead: true,
-                    type: 'info'
-                },
-                {
-                    id: '4',
-                    title: 'Reminder Jadwal',
-                    message: 'Jangan lupa reservasi Anda besok pukul 10:00',
-                    time: '2 jam yang lalu',
-                    isRead: true,
-                    type: 'info'
-                }
-            ],
+            notifications: @json(auth()->user()->notifications()->latest()->take(10)->get()),
+            pollingInterval: null,
+            csrfToken: '{{ csrf_token() }}',
             
             get unreadCount() {
-                return this.notifications.filter(n => !n.isRead).length;
+                return this.notifications.filter(n => !n.read_at).length;
+            },
+            
+            startPolling() {
+                // Poll every 2 seconds
+                this.pollingInterval = setInterval(() => {
+                    this.fetchNotifications();
+                }, 2000); // 2 seconds
+            },
+            
+            stopPolling() {
+                if (this.pollingInterval) {
+                    clearInterval(this.pollingInterval);
+                }
+            },
+            
+            fetchNotifications() {
+                fetch('/notifications', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': this.csrfToken
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.notifications = data.notifications;
+                    }
+                });
             },
             
             markAsRead(id) {
-                const notification = this.notifications.find(n => n.id === id);
-                if (notification) {
-                    notification.isRead = true;
-                }
+                fetch(`/notifications/${id}/mark-as-read`, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': this.csrfToken,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const notification = this.notifications.find(n => n.id === id);
+                        if (notification) {
+                            notification.read_at = new Date().toISOString();
+                        }
+                    }
+                });
             },
             
             markAllAsRead() {
-                this.notifications.forEach(notification => {
-                    notification.isRead = true;
+                fetch('/notifications/mark-all-as-read', {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': this.csrfToken,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.notifications.forEach(notification => {
+                            notification.read_at = new Date().toISOString();
+                        });
+                    }
                 });
             },
             
             removeNotification(id) {
-                this.notifications = this.notifications.filter(n => n.id !== id);
+                fetch(`/notifications/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': this.csrfToken,
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        this.notifications = this.notifications.filter(n => n.id !== id);
+                    }
+                });
+            },
+
+            deleteAllNotifications() {
+                if (confirm('Apakah Anda yakin ingin menghapus semua notifikasi?')) {
+                    fetch('/notifications/delete-all', {
+                        method: 'DELETE',
+                        headers: {
+                            'X-CSRF-TOKEN': this.csrfToken,
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            this.notifications = [];
+                        }
+                    });
+                }
             }
         }
     }

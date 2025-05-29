@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Notification as LaravelNotification;
+use App\Notifications\ReservationNotification;
 
 class PaymentController extends Controller
 {
@@ -42,13 +44,20 @@ class PaymentController extends Controller
                     $reservation->status = 'confirmed';
                     $reservation->save();
                     
-                     // Send notification to admin
-                     $customer = Auth::user();
-                     $recipient = User::where('role', 'admin')->first()->get();
-                     Notification::make()
-                     ->title('Reservasi Baru Diterima')
-                     ->body('Pelanggan ' . $customer->name . ' telah melakukan reservasi untuk hari ' . \Carbon\Carbon::parse($reservation->tanggal_reservasi)->locale('id')->isoFormat('dddd, D MMMM Y') . ' pada jam ' . substr($reservation->sesi->jam, 0, 5) . '. Silakan cek detail reservasi.')
-                     ->sendToDatabase($recipient);
+                    // Send notification to admin using Filament
+                    $customer = Auth::user();
+                    $admin = User::where('role', 'admin')->first();
+                    Notification::make()
+                        ->title('Reservasi Baru Diterima')
+                        ->body('Pelanggan ' . $customer->name . ' telah melakukan reservasi untuk hari ' . \Carbon\Carbon::parse($reservation->tanggal_reservasi)->locale('id')->isoFormat('dddd, D MMMM Y') . ' pada jam ' . substr($reservation->sesi->jam, 0, 5) . '. Silakan cek detail reservasi.')
+                        ->sendToDatabase($admin);
+
+                    // Send notification to customer using Laravel Notification
+                    $customer->notify(new ReservationNotification(
+                        'Reservasi Dikonfirmasi',
+                        'Reservasi baby spa untuk anak Anda telah dikonfirmasi',
+                        'success'
+                    ));
                 }
             } else {
                 $transaction->status = $result['transaction_status'];
