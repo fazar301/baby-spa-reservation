@@ -2,17 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TransaksiResource\Pages;
-use App\Filament\Resources\TransaksiResource\RelationManagers;
-use App\Models\Transaksi;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
+use App\Models\Transaksi;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Resources\Resource;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Builder;
+use App\Notifications\ReservationNotification;
+use App\Filament\Resources\TransaksiResource\Pages;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\TransaksiResource\RelationManagers;
 
 class TransaksiResource extends Resource
 {
@@ -51,6 +53,14 @@ class TransaksiResource extends Resource
                     ->afterStateUpdated(function ($state, Transaksi $record) {
                         if ($state === 'paid' && $record->metode === 'cash') {
                             $record->reservasi->update(['status' => 'confirmed']);
+
+                            // Send notification to customer using Laravel Notification
+                            $customer = $record->reservasi->user;
+                            $customer->notify(new ReservationNotification(
+                                'Pembayaran berhasil',
+                                'Pembayaran untuk reservasi telah berhasil',
+                                'success'
+                            ));
                         }
                     }),
                 Forms\Components\TextInput::make('metode')

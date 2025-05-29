@@ -110,14 +110,14 @@ class TransaksiController extends Controller
 
             DB::commit();
 
-            if($transaksi->method == 'cash'){
+            if($transaksi->metode == 'cash'){
                 // Send notification to admin
                 $customer = Auth::user();
-                $recipient = User::where('role', 'admin')->first()->get();
+                $admin = User::where('role', 'admin')->first();
                 Notification::make()
-                ->title('Reservasi Baru Diterima')
-                ->body('Pelanggan(Cash) ' . $customer->name . ' telah melakukan reservasi untuk hari ' . \Carbon\Carbon::parse($reservation->tanggal_reservasi)->locale('id')->isoFormat('dddd, D MMMM Y') . ' pada jam ' . substr($reservation->sesi->jam, 0, 5) . '. Silakan cek detail reservasi.')
-                ->sendToDatabase($recipient);
+                    ->title('Reservasi Baru Diterima')
+                    ->body('Pelanggan ' . $customer->name . ' telah melakukan reservasi untuk hari ' . \Carbon\Carbon::parse($reservation->tanggal_reservasi)->locale('id')->isoFormat('dddd, D MMMM Y') . ' pada jam ' . substr($reservation->sesi->jam, 0, 5) . '. Silakan cek detail reservasi.')
+                    ->sendToDatabase($admin);
             }
             return response()->json([
                 'success' => true,
