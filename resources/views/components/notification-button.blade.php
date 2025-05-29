@@ -71,7 +71,7 @@
                                     ></div>
                                 </div>
                                 <p class="text-xs text-gray-600 mb-1" x-text="notification.data.message"></p>
-                                <p class="text-xs text-gray-400" x-text="notification.data.time"></p>
+                                <p class="text-xs text-gray-400" x-text="formatTime(notification.created_at)"></p>
                             </div>
                             <div class="flex gap-1">
                                 <button
@@ -122,6 +122,37 @@
             
             get unreadCount() {
                 return this.notifications.filter(n => !n.read_at).length;
+            },
+            
+            formatTime(timestamp) {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diffInSeconds = Math.floor((now - date) / 1000);
+                
+                if (diffInSeconds < 60) {
+                    return 'Baru saja';
+                }
+                
+                const diffInMinutes = Math.floor(diffInSeconds / 60);
+                if (diffInMinutes < 60) {
+                    return `${diffInMinutes} menit yang lalu`;
+                }
+                
+                const diffInHours = Math.floor(diffInMinutes / 60);
+                if (diffInHours < 24) {
+                    return `${diffInHours} jam yang lalu`;
+                }
+                
+                const diffInDays = Math.floor(diffInHours / 24);
+                if (diffInDays < 7) {
+                    return `${diffInDays} hari yang lalu`;
+                }
+                
+                return date.toLocaleDateString('id-ID', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric'
+                });
             },
             
             startPolling() {
