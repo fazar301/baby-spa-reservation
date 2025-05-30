@@ -58,7 +58,7 @@
                     <div>
                         <div class="flex items-center">
                             <h3 class="text-lg font-semibold me-3">{{ $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket }}</h3>
-                            <div style="height: min-content" class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground text-xs">RSV-1234</div>
+                            <div style="height: min-content" class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground text-xs">{{ $reservation->kode }}</div>
                         </div>
                         <p class="text-sm text-gray-500">Untuk {{ $reservation->bayi->nama }}</p>
                     </div>
@@ -118,7 +118,7 @@
                     <div>
                         <div class="flex items-center">
                             <h3 class="text-lg font-semibold me-3">{{ $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket }}</h3>
-                            <div style="height: min-content" class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground text-xs">RSV-1234</div>
+                            <div style="height: min-content" class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground text-xs">{{ $reservation->kode }}</div>
                         </div>
                         <p class="text-sm text-gray-500">Untuk {{ $reservation->bayi->nama }}</p>
                     </div>
