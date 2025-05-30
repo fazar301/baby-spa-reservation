@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\ReservationResource\Pages;
 
-use App\Filament\Resources\ReservationResource;
+use App\Models\Sesi;
 use Filament\Actions;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
 use Filament\Resources\Pages\EditRecord;
 use App\Notifications\ReservationNotification;
-use Illuminate\Support\Facades\Log;
+use App\Filament\Resources\ReservationResource;
 
 class EditReservation extends EditRecord
 {
@@ -33,7 +35,7 @@ class EditReservation extends EditRecord
             $original['sesi_id'] !== $record->sesi_id) {
             
             // Get the session time
-            $newSesiTime = \App\Models\Sesi::find($record->sesi_id)->jam;
+            $newSesiTime = Str::substr(Sesi::find($record->sesi_id)->jam,0,5);
             
             // Format the date
             $formattedDate = \Carbon\Carbon::parse($record->tanggal_reservasi)->format('d M Y');
