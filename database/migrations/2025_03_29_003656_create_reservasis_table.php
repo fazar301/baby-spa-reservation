@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('reservasis', function (Blueprint $table) {
             $table->id();
+            $table->string('kode',8)->unique();
             $table->foreignId('user_id')->constrained(
                 table: 'users', 
                 indexName: 'reservasis_user_id'
