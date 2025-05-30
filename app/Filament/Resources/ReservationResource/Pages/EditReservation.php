@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\ReservationResource\Pages;
 
+use Carbon\Carbon;
 use App\Models\Sesi;
 use Filament\Actions;
 use Illuminate\Support\Str;
@@ -14,6 +15,9 @@ class EditReservation extends EditRecord
 {
     protected static string $resource = ReservationResource::class;
 
+    protected $originalDate;
+    protected $originalSesi;
+
     protected function getHeaderActions(): array
     {
         return [
@@ -21,18 +25,25 @@ class EditReservation extends EditRecord
         ];
     }
 
+    protected function beforeSave(): void
+    {
+        // Store original values before save
+        $this->originalDate = $this->record->getOriginal('tanggal_reservasi');
+        $this->originalSesi = $this->record->getOriginal('sesi_id');
+    }
+
     protected function afterSave(): void
     {
         $record = $this->record->fresh();
-        $original = $this->record->getOriginal();
         
-        // Log untuk debugging
-        Log::info('Original data:', $original);
-        Log::info('New data:', $record->toArray());
+        // Compare dates using direct string comparison
+        $originalDateStr = Carbon::parse($this->originalDate)->format('Y-m-d');
+        $newDateStr = Carbon::parse($record->tanggal_reservasi)->format('Y-m-d');
+        $isDateChanged = $originalDateStr !== $newDateStr;
+        $isSesiChanged = $this->originalSesi != $record->sesi_id;
+
         
-        // Check if tanggal_reservasi or sesi_id has changed
-        if ($original['tanggal_reservasi'] !== $record->tanggal_reservasi || 
-            $original['sesi_id'] !== $record->sesi_id) {
+        if ($isDateChanged || $isSesiChanged) {
             
             // Get the session time
             $newSesiTime = Str::substr(Sesi::find($record->sesi_id)->jam,0,5);
@@ -48,12 +59,10 @@ class EditReservation extends EditRecord
                 'warning'
             ));
             
-            // Log notification sent
-            Log::info('Notification sent to customer:', [
-                'customer_id' => $customer->id,
-                'new_date' => $formattedDate,
-                'new_time' => $newSesiTime
-            ]);
         }
+    }
+    protected function getRedirectUrl(): string
+    {
+        return $this->previousUrl ?? $this->getResource()::getUrl('index');
     }
 }
