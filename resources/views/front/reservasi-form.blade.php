@@ -897,7 +897,15 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(response => response.json())
             .then(data => {
                 // Remove unavailable sessions
-                Array.from(sesiSelect.options).forEach(option => {
+                Array.from(sesiSelect.options).forEach((option,i) => {
+                    if(i > 0){
+                        if(new Date().getDate() == document.querySelector('#tanggal_reservasi').value.substr(8)){
+                            if(option.getAttribute('data-time').toString().substr(0,2) < new Date().getHours()){
+                                option.remove()
+                                return
+                            }
+                        }
+                    }
                     if (option.value && !data.available_sessions.includes(parseInt(option.value))) {
                         option.remove();
                     }
