@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Session;
 
 class TransaksiController extends Controller
 {
@@ -31,6 +32,13 @@ class TransaksiController extends Controller
     {
         if ($reservation->user_id !== Auth::id()) {
             return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki akses ke reservasi ini.');
+        }
+        $reservationId = Session::get('reservation_id');
+        if($reservationId){
+            $reservation = Reservation::find($reservationId);
+            if($reservation->status == 'confirmed'){
+                return redirect('/reservasi/success');
+            }
         }
         return view('front.pembayaran', compact('reservation'));
     }
