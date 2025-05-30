@@ -59,6 +59,9 @@ class ReservationResource extends Resource
                         })->pluck('jam', 'id');
                     }),
                 Forms\Components\DatePicker::make('tanggal_reservasi')
+                    ->minDate(now())
+                    ->native(false)
+                    ->closeOnDateSelection(true)
                     ->required()
                     ->live(), // Make it live to trigger session options update
                 Forms\Components\Select::make('status')
