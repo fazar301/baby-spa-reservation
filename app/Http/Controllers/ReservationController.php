@@ -185,6 +185,11 @@ class ReservationController extends Controller
 
             $reservation = new Reservation();
             $reservation->user_id = Auth::user()->id;
+            if(Auth::user()->name != $request->parent_name){
+                $user = \App\Models\User::find(Auth::user()->id);
+                $user->name = $request->parent_name;
+                $user->save();
+            }
             $reservation->layanan_id = $request->service_id;
             $reservation->type = $request->type;
             $reservation->sesi_id = $request->sesi_id;
