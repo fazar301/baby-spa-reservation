@@ -158,6 +158,7 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property string $kode
  * @property int $user_id
  * @property int $layanan_id
  * @property string $type
@@ -177,6 +178,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi whereHarga($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi whereKode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi whereLayananId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi whereSesiId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi whereStatus($value)
@@ -193,6 +195,7 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property string $kode
  * @property int $user_id
  * @property int $layanan_id
  * @property string $type
@@ -220,6 +223,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereHarga($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereKode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereLayananId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereSesiId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation whereStatus($value)
