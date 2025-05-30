@@ -54,47 +54,46 @@
         @if(!$isPast)
         <div class="bg-white rounded-xl shadow-sm mb-4">
             <div class="p-6">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                <div>
-                <h3 class="text-lg font-semibold">{{ $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket }}</h3>
-                <p class="text-sm text-gray-500">Untuk {{ $reservation->bayi->nama }}</p>
-                </div>
-                <span class="mt-2 md:mt-0 px-3 py-1 {{ $reservation->status === 'confirmed' ? 'bg-babypink-100 text-babypink-600' : 'bg-orange-100 text-orange-600' }} text-sm rounded-full">
-                {{ $reservation->status === 'confirmed' ? 'Dikonfirmasi' : 'Menunggu' }}
-                </span>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-2">
-                <div class="flex items-center text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-gray-500"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                    <span>{{ $reservation->tanggal_reservasi->format('d F Y') }}</span>
-                </div>
-                <div class="flex items-center text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-gray-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <span>{{ $reservation->sesi->jam }}</span>
-                </div>
+                <div class="flex flex-row items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold">{{ $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket }}</h3>
+                        <p class="text-sm text-gray-500">Untuk {{ $reservation->bayi->nama }}</p>
+                    </div>
+                    <span style="width: min-content" class="mt-2 md:mt-0 px-3 py-1 {{ $reservation->status === 'confirmed' ? 'bg-babypink-100 text-babypink-600' : 'bg-orange-100 text-orange-600' }} text-sm rounded-full">
+                        {{ $reservation->status === 'confirmed' ? 'Dikonfirmasi' : 'Menunggu' }}
+                    </span>
                 </div>
                 
-                <div class="space-y-2">
-                @if($reservation->catatan)
-                <div class="text-sm">
-                    <span class="text-gray-500">Catatan:</span> {{ $reservation->catatan }}
+                <div class="grid grid-cols-1 grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-gray-500"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                            <span>{{ $reservation->tanggal_reservasi->format('d F Y') }}</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-gray-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span>{{ Str::substr($reservation->sesi->jam,0,5) }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                    @if($reservation->catatan)
+                    <div class="text-sm">
+                        <span class="text-gray-500">Catatan:</span> {{ $reservation->catatan }}
+                    </div>
+                    @endif
+                    <div class="flex justify-end mt-4 space-x-2">
+                        @if($reservation->status === 'confirmed')
+                        <button class="px-3 py-1.5 text-sm border border-gray-300 rounded-md">
+                            Ubah Jadwal
+                        </button>
+                        {{-- <button class="px-3 py-1.5 text-sm bg-red-500 text-white rounded-md">
+                            Batalkan
+                        </button> --}}
+                        @endif
+                    </div>
+                    </div>
                 </div>
-                @endif
-                </div>
-            </div>
-            
-            <div class="flex justify-end mt-4 space-x-2">
-                @if($reservation->status === 'pending')
-                <button class="px-3 py-1.5 text-sm border border-gray-300 rounded-md">
-                    Ubah Jadwal
-                </button>
-                <button class="px-3 py-1.5 text-sm bg-red-500 text-white rounded-md">
-                    Batalkan
-                </button>
-                @endif
-            </div>
             </div>
         </div>
         @endif
@@ -112,47 +111,73 @@
         @if($isPast)
         <div class="bg-white rounded-xl shadow-sm mb-4">
             <div class="p-6">
-            <div class="flex flex-col md:flex-row md:items-center md:justify-between mb-4">
-                <div>
-                <h3 class="text-lg font-semibold">{{ $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket }}</h3>
-                <p class="text-sm text-gray-500">Untuk {{ $reservation->bayi->nama }}</p>
+                <div class="flex flex-row items-center justify-between mb-4">
+                    <div>
+                        <h3 class="text-lg font-semibold">{{ $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket }}</h3>
+                        <p class="text-sm text-gray-500">Untuk {{ $reservation->bayi->nama }}</p>
+                    </div>
+                    <span style="width: min-content" class="mt-2 md:mt-0 px-3 py-1 bg-green-100 text-green-600 text-sm rounded-full">
+                    Selesai
+                    </span>
                 </div>
-                <span class="mt-2 md:mt-0 px-3 py-1 bg-green-100 text-green-600 text-sm rounded-full">
-                Selesai
-                </span>
-            </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="space-y-2">
-                <div class="flex items-center text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-gray-500"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
-                    <span>{{ $reservation->tanggal_reservasi->format('d F Y') }}</span>
+                <div class="grid grid-cols-1 grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                        <div class="flex items-center text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-gray-500"><rect width="18" height="18" x="3" y="4" rx="2" ry="2"/><line x1="16" x2="16" y1="2" y2="6"/><line x1="8" x2="8" y1="2" y2="6"/><line x1="3" x2="21" y1="10" y2="10"/></svg>
+                            <span>{{ $reservation->tanggal_reservasi->format('d F Y') }}</span>
+                        </div>
+                        <div class="flex items-center text-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-gray-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                            <span>{{ Str::substr($reservation->sesi->jam,0,5) }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        @if($reservation->catatan)
+                        <div class="text-sm">
+                            <span class="text-gray-500">Catatan:</span> {{ $reservation->catatan }}
+                        </div>
+                        @endif    
+                        <div class="flex justify-end mt-4">
+                            <button class="px-3 py-1.5 text-sm border border-gray-300 rounded-md">
+                                Buat Ulasan
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="flex items-center text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2 text-gray-500"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    <span>{{ $reservation->sesi->jam }}</span>
-                </div>
-                </div>
-                
-                <div class="space-y-2">
-                @if($reservation->catatan)
-                <div class="text-sm">
-                    <span class="text-gray-500">Catatan:</span> {{ $reservation->catatan }}
-                </div>
-                @endif
-                </div>
-            </div>
-            
-            <div class="flex justify-end mt-4">
-                <button class="px-3 py-1.5 text-sm border border-gray-300 rounded-md">
-                    Buat Ulasan
-                </button>
-            </div>
             </div>
         </div>
         @endif
     @endforeach
     </div>
+    <!-- Pagination Controls -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border-t">
+        <div class="flex items-center gap-2">
+            <span class="text-sm text-gray-700">
+                Menampilkan
+                <span id="startIndex" class="font-medium">1</span>
+                -
+                <span id="endIndex" class="font-medium">5</span>
+                dari
+                <span id="totalItems" class="font-medium">0</span>
+                hasil
+            </span>
+        </div>
+        <div class="flex items-center gap-2">
+            <button id="prevPage" class="px-3 py-1 rounded-md border text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Sebelumnya
+            </button>
+            <div id="pageNumbers" class="flex items-center gap-1">
+                <!-- Page numbers will be dynamically populated -->
+            </div>
+            <button id="nextPage" class="px-3 py-1 rounded-md border text-sm font-medium text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
+                Berikutnya
+            </button>
+        </div>
+    </div>
+    </div>
+
     @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -168,6 +193,83 @@
                     content: document.getElementById('past-tab-content')
                 }
             };
+
+            // Pagination state
+            let currentPage = 1;
+            const itemsPerPage = 5;
+            let filteredReservations = [];
+            
+            // Function to get all reservations from the current tab
+            function getCurrentTabReservations() {
+                const activeTab = tabs.upcoming.content.classList.contains('hidden') ? 'past' : 'upcoming';
+                const reservations = Array.from(tabs[activeTab].content.querySelectorAll('.bg-white'));
+                return reservations;
+            }
+            
+            // Function to render reservations
+            function renderReservations(items) {
+                const activeTab = tabs.upcoming.content.classList.contains('hidden') ? 'past' : 'upcoming';
+                const container = tabs[activeTab].content;
+                
+                // Hide all reservations first
+                container.querySelectorAll('.bg-white').forEach(reservation => {
+                    reservation.style.display = 'none';
+                });
+                
+                // Show only the reservations for current page
+                items.forEach(reservation => {
+                    reservation.style.display = 'block';
+                });
+            }
+            
+            // Function to render pagination
+            function renderPagination() {
+                const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);
+                const startIndex = (currentPage - 1) * itemsPerPage + 1;
+                const endIndex = Math.min(currentPage * itemsPerPage, filteredReservations.length);
+                
+                // Update pagination info
+                document.getElementById('startIndex').textContent = startIndex;
+                document.getElementById('endIndex').textContent = endIndex;
+                document.getElementById('totalItems').textContent = filteredReservations.length;
+                
+                // Update pagination buttons
+                document.getElementById('prevPage').disabled = currentPage === 1;
+                document.getElementById('nextPage').disabled = currentPage === totalPages;
+                
+                // Render page numbers
+                const pageNumbers = document.getElementById('pageNumbers');
+                pageNumbers.innerHTML = '';
+                
+                for (let i = 1; i <= totalPages; i++) {
+                    const button = document.createElement('button');
+                    button.className = `w-8 h-8 flex items-center justify-center rounded-md text-sm font-medium
+                        ${currentPage === i ? 'bg-babypink-50 text-babypink-600 border-babypink-200' : 'text-gray-700 hover:bg-gray-50 border'}
+                        border`;
+                    button.textContent = i;
+                    button.addEventListener('click', () => goToPage(i));
+                    pageNumbers.appendChild(button);
+                }
+            }
+            
+            // Function to go to specific page
+            function goToPage(page) {
+                currentPage = page;
+                const start = (page - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                renderReservations(filteredReservations.slice(start, end));
+                renderPagination();
+            }
+            
+            // Initialize pagination controls
+            document.getElementById('prevPage').addEventListener('click', () => {
+                if (currentPage > 1) goToPage(currentPage - 1);
+            });
+            
+            document.getElementById('nextPage').addEventListener('click', () => {
+                const totalPages = Math.ceil(filteredReservations.length / itemsPerPage);
+                if (currentPage < totalPages) goToPage(currentPage + 1);
+            });
     
             // Function to switch tabs
             function switchTab(activeTab) {
@@ -186,6 +288,10 @@
                 tabs[activeTab].content.classList.add('block');
                 tabs[activeTab].button.classList.remove('border-transparent', 'text-gray-500');
                 tabs[activeTab].button.classList.add('border-babypink-500', 'text-babypink-500');
+
+                // Update pagination for the new tab
+                filteredReservations = getCurrentTabReservations();
+                goToPage(1);
             }
     
             // Add click event listeners
