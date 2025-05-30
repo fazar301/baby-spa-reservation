@@ -27,7 +27,6 @@ return [
     */
 
     'env' => env('APP_ENV', 'production'),
-    'timezone' => 'Asia/Jakarta',
 
 
 
@@ -68,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Asia/Jakarta',
 
     /*
     |--------------------------------------------------------------------------
