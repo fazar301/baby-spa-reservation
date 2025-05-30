@@ -83,9 +83,6 @@ class ReservationResource extends Resource
         return $table
             ->defaultSort('tanggal_reservasi', 'desc')
             ->columns([
-                // Tables\Columns\TextColumn::make('id')
-                //     ->label('ID')
-                //     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Nama Pelanggan')
                     ->searchable()
