@@ -56,10 +56,13 @@
             <div class="p-6">
                 <div class="flex flex-row items-center justify-between mb-4">
                     <div>
-                        <h3 class="text-lg font-semibold">{{ $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket }}</h3>
+                        <div class="flex items-center">
+                            <h3 class="text-lg font-semibold me-3">{{ $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket }}</h3>
+                            <div style="height: min-content" class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground text-xs">RSV-1234</div>
+                        </div>
                         <p class="text-sm text-gray-500">Untuk {{ $reservation->bayi->nama }}</p>
                     </div>
-                    <span style="width: min-content" class="mt-2 md:mt-0 px-3 py-1 {{ $reservation->status === 'confirmed' ? 'bg-babypink-100 text-babypink-600' : 'bg-orange-100 text-orange-600' }} text-sm rounded-full">
+                    <span style="width: min-content" class="self-start mt-0 px-3 py-1 {{ $reservation->status === 'confirmed' ? 'bg-babypink-100 text-babypink-600' : 'bg-orange-100 text-orange-600' }} text-sm rounded-full">
                         {{ $reservation->status === 'confirmed' ? 'Dikonfirmasi' : 'Menunggu' }}
                     </span>
                 </div>
@@ -82,17 +85,17 @@
                         <span class="text-gray-500">Catatan:</span> {{ $reservation->catatan }}
                     </div>
                     @endif
-                    <div class="flex justify-end mt-4 space-x-2">
-                        @if($reservation->status === 'confirmed')
-                        <button class="px-3 py-1.5 text-sm border border-gray-300 rounded-md">
-                            Ubah Jadwal
-                        </button>
-                        {{-- <button class="px-3 py-1.5 text-sm bg-red-500 text-white rounded-md">
-                            Batalkan
-                        </button> --}}
-                        @endif
                     </div>
-                    </div>
+                </div>
+                <div class="flex justify-end mt-4 space-x-2">
+                    @if($reservation->status === 'confirmed')
+                    <button class="px-3 py-1.5 text-sm border border-gray-300 rounded-md">
+                        Ubah Jadwal
+                    </button>
+                    {{-- <button class="px-3 py-1.5 text-sm bg-red-500 text-white rounded-md">
+                        Batalkan
+                    </button> --}}
+                    @endif
                 </div>
             </div>
         </div>
@@ -113,10 +116,13 @@
             <div class="p-6">
                 <div class="flex flex-row items-center justify-between mb-4">
                     <div>
-                        <h3 class="text-lg font-semibold">{{ $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket }}</h3>
+                        <div class="flex items-center">
+                            <h3 class="text-lg font-semibold me-3">{{ $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket }}</h3>
+                            <div style="height: min-content" class="inline-flex items-center rounded-full border px-2.5 py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 text-foreground text-xs">RSV-1234</div>
+                        </div>
                         <p class="text-sm text-gray-500">Untuk {{ $reservation->bayi->nama }}</p>
                     </div>
-                    <span style="width: min-content" class="mt-2 md:mt-0 px-3 py-1 bg-green-100 text-green-600 text-sm rounded-full">
+                    <span style="width: min-content" class="self-start mt-0 px-3 py-1 bg-green-100 text-green-600 text-sm rounded-full">
                     Selesai
                     </span>
                 </div>
@@ -139,12 +145,12 @@
                             <span class="text-gray-500">Catatan:</span> {{ $reservation->catatan }}
                         </div>
                         @endif    
-                        <div class="flex justify-end mt-4">
-                            <button class="px-3 py-1.5 text-sm border border-gray-300 rounded-md">
-                                Buat Ulasan
-                            </button>
-                        </div>
                     </div>
+                </div>
+                <div class="flex justify-end mt-4">
+                    <button class="px-3 py-1.5 text-sm border border-gray-300 rounded-md">
+                        Buat Ulasan
+                    </button>
                 </div>
             </div>
         </div>
