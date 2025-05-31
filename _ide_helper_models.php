@@ -167,9 +167,10 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int|null $bayi_id
- * @property string $tanggal_reservasi
- * @property string $harga
+ * @property \Illuminate\Support\Carbon $tanggal_reservasi
+ * @property numeric $harga
  * @property string|null $catatan
+ * @property-read \App\Models\Ulasan|null $ulasan
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservasi query()
@@ -213,6 +214,7 @@ namespace App\Models{
  * @property-read \App\Models\Layanan $service
  * @property-read \App\Models\Sesi $sesi
  * @property-read \App\Models\Transaksi|null $transaksi
+ * @property-read \App\Models\Ulasan|null $ulasan
  * @property-read \App\Models\User $user
  * @property-read \App\Models\Voucher|null $voucher
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Reservation newModelQuery()
@@ -286,6 +288,35 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transaksi whereUpdatedAt($value)
  */
 	class Transaksi extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property int $reservasis_id
+ * @property int $user_id
+ * @property string $nama_layanan
+ * @property int $rating
+ * @property string|null $feedback
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Reservasi $reservasi
+ * @property-read \App\Models\User $user
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ulasan newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ulasan newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ulasan query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ulasan whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ulasan whereFeedback($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ulasan whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ulasan whereNamaLayanan($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ulasan whereRating($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ulasan whereReservasisId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ulasan whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Ulasan whereUserId($value)
+ */
+	class Ulasan extends \Eloquent {}
 }
 
 namespace App\Models{

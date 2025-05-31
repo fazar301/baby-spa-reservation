@@ -16,6 +16,7 @@ use App\Http\Controllers\PaymentController;
 use Filament\Notifications\Notification;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\UlasanController;
 
 Route::get('/', function () {
     $layanans = Layanan::limit(3)->get();
@@ -162,6 +163,7 @@ Route::middleware(['auth'])->group(function () {
         ->name('payment.process');
     Route::post('/payment/callback', [TransaksiController::class, 'handleCallback'])
         ->name('payment.callback');
+    Route::post('/api/reviews', [UlasanController::class, 'store'])->name('reviews.store');
 });
 
 // Add this route outside the auth middleware group

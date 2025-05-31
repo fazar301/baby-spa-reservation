@@ -316,7 +316,7 @@ class ReservationController extends Controller
     public function index()
     {
         $reservations = Reservation::where('user_id', Auth::id())
-            ->with(['layanan', 'paketLayanan', 'bayi', 'sesi'])
+            ->with(['layanan', 'paketLayanan', 'bayi', 'sesi', 'ulasan'])
             ->orderBy('created_at', 'desc')
             ->get();
         $layanans = Layanan::all();

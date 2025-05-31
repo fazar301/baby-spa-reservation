@@ -70,6 +70,11 @@ class Reservation extends Model
         return $this->hasOne(Transaksi::class, 'reservasi_id');
     }
 
+    public function ulasan()
+    {
+        return $this->hasOne(Ulasan::class, 'reservasis_id');
+    }
+
     public static function boot()
     {
         parent::boot();
