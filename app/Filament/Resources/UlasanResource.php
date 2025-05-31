@@ -72,7 +72,7 @@ class UlasanResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->searchable()
                     ->sortable()
-                    ->label('Pengguna'),
+                    ->label('Nama Pelanggan'),
                 Tables\Columns\TextColumn::make('nama_layanan')
                     ->searchable()
                     ->sortable()
