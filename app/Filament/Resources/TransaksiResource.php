@@ -24,7 +24,8 @@ class TransaksiResource extends Resource
     protected static ?string $navigationLabel = 'Transaksi';
     protected static ?string $modelLabel = 'Transaksi';
     protected static ?string $pluralModelLabel = 'Transaksi';
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Manajemen Reservasi';
 
     public static function form(Form $form): Form
     {
@@ -171,5 +172,10 @@ class TransaksiResource extends Resource
             'create' => Pages\CreateTransaksi::route('/create'),
             'edit' => Pages\EditTransaksi::route('/{record}/edit'),
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+       return false;
     }
 }

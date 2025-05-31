@@ -22,7 +22,8 @@ class ReservationResource extends Resource
     protected static ?string $navigationLabel = 'Reservasi';
     protected static ?string $modelLabel = 'Reservasi';
     protected static ?string $pluralModelLabel = 'Reservasi';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Manajemen Reservasi';
 
     public static function form(Form $form): Form
     {
@@ -179,5 +180,10 @@ class ReservationResource extends Resource
             'create' => Pages\CreateReservation::route('/create'),
             'edit' => Pages\EditReservation::route('/{record}/edit'),
         ];
+    }
+
+    public static function canCreate(): bool
+    {
+       return false;
     }
 }
