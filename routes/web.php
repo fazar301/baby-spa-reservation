@@ -180,7 +180,7 @@ Route::post('/payment/cancel', [PaymentController::class, 'cancel'])->name('paym
 Route::get('/reservasi/pending', [ReservationController::class, 'pending'])->name('reservasi.pending');
 
 Route::get('/test-template', function(){
-    return view('templates.invoice');
+    return view('templates.ulasan');
 });
 
 Route::get('/test-notification', function(){
