@@ -47,9 +47,8 @@
     <div id="upcoming-tab-content" class="block">
     @foreach($reservations as $reservation)
         @php
-            $isPast = $reservation->tanggal_reservasi->isPast() || 
-                     ($reservation->tanggal_reservasi->isToday() && 
-                      \Carbon\Carbon::parse($reservation->sesi->jam)->isPast());
+            $sesiDateTime = \Carbon\Carbon::parse($reservation->tanggal_reservasi->format('Y-m-d') . ' ' . $reservation->sesi->jam);
+            $isPast = now()->gt($sesiDateTime->addHour()); // dianggap selesai 1 jam setelah sesi dimulai
         @endphp
         @if(!$isPast)
         <div class="bg-white rounded-xl shadow-sm mb-4">
@@ -107,10 +106,10 @@
     <div id="past-tab-content" class="hidden">
     @foreach($reservations as $reservation)
         @php
-            $isPast = $reservation->tanggal_reservasi->isPast() || 
-                     ($reservation->tanggal_reservasi->isToday() && 
-                      \Carbon\Carbon::parse($reservation->sesi->jam)->isPast());
+            $sesiDateTime = \Carbon\Carbon::parse($reservation->tanggal_reservasi->format('Y-m-d') . ' ' . $reservation->sesi->jam);
+            $isPast = now()->gt($sesiDateTime->addHour()); // dianggap selesai 1 jam setelah sesi dimulai
         @endphp
+
         @if($isPast)
         <div class="bg-white rounded-xl shadow-sm mb-4">
             <div class="p-6">

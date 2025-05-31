@@ -5,16 +5,16 @@
           <x-notification-button :count="3" />
           <x-profile-dropdown username="Akun Saya" />
         </div>
-      </div> 
+    </div> 
     
-      <!-- Stats Cards -->
+    <!-- Stats Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <!-- Stat Card 1 -->
         <div class="bg-white rounded-xl shadow-sm p-6">
             <div class="flex justify-between">
             <div>
                 <p class="text-sm text-gray-500 font-medium">Total Kunjungan</p>
-                <p class="text-2xl font-semibold">8</p>
+                <p class="text-2xl font-semibold">{{ $totalVisits }}</p>
             </div>
             <div class="h-10 w-10 bg-babypink-50 rounded-full flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-babypink-500">
@@ -28,7 +28,7 @@
             <p class="text-xs text-gray-500 mt-2">Semua sesi spa</p>
             <div class="flex items-center mt-2 text-green-600 text-xs">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-1"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
-            <span>3 dalam bulan ini</span>
+            <span>{{ $visitsThisMonth }} dalam bulan ini</span>
             </div>
         </div>
 
@@ -37,7 +37,7 @@
             <div class="flex justify-between">
             <div>
                 <p class="text-sm text-gray-500 font-medium">Total Pengeluaran</p>
-                <p class="text-2xl font-semibold">Rp 1.350.000</p>
+                <p class="text-2xl font-semibold">Rp {{ number_format($totalSpending, 0, ',', '.') }}</p>
             </div>
             <div class="h-10 w-10 bg-babypink-50 rounded-full flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-babypink-500">
@@ -54,7 +54,7 @@
             <div class="flex justify-between">
             <div>
                 <p class="text-sm text-gray-500 font-medium">Anak Terdaftar</p>
-                <p class="text-2xl font-semibold">2</p>
+                <p class="text-2xl font-semibold">{{ $registeredChildren }}</p>
             </div>
             <div class="h-10 w-10 bg-babypink-50 rounded-full flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-babypink-500">
@@ -73,7 +73,7 @@
             <div class="flex justify-between">
             <div>
                 <p class="text-sm text-gray-500 font-medium">Layanan Favorit</p>
-                <p class="text-2xl font-semibold">Pijat Bayi</p>
+                <p class="text-2xl font-semibold">{{ $favoriteServiceName }}</p>
             </div>
             <div class="h-10 w-10 bg-babypink-50 rounded-full flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-babypink-500">
@@ -84,7 +84,7 @@
                 </svg>
             </div>
             </div>
-            <p class="text-xs text-gray-500 mt-2">5 dari 8 kunjungan</p>
+            <p class="text-xs text-gray-500 mt-2">{{ $favoriteServiceVisitsCount }} dari {{ $totalVisits }} kunjungan</p>
         </div>
     </div>
 
@@ -93,117 +93,106 @@
         <!-- Upcoming Reservations -->
         <div class="bg-white rounded-xl shadow-sm p-6">
             <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold">Reservasi Mendatang</h2>
-            <a href="reservations.html" class="text-babypink-500 hover:text-babypink-600 text-sm">Lihat Semua</a>
+                <div class="">
+                    <h2 class="text-lg font-semibold">Reservasi Mendatang</h2>
+                    <p class="text-sm text-muted" style="color: hsl(215.4 16.3% 46.9%)">Jadwal reservasi yang akan datang</p>
+                </div>
+                <a href="{{ route('reservasi.index') }}" class="text-babypink-500 hover:text-babypink-600 text-sm">Lihat Semua</a>
             </div>
             
-            <!-- Reservation Item -->
-            <div class="mb-4 border-b pb-4">
-            <div class="flex justify-between items-center">
-                <div>
-                <h4 class="font-medium">Pijat Bayi</h4>
-                <p class="text-sm text-gray-500">28 April 2025, 10:00</p>
-                
-                    <p class="text-sm text-gray-500">Anak: Aditya</p>
-                
+            @forelse($upcomingReservations as $reservation)
+            <div class="mb-4 {{ !$loop->last ? 'border-b pb-4' : '' }}">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <h4 class="font-medium">{{ $reservation->layanan->nama_layanan }}</h4>
+                        <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($reservation->tanggal_reservasi)->locale('id')->isoFormat('D MMMM Y') }}, {{ substr($reservation->sesi->jam, 0, 5) }}</p>
+                        <p class="text-sm text-gray-500">Anak: {{ $reservation->bayi->nama }}</p>
+                    </div>
+                    <span class="px-2 py-1 bg-babypink-100 text-babypink-600 text-xs rounded-full h-min">Dikonfirmasi</span>
                 </div>
-                <span class="px-2 py-1 bg-babypink-100 text-babypink-600 text-xs rounded-full h-min">Dikonfirmasi</span>
             </div>
+            @empty
+            <div class="text-center text-gray-500 py-4">
+                Tidak ada reservasi mendatang
             </div>
-            
-            <!-- Reservation Item -->
-            <div>
-            <div class="flex justify-between items-center">
-                <div>
-                <h4 class="font-medium">Hidroterapi</h4>
-                <p class="text-sm text-gray-500">30 April 2025, 13:30</p>
-                
-                    <p class="text-sm text-gray-500">Anak: Aditya</p>
-                
-                </div>
-                <span class="px-2 py-1 bg-orange-100 text-orange-600 text-xs rounded-full h-min">Menunggu</span>
-            </div>
-            </div>
+            @endforelse
         </div>
 
         <!-- Recent Transactions -->
         <div class="bg-white rounded-xl shadow-sm p-6">
             <div class="flex justify-between items-center mb-4">
-            <h2 class="text-lg font-semibold">Transaksi Terakhir</h2>
-            <a href="transactions.html" class="text-babypink-500 hover:text-babypink-600 text-sm">Lihat Semua</a>
+            <div class="">
+                <h2 class="text-lg font-semibold">Transaksi Terakhir</h2>
+                <p class="text-sm text-muted" style="color: hsl(215.4 16.3% 46.9%)">Riwayat pembayaran terbaru Anda</p>
+            </div>
+            <a href="{{ route('transaksi') }}" class="text-babypink-500 hover:text-babypink-600 text-sm">Lihat Semua</a>
             </div>
             
-            <!-- Transaction Item -->
-            <div class="mb-4 border-b pb-4">
-            <div class="flex justify-between">
-                <div>
-                <h4 class="font-medium">Pijat Bayi</h4>
-                <p class="text-sm text-gray-500">20 April 2025</p>
+            @forelse($recentTransactions as $transaction)
+            <div class="mb-4 {{ !$loop->last ? 'border-b pb-4' : '' }}">
+                <div class="flex justify-between">
+                    <div>
+                        <h4 class="font-medium">{{ $transaction->reservasi->layanan->nama_layanan }}</h4>
+                        <p class="text-sm text-gray-500">{{ \Carbon\Carbon::parse($transaction->tanggal)->locale('id')->isoFormat('D MMMM Y') }}</p>
+                    </div>
+                    <p class="font-medium">Rp {{ number_format($transaction->jumlah, 0, ',', '.') }}</p>
                 </div>
-                <p class="font-medium">Rp 250.000</p>
-            </div>
-            <div class="mt-1 flex justify-between items-center">
-                <p class="text-sm text-gray-500">Kartu Kredit</p>
-                <span class="px-2 py-1 bg-green-100 text-green-600 text-xs rounded-full">Lunas</span>
-            </div>
-            </div>
-            
-            <!-- Transaction Item -->
-            <div>
-            <div class="flex justify-between">
-                <div>
-                <h4 class="font-medium">Hidroterapi</h4>
-                <p class="text-sm text-gray-500">15 April 2025</p>
+                <div class="mt-1 flex justify-between items-center">
+                    <p class="text-sm text-gray-500">{{ strtoupper($transaction->metode) }}</p>
+                    <span class="px-2 py-1 bg-green-100 text-green-600 text-xs rounded-full">Lunas</span>
                 </div>
-                <p class="font-medium">Rp 350.000</p>
             </div>
-            <div class="mt-1 flex justify-between items-center">
-                <p class="text-sm text-gray-500">Transfer Bank</p>
-                <span class="px-2 py-1 bg-green-100 text-green-600 text-xs rounded-full">Lunas</span>
+            @empty
+            <div class="text-center text-gray-500 py-4">
+                Tidak ada transaksi terakhir
             </div>
-            </div>
+            @endforelse
         </div>
     </div>
 
     <!-- Children Profiles -->
     <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
-        <div class="flex justify-between items-center mb-4">
+        <div class="mb-4">
             <h2 class="text-lg font-semibold">Profil Anak</h2>
-            <a href="children.html" class="text-babypink-500 hover:text-babypink-600 text-sm">Kelola Profil</a>
+            <p class="text-sm text-muted" style="color: hsl(215.4 16.3% 46.9%)">Data anak-anak yang terdaftar
+            </p>
         </div>
         
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Child Profile 1 -->
-            <div class="border rounded-lg p-4 flex items-center">
-            <div class="h-12 w-12 rounded-full bg-babypink-200 flex items-center justify-center text-babypink-600 font-medium text-lg mr-3">
-                Ad
+        <div class="grid grid-cols-1 gap-4">
+            @forelse($children as $child)
+            <div class="border-b pb-4">
+                <div class="w-full flex">
+                    <div class="h-12 w-12 rounded-full bg-babypink-200 flex items-center justify-center text-babypink-600 font-medium text-lg mr-3">
+                        {{ substr($child->nama, 0, 2) }}
+                    </div>
+                    <div class="flex-1 self-center">
+                        <div class="flex w-full justify-between">
+                            <h4 class="text-sm font-medium">{{ $child->nama }}</h4>
+                            @php
+                                $ageInMonths = $child->tanggal_lahir->diffInMonths(now());
+                                $years = floor($ageInMonths / 12);
+                                $months = $ageInMonths % 12;
+                            @endphp
+                            <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 bg-babyblue-50 text-babyblue-600 border-babyblue-200">
+                                @if($years > 0)
+                                    {{ $years }} tahun
+                                    @if($months > 0)
+                                        {{ $months }} bulan
+                                    @endif
+                                @else
+                                    {{ $ageInMonths }} bulan
+                                @endif
+                            </span>      
+                        </div>
+                        <p class="flex items-center text-xs text-gray-500">Kunjungan terakhir: {{ \Carbon\Carbon::parse($child->last_visit_date)->locale('id')->isoFormat('D MMMM Y') }} • Total: {{ $child->total_sessions }} sesi</p>
+                    </div>
+                </div>
             </div>
-            <div>
-                <h4 class="font-medium">Aditya</h4>
-                <p class="text-sm text-gray-500">8 bulan • Laki-laki</p>
+            @empty
+            <div class="text-center text-gray-500 py-4 col-span-2">
+                Belum ada profil anak yang terdaftar
             </div>
-            <div class="ml-auto">
-                <a href="children.html" class="p-2 text-gray-500 hover:text-babypink-500">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </a>
-            </div>
-            </div>
-            
-            <!-- Child Profile 2 -->
-            <div class="border rounded-lg p-4 flex items-center">
-            <div class="h-12 w-12 rounded-full bg-babypink-200 flex items-center justify-center text-babypink-600 font-medium text-lg mr-3">
-                Bi
-            </div>
-            <div>
-                <h4 class="font-medium">Bintang</h4>
-                <p class="text-sm text-gray-500">1 tahun 2 bulan • Laki-laki</p>
-            </div>
-            <div class="ml-auto">
-                <a href="children.html" class="p-2 text-gray-500 hover:text-babypink-500">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-                </a>
-            </div>
-            </div>
+            @endforelse
         </div>
     </div>
 </x-user-dashboard>

@@ -80,21 +80,19 @@ class TransaksiResource extends Resource
                 // Tables\Columns\TextColumn::make('id')
                 //     ->label('ID')
                 //     ->sortable(),
+                Tables\Columns\TextColumn::make('reservasi.kode')
+                ->label('Kode Reservasi')
+                ->searchable(),
                 Tables\Columns\TextColumn::make('reservasi.user.name')
                     ->label('Nama Pelanggan')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('reservasi.layanan.nama_layanan')
                     ->label('Layanan')
-                    ->searchable()
-                    ->sortable(),
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('tanggal')
                     ->date('d M Y')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('jumlah')
-                    ->money('IDR')
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('discount_amount')
                     ->money('IDR')
                     ->sortable(),
                 Tables\Columns\BadgeColumn::make('status')
@@ -106,6 +104,7 @@ class TransaksiResource extends Resource
                     ])
                     ->sortable(),
                 Tables\Columns\TextColumn::make('metode')
+                    ->formatStateUsing(fn (string $state): string => strtoupper($state))
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime('d M Y H:i')

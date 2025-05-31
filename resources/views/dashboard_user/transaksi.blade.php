@@ -48,19 +48,19 @@
         <!-- Card 1 -->
         <div class="bg-white rounded-lg shadow-sm p-6">
           <p class="text-sm font-medium text-gray-500">Bulan Ini</p>
-          <p class="text-2xl font-bold mt-1">Rp 950.000</p>
+          <p class="text-2xl font-bold mt-1">Rp {{ number_format($thisMonthSpending, 0, ',', '.') }}</p>
         </div>
         
         <!-- Card 2 -->
         <div class="bg-white rounded-lg shadow-sm p-6">
           <p class="text-sm font-medium text-gray-500">Bulan Lalu</p>
-          <p class="text-2xl font-bold mt-1">Rp 1.350.000</p>
+          <p class="text-2xl font-bold mt-1">Rp {{ number_format($lastMonthSpending, 0, ',', '.') }}</p>
         </div>
         
         <!-- Card 3 -->
         <div class="bg-white rounded-lg shadow-sm p-6">
           <p class="text-sm font-medium text-gray-500">Total Pengeluaran</p>
-          <p class="text-2xl font-bold mt-1">Rp 2.300.000</p>
+          <p class="text-2xl font-bold mt-1">Rp {{ number_format($totalSpending, 0, ',', '.') }}</p>
         </div>
       </div>
       
@@ -71,23 +71,29 @@
           <p class="text-sm text-gray-500">Detail pembayaran terbaru Anda</p>
         </div>
         
+        @if($lastTransaction)
         <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
             <p class="text-sm font-medium text-gray-500">Tanggal Pembayaran</p>
-            <p class="font-medium">20 April 2025</p>
+            <p class="font-medium">{{ \Carbon\Carbon::parse($lastTransaction->tanggal)->locale('id')->isoFormat('D MMMM Y') }}</p>
           </div>
           <div>
             <p class="text-sm font-medium text-gray-500">Metode Pembayaran</p>
-            <p class="font-medium">Kartu Kredit</p>
+            <p class="font-medium">{{ strtoupper($lastTransaction->metode) }}</p>
           </div>
         </div>
         
         <div class="p-6 border-t flex justify-end">
-          <button class="flex items-center gap-2 px-4 py-2 rounded-md border border-gray-300 text-sm hover:bg-gray-50 transition-colors">
+          <a href="{{ route('reservasi.invoice', $lastTransaction->reservasi->id) }}" class="flex items-center gap-2 px-4 py-2 rounded-md border border-gray-300 text-sm hover:bg-gray-50 transition-colors">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
             <span>Unduh Invoice</span>
-          </button>
+          </a>
         </div>
+        @else
+        <div class="p-6 text-center text-gray-500">
+            Tidak ada transaksi terakhir.
+        </div>
+        @endif
       </div>
       
       <!-- Transaction History -->
@@ -118,7 +124,7 @@
           <table class="w-full min-w-[640px] text-sm">
             <thead>
               <tr class="border-b">
-                <th class="text-left p-4 font-medium text-gray-500">ID Transaksi</th>
+                <th class="text-left p-4 font-medium text-gray-500">Kode Reservasi</th>
                 <th class="text-left p-4 font-medium text-gray-500">
                   <div class="flex items-center gap-1 cursor-pointer" id="sortByDate">
                     Tanggal
@@ -171,71 +177,7 @@
     document.addEventListener('DOMContentLoaded', function() {
 
       // Transaction data
-      const transactions = [
-        {
-          id: 'TRX-001',
-          date: '20 April 2025',
-          service: 'Pijat Bayi',
-          amount: 'Rp 250.000',
-          status: 'paid',
-          statusText: 'Lunas',
-          method: 'Kartu Kredit'
-        },
-        {
-          id: 'TRX-002',
-          date: '15 April 2025',
-          service: 'Hidroterapi',
-          amount: 'Rp 350.000',
-          status: 'paid',
-          statusText: 'Lunas',
-          method: 'Transfer Bank'
-        },
-        {
-          id: 'TRX-003',
-          date: '10 April 2025',
-          service: 'Sesi Mengambang',
-          amount: 'Rp 300.000',
-          status: 'paid',
-          statusText: 'Lunas',
-          method: 'E-Wallet'
-        },
-        {
-          id: 'TRX-004',
-          date: '5 April 2025',
-          service: 'Paket 3x Sesi',
-          amount: 'Rp 750.000',
-          status: 'paid',
-          statusText: 'Lunas',
-          method: 'Kartu Debit'
-        },
-        {
-          id: 'TRX-005',
-          date: '1 April 2025',
-          service: 'Pijat Bayi',
-          amount: 'Rp 250.000',
-          status: 'paid',
-          statusText: 'Lunas',
-          method: 'Tunai'
-        },
-        {
-          id: 'TRX-006',
-          date: '25 Maret 2025',
-          service: 'Hidroterapi',
-          amount: 'Rp 350.000',
-          status: 'paid',
-          statusText: 'Lunas',
-          method: 'Transfer Bank'
-        },
-        {
-          id: 'TRX-007',
-          date: '20 Maret 2025',
-          service: 'Pijat Bayi',
-          amount: 'Rp 250.000',
-          status: 'canceled',
-          statusText: 'Dibatalkan',
-          method: 'Kartu Kredit'
-        }
-      ];
+      const transactions = @json($transactions)
 
       // Pagination state
       let currentPage = 1;
@@ -257,7 +199,7 @@
             : 'bg-red-50 text-red-600 border-red-200';
           
           row.innerHTML = `
-            <td class="p-4 font-medium">${transaction.id}</td>
+            <td class="p-4 font-medium">${transaction.kode}</td>
             <td class="p-4">${transaction.date}</td>
             <td class="p-4">${transaction.service}</td>
             <td class="p-4">${transaction.amount}</td>
@@ -275,7 +217,7 @@
                 <div class="origin-top-right absolute right-[20px] mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 dropdown-content z-10">
                   <div class="py-1">
                     ${transaction.status === 'paid' ? `
-                      <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                      <a href="/reservations/`+ transaction.id +`/invoice" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
                         <span>Unduh Invoice</span>
                       </a>

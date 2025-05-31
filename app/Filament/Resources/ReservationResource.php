@@ -59,7 +59,7 @@ class ReservationResource extends Resource
                         })->pluck('jam', 'id');
                     }),
                 Forms\Components\DatePicker::make('tanggal_reservasi')
-                    ->minDate(now())
+                    ->minDate(now()->today())
                     ->native(false)
                     ->closeOnDateSelection(true)
                     ->required()

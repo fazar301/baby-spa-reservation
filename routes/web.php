@@ -15,6 +15,7 @@ use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\PaymentController;
 use Filament\Notifications\Notification;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\DashboardController;
 
 Route::get('/', function () {
     $layanans = Layanan::limit(3)->get();
@@ -22,13 +23,9 @@ Route::get('/', function () {
     return view('front.home', ['layanans' => $layanans, 'paket_layanans' => $paket_layanans]);
 });
 
-Route::get('/dashboard', function () {
-    // mencegah user dengan role admin mengakses dashboard customer
-    if(Auth::user()->role == 'admin'){
-        return redirect('/admin/');
-    }
-    return view('dashboard_user.home');
-})->middleware(['auth', 'verified'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 Route::get('/reservasi', function () {
     $layanans = Layanan::all();
@@ -37,7 +34,64 @@ Route::get('/reservasi', function () {
 })->middleware(['auth', 'verified'])->name('reservasi');
 
 Route::get('/transaksi', function () {
-    return view('dashboard_user.transaksi');
+    $user = auth()->user();
+    
+    // Calculate Total Spending
+    $totalSpending = \App\Models\Transaksi::whereHas('reservasi', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->where('status', 'paid')
+        ->sum('jumlah');
+
+    // Calculate This Month Spending
+    $thisMonthSpending = \App\Models\Transaksi::whereHas('reservasi', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })
+        ->where('status', 'paid')
+        ->whereMonth('tanggal', \Carbon\Carbon::now()->month)
+        ->whereYear('tanggal', \Carbon\Carbon::now()->year)
+        ->sum('jumlah');
+
+    // Calculate Last Month Spending
+    $lastMonth = \Carbon\Carbon::now()->subMonth();
+
+    $lastMonthSpending = \App\Models\Transaksi::whereHas('reservasi', function($query) use ($user) {
+        $query->where('user_id', $user->id);
+    })
+    ->where('status', 'paid')
+    ->whereMonth('tanggal', $lastMonth->month)
+    ->whereYear('tanggal', $lastMonth->year)
+    ->sum('jumlah');
+
+
+    // Get Last Transaction
+    $lastTransaction = \App\Models\Transaksi::whereHas('reservasi', function($query) use ($user) {
+        $query->where('user_id', $user->id);
+    })
+    ->where('status', 'paid')
+    ->orderBy('tanggal', 'desc')
+    ->first();
+
+    $transactions = $user
+        ->reservasis()
+        ->with('transaksi')
+        ->with('layanan')
+        ->get()
+        ->pluck('transaksi')
+        ->flatten()
+        ->map(function ($transaction) {
+            return [
+                'id' => $transaction->reservasi->id,
+                'kode' => $transaction->reservasi->kode,
+                'date' => $transaction->created_at->format('d F Y'),
+                'service' => $transaction->reservasi->layanan->nama_layanan, // or from transaction if it exists there
+                'amount' => 'Rp ' . number_format($transaction->jumlah, 0, ',', '.'),
+                'status' => $transaction->status,
+                'statusText' => $transaction->status === 'paid' ? 'Lunas' : 'Dibatalkan',
+                'method' => strtoupper($transaction->metode)
+            ];
+    });
+    return view('dashboard_user.transaksi', compact('transactions', 'totalSpending', 'thisMonthSpending', 'lastMonthSpending', 'lastTransaction'));
 })->middleware(['auth', 'verified'])->name('transaksi');
 
 Route::get('/settings', function () {  
