@@ -27,8 +27,8 @@ class PaketLayananResource extends Resource
     protected static ?string $model = PaketLayanan::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-cube';
-    protected static ?string $navigationGroup = 'Manage Layanan';
-    protected static ?int $navigationSort = 2;
+    protected static ?string $navigationGroup = 'Manajemen Layanan';
+    protected static ?int $navigationSort = 8;
 
     public static function form(Form $form): Form
     {

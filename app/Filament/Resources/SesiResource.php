@@ -22,7 +22,8 @@ class SesiResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
 
-    protected static ?string $navigationGroup = 'Reservasi';
+    protected static ?string $navigationGroup = 'Manajemen Reservasi';
+    protected static ?int $navigationSort = 5;
 
     public static function form(Form $form): Form
     {

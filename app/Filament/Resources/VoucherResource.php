@@ -18,7 +18,8 @@ class VoucherResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-ticket';
 
-    protected static ?string $navigationGroup = 'Reservasi';
+    protected static ?string $navigationGroup = 'Manajemen Reservasi';
+    protected static ?int $navigationSort = 6;
 
     public static function form(Form $form): Form
     {
