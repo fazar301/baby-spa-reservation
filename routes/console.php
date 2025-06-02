@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('transaksi:batalkan-timeout')->everyTenMinutes();
+Schedule::command('reservasi:update-status')->everyFiveMinutes();
