@@ -217,6 +217,16 @@ class ReservationController extends Controller
             $reservation->bayi_id = $bayi->id;
             $reservation->save();
 
+            // Create a default transaction with status pending and method midtrans
+            $transaksi = new \App\Models\Transaksi();
+            $transaksi->reservasi_id = $reservation->id;
+            $transaksi->tanggal = \Carbon\Carbon::now();
+            $transaksi->jumlah = $harga; // Amount from reservation price
+            $transaksi->discount_amount = 0; // Default discount is 0
+            $transaksi->status = 'pending'; // Initial status is pending
+            $transaksi->metode = 'midtrans'; // Default method
+            $transaksi->save();
+
             DB::commit();
 
             // Store necessary data in session for payment page
