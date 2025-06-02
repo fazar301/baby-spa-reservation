@@ -88,7 +88,7 @@ Route::get('/transaksi', function () {
                 'service' => $transaction->reservasi->layanan->nama_layanan, // or from transaction if it exists there
                 'amount' => 'Rp ' . number_format($transaction->jumlah, 0, ',', '.'),
                 'status' => $transaction->status,
-                'statusText' => $transaction->status === 'paid' ? 'Lunas' : 'Dibatalkan',
+                'statusText' => $transaction->status === 'paid' ? 'Lunas' : ($transaction->status === 'pending' ? 'Menunggu Pembayaran' : 'Dibatalkan'),
                 'method' => strtoupper($transaction->metode)
             ];
     });

@@ -194,9 +194,12 @@
           row.className = 'border-b hover:bg-gray-50 transition-colors';
           row.setAttribute('data-status', transaction.status);
           
-          const statusClass = transaction.status === 'paid' 
-            ? 'bg-green-50 text-green-600 border-green-200'
-            : 'bg-red-50 text-red-600 border-red-200';
+          let statusClass = 'bg-red-50 text-red-600 border-red-200'; // Default for failed/cancelled/no_transaction
+          if (transaction.status === 'paid') {
+              statusClass = 'bg-green-50 text-green-600 border-green-200';
+          } else if (transaction.status === 'pending') {
+              statusClass = 'bg-yellow-50 text-yellow-600 border-yellow-200';
+          }
           
           row.innerHTML = `
             <td class="p-4 font-medium">${transaction.kode}</td>
@@ -224,6 +227,12 @@
                       <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><rect width="20" height="14" x="2" y="5" rx="2"/><line x1="2" x2="22" y1="10" y2="10"/></svg>
                         <span>Detail Pembayaran</span>
+                      </a>
+                    ` : ''}
+                    ${transaction.status === 'pending' ? `
+                      <a href="/reservations/`+ transaction.id +`/payment" class="flex items-center px-4 py-2 text-sm text-blue-700 hover:bg-blue-100">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4m0-4h.01"/></svg>
+                        <span>Bayar Sekarang</span>
                       </a>
                     ` : ''}
                     <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
