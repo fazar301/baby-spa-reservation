@@ -77,14 +77,30 @@ class TransaksiController extends Controller
                 return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki akses ke reservasi ini.');
             }
 
-            // Create transaction record
-            $transaksi = new Transaksi();
-            $transaksi->reservasi_id = $reservation->id;
-            $transaksi->tanggal = Carbon::now();
-            $transaksi->jumlah = $request->amount;
-            $transaksi->discount_amount = $request->discount_amount ?? 0;
-            $transaksi->status = 'pending';
-            $transaksi->metode = $request->payment_method;
+            // Check for existing pending or failed transaction for this reservation
+            $transaksi = Transaksi::where('reservasi_id', $reservation->id)
+                                ->whereIn('status', ['pending', 'failed'])
+                                ->first();
+
+            if ($transaksi) {
+                // Update existing transaction
+                $transaksi->tanggal = Carbon::now();
+                $transaksi->jumlah = $request->amount;
+                $transaksi->discount_amount = $request->discount_amount ?? 0;
+                $transaksi->status = 'pending'; // Reset status to pending
+                $transaksi->metode = $request->payment_method;
+                // Do NOT update snap_token or order_id here, they will be generated again below
+            } else {
+                // Create new transaction record
+                $transaksi = new Transaksi();
+                $transaksi->reservasi_id = $reservation->id;
+                $transaksi->tanggal = Carbon::now();
+                $transaksi->jumlah = $request->amount;
+                $transaksi->discount_amount = $request->discount_amount ?? 0;
+                $transaksi->status = 'pending';
+                $transaksi->metode = $request->payment_method;
+            }
+
             $transaksi->save();
 
             // Prepare Midtrans transaction parameters

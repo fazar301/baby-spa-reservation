@@ -180,6 +180,7 @@ Route::post('/payment/verify', [PaymentController::class, 'verify'])->name('paym
 Route::post('/payment/notification', [PaymentController::class, 'handleNotification'])->name('payment.notification');
 Route::post('/payment/cancel', [PaymentController::class, 'cancel'])->name('payment.cancel');
 Route::get('/reservasi/pending', [ReservationController::class, 'pending'])->name('reservasi.pending');
+Route::post('/payment/set-pending', [PaymentController::class, 'setPendingStatus'])->name('payment.set-pending');
 
 Route::get('/test-template', function(){
     return view('templates.ulasan');

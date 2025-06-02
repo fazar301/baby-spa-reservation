@@ -363,8 +363,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             payButton.textContent = 'Bayar Sekarang';
                         },
                         onClose: function() {
-                            // Send request to delete transaction
-                            fetch('/payment/cancel', {
+                            // Send request to set transaction status to pending
+                            fetch('{{ route('payment.set-pending') }}', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json',
@@ -375,16 +375,16 @@ document.addEventListener('DOMContentLoaded', function() {
                             .then(response => response.json())
                             .then(result => {
                                 if (result.success) {
-                                    alert('Pembayaran dibatalkan. Silakan coba lagi jika Anda ingin melanjutkan pembayaran.');
+                                    // Optionally show a message to the user
+                                    console.log('Transaction status set to pending.');
                                 } else {
-                                    alert('Terjadi kesalahan saat membatalkan pembayaran. Silakan hubungi customer service.');
+                                    console.error('Failed to set transaction status to pending:', result.message);
                                 }
                                 payButton.disabled = false;
                                 payButton.textContent = 'Bayar Sekarang';
                             })
                             .catch(error => {
                                 console.error('Error:', error);
-                                alert('Terjadi kesalahan saat membatalkan pembayaran. Silakan hubungi customer service.');
                                 payButton.disabled = false;
                                 payButton.textContent = 'Bayar Sekarang';
                             });

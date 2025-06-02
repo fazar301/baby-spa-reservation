@@ -179,4 +179,63 @@ class PaymentController extends Controller
             ], 500);
         }
     }
+
+    public function setPendingStatus(Request $request)
+    {
+        try {
+            DB::beginTransaction();
+
+            $snapToken = $request->snap_token;
+            $transaction = Transaksi::where('snap_token', $snapToken)->first();
+
+            if (!$transaction) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction not found'
+                ], 404);
+            }
+
+            // Update status to pending
+            if ($transaction->status === 'pending') {
+                // If already pending, no need to update
+                DB::commit();
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Transaction is already pending'
+                ]);
+            } else if ($transaction->status !== 'paid' && $transaction->status !== 'failed') {
+                $transaction->status = 'pending';
+                $transaction->save();
+
+                // Optionally update reservation status if needed, but be careful not to overwrite 'confirmed'
+                $reservation = $transaction->reservasi;
+                if ($reservation && $reservation->status !== 'confirmed') {
+                    $reservation->status = 'pending'; // Or another appropriate status like 'created'
+                    $reservation->save();
+                }
+
+                DB::commit();
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Transaction status updated to pending'
+                ]);
+            } else {
+                // Status is already paid or failed, do nothing
+                DB::commit();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Transaction status is final, cannot set to pending'
+                ]);
+            }
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Payment set pending error: ' . $e->getMessage());
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to set transaction status to pending'
+            ], 500);
+        }
+    }
 } 
