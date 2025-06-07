@@ -274,15 +274,9 @@
                             <label for="tanggal_reservasi" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Reservasi <span class="text-red-500">*</span></label>
                             <select id="tanggal_reservasi" name="tanggal_reservasi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required>
                                 <option value="">Pilih Tanggal</option>
-                                @php
-                                    $today = \Carbon\Carbon::now();
-                                    for ($i = 0; $i < 7; $i++) {
-                                        $date = $today->copy()->addDays($i);
-                                        $formattedDate = $date->format('Y-m-d');
-                                        $displayDate = $date->locale('id')->isoFormat('dddd, D MMMM YYYY');
-                                        echo "<option value=\"$formattedDate\">$displayDate</option>";
-                                    }
-                                @endphp
+                                @foreach($availableDates as $date)
+                                    <option value="{{ $date['value'] }}">{{ $date['display'] }}</option>
+                                @endforeach
                             </select>
                         </div>
                         
