@@ -65,6 +65,29 @@ namespace App\Models{
  * 
  *
  * @property int $id
+ * @property \Illuminate\Support\Carbon $tanggal_mulai
+ * @property \Illuminate\Support\Carbon $tanggal_selesai
+ * @property string $deskripsi
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday whereDeskripsi($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday whereTanggalMulai($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday whereTanggalSelesai($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Holiday whereUpdatedAt($value)
+ */
+	class Holiday extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
  * @property string $nama_kategori
  * @property string|null $deskripsi
  * @property \Illuminate\Support\Carbon|null $created_at
