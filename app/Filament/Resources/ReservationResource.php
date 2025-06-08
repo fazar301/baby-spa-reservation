@@ -116,6 +116,13 @@ class ReservationResource extends Resource
                         'danger' => 'cancelled',
                         'info' => 'completed',
                     ])
+                    ->icon(fn (string $state): string => match ($state) {
+                        'pending' => 'heroicon-s-clock',
+                        'confirmed' => 'heroicon-s-check-circle',
+                        'cancelled' => 'heroicon-s-x-circle',
+                        'completed' => 'heroicon-s-clipboard-document-check',
+                        default => 'heroicon-s-information-circle',
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('harga')
                     ->money('IDR')
