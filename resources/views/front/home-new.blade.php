@@ -78,7 +78,7 @@
                             </p>
                             <div class="flex items-center mt-3">
                                 <img 
-                                    src="https://images.unsplash.com/photo-1494790108755-2616b612b5bb?w=32&h=32&fit=crop&crop=face" 
+                                    src="/images/person.png" 
                                     alt="Customer" 
                                     class="w-8 h-8 rounded-full"
                                 />
@@ -109,15 +109,6 @@
                 </p>
             </div>
 
-            <!-- Service Filter Tabs -->
-            <div class="flex justify-center mb-8 md:mb-12">
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-1 bg-gray-200 rounded-lg p-1 max-w-2xl">
-                    <button onclick="filterServices('all')" class="service-filter px-4 py-2 rounded-md text-sm md:text-base transition-colors bg-white text-gray-900 shadow-sm" data-category="all">Semua</button>
-                    <button onclick="filterServices('pijat')" class="service-filter px-4 py-2 rounded-md text-sm md:text-base transition-colors text-gray-600 hover:text-gray-900" data-category="pijat">Pijat</button>
-                    <button onclick="filterServices('air')" class="service-filter px-4 py-2 rounded-md text-sm md:text-base transition-colors text-gray-600 hover:text-gray-900" data-category="air">Sesi Air</button>
-                    <button onclick="filterServices('paket')" class="service-filter px-4 py-2 rounded-md text-sm md:text-base transition-colors text-gray-600 hover:text-gray-900" data-category="paket">Paket</button>
-                </div>
-            </div>
             
             <!-- Services Grid for Layanan -->
             <div id="services-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
@@ -272,9 +263,7 @@
 
                 <div class="text-center p-4 md:p-6 bg-white rounded-lg shadow-sm hover:shadow-lg transition-shadow">
                     <div class="w-12 h-12 md:w-16 md:h-16 bg-babypink-100 rounded-full flex items-center justify-center mx-auto mb-3 md:mb-4">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6 md:w-8 md:h-8 text-babypink-500">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.228a25.628 25.628 0 012.916.52 6.003 6.003 0 00-5.395 4.972m0 0a6.726 6.726 0 01-2.749 1.35m0 0a6.772 6.772 0 01-3.044 0" />
-                        </svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-award w-6 h-6 md:w-8 md:h-8 text-babypink-500" data-lov-id="src/components/landing/AboutSection.tsx:98:20" data-lov-name="IconComponent" data-component-path="src/components/landing/AboutSection.tsx" data-component-line="98" data-component-file="AboutSection.tsx" data-component-name="IconComponent" data-component-content="%7B%22className%22%3A%22w-6%20h-6%20md%3Aw-8%20md%3Ah-8%20text-babypink-500%22%7D"><path d="m15.477 12.89 1.515 8.526a.5.5 0 0 1-.81.47l-3.58-2.687a1 1 0 0 0-1.197 0l-3.586 2.686a.5.5 0 0 1-.81-.469l1.514-8.526"></path><circle cx="12" cy="8" r="6"></circle></svg>
                     </div>
                     <h4 class="text-base md:text-lg font-semibold text-gray-900 mb-2">
                         Metode Terpercaya
@@ -533,15 +522,8 @@
                 <h3 class="text-2xl font-bold text-gray-900 mb-8 text-center">
                     Lokasi Kami
                 </h3>
-                <div class="bg-gray-200 rounded-2xl h-96 flex items-center justify-center">
-                    <div class="text-center text-gray-500">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-12 h-12 mx-auto mb-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
-                        </svg>
-                        <p class="text-lg font-medium">Peta Lokasi</p>
-                        <p class="text-sm">Jl. Bayi Sehat No. 123, Jakarta Selatan</p>
-                    </div>
+                <div class="bg-gray-200 rounded-2xl h-96 flex items-center justify-center overflow-hidden">
+                    <div class="embed-map-responsive w-full h-full"><div class="embed-map-container"><iframe class="embed-map-frame" frameborder="0" scrolling="no" marginheight="0" marginwidth="0" src="https://maps.google.com/maps?width=600&height=400&hl=en&q=latumi%20baby%20spa&t=&z=14&ie=UTF8&iwloc=B&output=embed"></iframe><a href="https://sprunkiretake.net" style="font-size:2px!important;color:gray!important;position:absolute;bottom:0;left:0;z-index:1;max-height:1px;overflow:hidden">sprunki retake</a></div><style>.embed-map-responsive{position:relative;text-align:right;width:100%;height:100%;}.embed-map-container{overflow:hidden;background:none!important;width:100%;height:100%;position:absolute;top:0;left:0;}.embed-map-frame{width:100%!important;height:100%!important;position:absolute;top:0;left:0;}</style></div>
                 </div>
             </div>
         </div>
