@@ -35,7 +35,7 @@ Route::get('/reservasi', function () {
 })->middleware(['auth', 'verified'])->name('reservasi');
 
 Route::get('/transaksi', function () {
-    $user = auth()->user();
+    $user = Auth::user();
     
     // Calculate Total Spending
     $totalSpending = \App\Models\Transaksi::whereHas('reservasi', function($query) use ($user) {
@@ -183,7 +183,7 @@ Route::get('/reservasi/pending', [ReservationController::class, 'pending'])->nam
 Route::post('/payment/set-pending', [PaymentController::class, 'setPendingStatus'])->name('payment.set-pending');
 
 Route::get('/test-template', function(){
-    return view('templates.ulasan');
+    return view('templates.landing-page');
 });
 
 Route::get('/test-notification', function(){
