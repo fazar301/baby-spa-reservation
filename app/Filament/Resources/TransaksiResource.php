@@ -103,6 +103,13 @@ class TransaksiResource extends Resource
                         'danger' => 'expired',
                         'danger' => 'failed',
                     ])
+                    ->icon(fn (string $state): string => match ($state) {
+                        'pending' => 'heroicon-s-clock',
+                        'paid' => 'heroicon-s-check-circle',
+                        'expired' => 'heroicon-s-x-circle',
+                        'failed' => 'heroicon-s-exclamation-circle',
+                        default => 'heroicon-s-information-circle',
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('metode')
                     ->formatStateUsing(fn (string $state): string => strtoupper($state))
