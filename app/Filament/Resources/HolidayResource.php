@@ -41,7 +41,17 @@ class HolidayResource extends Resource
                     ->live()
                     ->afterStateUpdated(function ($state, Forms\Set $set, Forms\Get $get) {
                         self::checkAffectedReservations($get('tanggal_mulai'), $state, $set);
-                    }),
+                    })
+                    ->rules([
+                        function (Forms\Get $get) {
+                            return function (string $attribute, $value, \Closure $fail) use ($get) {
+                                $startDate = $get('tanggal_mulai');
+                                if ($startDate && $value && strtotime($value) < strtotime($startDate)) {
+                                    $fail('Tanggal selesai tidak boleh kurang dari tanggal mulai.');
+                                }
+                            };
+                        },
+                    ]),
                 Forms\Components\Textarea::make('deskripsi')
                     ->required()
                     ->label('Deskripsi')
@@ -67,11 +77,9 @@ class HolidayResource extends Resource
                             return 'Tidak ada reservasi yang terdampak pada periode ini';
                         }
 
-                        $reservationsList = $affectedReservations->map(function ($reservation) {
-                            return "• Kode: {$reservation->kode} - Tanggal: {$reservation->tanggal_reservasi->format('d/m/Y')}";
-                        })->join('<br>');
-
-                        return new \Illuminate\Support\HtmlString($reservationsList);
+                        return view('filament.components.reservation-list', [
+                            'reservations' => $affectedReservations
+                        ]);
                     })
                     ->columnSpanFull(),
             ]);
@@ -91,11 +99,9 @@ class HolidayResource extends Resource
         ->get();
 
         if ($affectedReservations->isNotEmpty()) {
-            $reservationsList = $affectedReservations->map(function ($reservation) {
-                return "• Kode: {$reservation->kode} - Tanggal: {$reservation->tanggal_reservasi->format('d/m/Y')}";
-            })->join('<br>');
-
-            $set('affected_reservations', new \Illuminate\Support\HtmlString($reservationsList));
+            $set('affected_reservations', view('filament.components.reservation-list', [
+                'reservations' => $affectedReservations
+            ])->render());
         }
     }
 
