@@ -21,7 +21,7 @@ use App\Http\Controllers\UlasanController;
 Route::get('/', function () {
     $layanans = Layanan::limit(3)->get();
     $paket_layanans = PaketLayanan::limit(3)->with('layanans')->get();
-    return view('front.home', ['layanans' => $layanans, 'paket_layanans' => $paket_layanans]);
+    return view('front.home-new', ['layanans' => $layanans, 'paket_layanans' => $paket_layanans]);
 });
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
@@ -183,7 +183,7 @@ Route::get('/reservasi/pending', [ReservationController::class, 'pending'])->nam
 Route::post('/payment/set-pending', [PaymentController::class, 'setPendingStatus'])->name('payment.set-pending');
 
 Route::get('/test-template', function(){
-    return view('templates.landing-page');
+    return view('templates.ulasan');
 });
 
 Route::get('/test-notification', function(){

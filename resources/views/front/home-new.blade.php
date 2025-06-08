@@ -1,6 +1,6 @@
 <x-main-layout>
      <!-- Hero Section -->
-     <section id="home" class="min-h-screen flex items-center pt-16 bg-gradient-to-br from-babypink-50 via-white to-babyblue-50">
+     <section id="home" class="pt-16 flex items-center bg-gradient-to-br from-babypink-50 via-white to-babyblue-50">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <!-- Left Column - Content -->
@@ -53,7 +53,7 @@
                 </div>
 
                 <!-- Right Column - Image -->
-                <div class="relative">
+                <div class="relative max-w-[660px] max-h-[660px]">
                     <div class="relative z-10">
                         <img 
                             src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=600&fit=crop&crop=face" 
