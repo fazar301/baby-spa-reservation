@@ -1,6 +1,6 @@
 <x-main-layout>
      <!-- Hero Section -->
-     <section id="home" class="pt-16 flex items-center bg-gradient-to-br from-babypink-50 via-white to-babyblue-50">
+     <section id="home" class="py-16 flex items-center bg-gradient-to-br from-babypink-50 via-white to-babyblue-50">
         <div class="container mx-auto px-4">
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <!-- Left Column - Content -->
@@ -56,7 +56,7 @@
                 <div class="relative max-w-[660px] max-h-[660px]">
                     <div class="relative z-10">
                         <img 
-                            src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?w=600&h=600&fit=crop&crop=face" 
+                            src="/images/baby-bath.jpeg" 
                             alt="Baby Spa Experience" 
                             class="rounded-2xl shadow-2xl w-full"
                         />
@@ -187,7 +187,7 @@
                 <!-- Left - Image -->
                 <div class="relative order-2 lg:order-1">
                     <img 
-                        src="https://images.unsplash.com/photo-1559351098-27c086c7e0e5?w=600&h=400&fit=crop" 
+                        src="/images/staff-working.avif" 
                         alt="Professional Baby Care" 
                         class="rounded-2xl shadow-lg w-full"
                     />
