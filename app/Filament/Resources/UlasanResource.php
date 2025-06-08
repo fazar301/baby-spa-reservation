@@ -24,7 +24,7 @@ class UlasanResource extends Resource
 
     protected static ?string $pluralModelLabel = 'Ulasan';
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 6;
 
     protected static ?string $navigationGroup = 'Manajemen Reservasi';
 
