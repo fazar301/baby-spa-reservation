@@ -47,36 +47,6 @@ class ReservationController extends Controller
                 return $reservation->tanggal_reservasi . '_' . $reservation->sesi_id;
             });
 
-        // Get holidays for the next 7 days
-        $holidays = \App\Models\Holiday::where(function($query) use ($today) {
-            $query->where('tanggal_mulai', '<=', now()->addDays(7)->format('Y-m-d'))
-                  ->where('tanggal_selesai', '>=', $today);
-        })->get();
-
-        // Generate available dates
-        $availableDates = [];
-        for ($i = 0; $i < 7; $i++) {
-            $date = now()->addDays($i);
-            $dateStr = $date->format('Y-m-d');
-            $displayDate = $date->locale('id')->isoFormat('dddd, D MMMM YYYY');
-            
-            // Check if date is not a holiday
-            $isHoliday = false;
-            foreach ($holidays as $holiday) {
-                if ($date->between($holiday->tanggal_mulai, $holiday->tanggal_selesai)) {
-                    $isHoliday = true;
-                    break;
-                }
-            }
-            
-            if (!$isHoliday) {
-                $availableDates[] = [
-                    'value' => $dateStr,
-                    'display' => $displayDate
-                ];
-            }
-        }
-
         // Filter out sessions that are already booked
         $sesis = $allSesis->filter(function($sesi) use ($reservations) {
             // For each date in the next 7 days
@@ -92,29 +62,13 @@ class ReservationController extends Controller
             return false;
         });
 
-        return view('front.reservasi-form', compact('service', 'type', 'sesis', 'bayis', 'availableDates'));
+        return view('front.reservasi-form', compact('service', 'type', 'sesis', 'bayis'));
     }
 
     public function store(Request $request)
     {
         try {
             DB::beginTransaction();
-
-            // Check if the selected date is a holiday
-            $isHoliday = \App\Models\Holiday::where(function ($query) use ($request) {
-                $query->where('tanggal_mulai', '<=', $request->tanggal_reservasi)
-                      ->where('tanggal_selesai', '>=', $request->tanggal_reservasi);
-            })->exists();
-
-            if ($isHoliday) {
-                if ($request->ajax() || $request->wantsJson()) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Tanggal yang dipilih merupakan hari libur. Silakan pilih tanggal lain.'
-                    ], 422);
-                }
-                return back()->withInput()->with('error', 'Tanggal yang dipilih merupakan hari libur. Silakan pilih tanggal lain.');
-            }
 
             // Calculate baby's age
             $tanggal_lahir = \Carbon\Carbon::parse($request->tanggal_lahir);
@@ -349,7 +303,7 @@ class ReservationController extends Controller
         $pdf = Pdf::loadView('templates.invoice', compact('reservation', 'payment'));
 
         // Download the PDF
-        return $pdf->download('invoice_' . $reservation->kode . '.pdf');
+        return $pdf->download('invoice_' . $reservation->id . '.pdf');
     }
 
     public function showPayment(Reservation $reservation)
@@ -387,39 +341,38 @@ class ReservationController extends Controller
 
     public function getAvailableSessions(Request $request)
     {
-        $date = $request->date;
+        $date = $request->query('date');
         
-        // Check if the date is a holiday
-        $isHoliday = \App\Models\Holiday::where(function ($query) use ($date) {
-            $query->where('tanggal_mulai', '<=', $date)
-                  ->where('tanggal_selesai', '>=', $date);
-        })->exists();
-
-        if ($isHoliday) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Tanggal yang dipilih merupakan hari libur. Silakan pilih tanggal lain.'
-            ], 422);
+        if (!$date) {
+            return response()->json(['error' => 'Date is required'], 400);
         }
 
         // Get all sessions
         $allSesis = Sesi::orderBy('jam')->get();
         
-        // Get reservations for the specific date
-        $reservations = Reservation::where('tanggal_reservasi', $date)
+        // Get active reservations for the specific date (excluding cancelled ones)
+        $bookedSessions = Reservation::where('tanggal_reservasi', $date)
             ->whereNotIn('status', ['cancelled'])
-            ->get()
             ->pluck('sesi_id')
             ->toArray();
         
-        // Filter out booked sessions
-        $availableSessions = $allSesis->filter(function($sesi) use ($reservations) {
-            return !in_array($sesi->id, $reservations);
-        })->values();
+        // Check if the date is a Friday
+        $isFriday = \Carbon\Carbon::parse($date)->dayOfWeek === 5; // 5 represents Friday
+        
+        // Filter out booked sessions and sessions before 14:00 on Fridays
+        $availableSessions = $allSesis->filter(function($sesi) use ($bookedSessions, $isFriday) {
+            // If it's Friday, only allow sessions after 14:00
+            if ($isFriday) {
+                $sessionTime = \Carbon\Carbon::createFromFormat('H:i:s', $sesi->jam);
+                if ($sessionTime->format('H:i') < '14:00') {
+                    return false;
+                }
+            }
+            return !in_array($sesi->id, $bookedSessions);
+        })->pluck('id')->toArray();
 
         return response()->json([
-            'success' => true,
-            'sessions' => $availableSessions
+            'available_sessions' => $availableSessions
         ]);
     }
 } 

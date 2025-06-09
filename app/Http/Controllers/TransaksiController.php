@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Session;
+use App\Notifications\PaymentSuccessNotification;
 
 class TransaksiController extends Controller
 {
@@ -142,6 +143,9 @@ class TransaksiController extends Controller
                     ->title('Reservasi Baru Diterima')
                     ->body('Pelanggan ' . $customer->name . ' telah melakukan reservasi untuk hari ' . \Carbon\Carbon::parse($reservation->tanggal_reservasi)->locale('id')->isoFormat('dddd, D MMMM Y') . ' pada jam ' . substr($reservation->sesi->jam, 0, 5) . '. Silakan cek detail reservasi.')
                     ->sendToDatabase($admin);
+
+                // Send email notification to customer
+                $customer->notify(new PaymentSuccessNotification($reservation, $transaksi));
             }
             return response()->json([
                 'success' => true,

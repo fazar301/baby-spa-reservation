@@ -162,7 +162,7 @@
     <!-- Content -->
     <div class="content">
       <div class="greeting">
-        Halo <strong id="customer-name">Ibu Sarah</strong>! 👋
+        Halo <strong>{{ $customerName }}</strong>! 👋
       </div>
 
       <div class="message">
@@ -175,7 +175,7 @@
         
         <div class="detail-row">
           <span class="detail-label">ID Reservasi</span>
-          <span class="detail-value" id="reservation-id">#RSV-12345</span>
+          <span class="detail-value">#{{ $reservationId }}</span>
         </div>
         
         <div class="detail-row">
@@ -185,24 +185,22 @@
         
         <div class="detail-row">
           <span class="detail-label">Layanan</span>
-          <span class="detail-value" id="service-name">Pijat Bayi</span>
+          <span class="detail-value">{{ $serviceName }}</span>
         </div>
         
         <div class="detail-row">
           <span class="detail-label">Untuk Anak</span>
-          <span class="detail-value" id="child-name">Aditya</span>
+          <span class="detail-value">{{ $childName }}</span>
         </div>
         
         <div class="detail-row">
           <span class="detail-label">Tanggal & Waktu</span>
-          <span class="detail-value"><span id="appointment-date">28 April 2025</span>, <span id="appointment-time">10:00 - 11:00</span></span>
+          <span class="detail-value">{{ $appointmentDate }}, {{ $appointmentTime }}</span>
         </div>
-        
-        
         
         <div class="detail-row">
           <span class="detail-label">Lokasi</span>
-          <span class="detail-value" id="location">Jl. Perjuangan Baru No.2, Gn. Pangilun</span>
+          <span class="detail-value">{{ $location }}</span>
         </div>
       </div>
 
@@ -212,22 +210,29 @@
         
         <div class="detail-row">
           <span class="detail-label">Biaya Layanan</span>
-          <span class="detail-value" id="service-amount">Rp 250.000</span>
+          <span class="detail-value">Rp {{ number_format($serviceAmount, 0, ',', '.') }}</span>
         </div>
         
         <div class="detail-row">
-          <span class="detail-label">Pajak (11%)</span>
-          <span class="detail-value" id="tax-amount">Rp 27.500</span>
+          <span class="detail-label">PPN (11%)</span>
+          <span class="detail-value">Rp {{ number_format($tax, 0, ',', '.') }}</span>
         </div>
+        
+        @if($discount > 0)
+        <div class="detail-row">
+          <span class="detail-label">Diskon</span>
+          <span class="detail-value">- Rp {{ number_format($discount, 0, ',', '.') }}</span>
+        </div>
+        @endif
         
         <div class="detail-row">
           <span class="detail-label"><strong>Total Dibayar</strong></span>
-          <span class="detail-value"><strong id="total-amount">Rp 277.500</strong></span>
+          <span class="detail-value"><strong>Rp {{ number_format($totalAmount, 0, ',', '.') }}</strong></span>
         </div>
         
         <div class="detail-row">
           <span class="detail-label">Metode Pembayaran</span>
-          <span class="detail-value" id="payment-method">Transfer Bank</span>
+          <span class="detail-value">{{ $paymentMethod }}</span>
         </div>
       </div>
 
@@ -242,7 +247,7 @@
 
       <!-- Call to Action -->
       <div style="text-align: center;">
-        <a href="#" class="cta-button">Lihat Detail di Dashboard</a>
+        <a href="{{ route('dashboard') }}" class="cta-button">Lihat Detail di Dashboard</a>
       </div>
 
       <div class="message">
@@ -255,7 +260,7 @@
       <p><strong>BabySpa - Spa & Perawatan Bayi Terpercaya</strong></p>
       
       <div class="contact-info">
-        📍 Jl. Sudirman No. 123, Jakarta Selatan<br>
+        📍 Jl. Perjuangan Baru No.2, Gn. Pangilun<br>
         📞 +62 21 1234 5678<br>
         📧 info@babyspa.com<br>
         🌐 www.babyspa.com
@@ -263,42 +268,10 @@
       
       <p style="margin-top: 16px; font-size: 12px;">
         Email ini dikirim otomatis. Mohon tidak membalas email ini.<br>
-        © 2025 BabySpa. Semua hak dilindungi.
+        © {{ date('Y') }} BabySpa. Semua hak dilindungi.
       </p>
     </div>
   </div>
-
-  <script>
-    // Function to populate email data (for testing purposes)
-    function populateEmail(data) {
-      document.getElementById('customer-name').textContent = data.customerName;
-      document.getElementById('reservation-id').textContent = `#${data.reservationId}`;
-      document.getElementById('service-name').textContent = data.serviceName;
-      document.getElementById('child-name').textContent = data.childName;
-      document.getElementById('appointment-date').textContent = data.appointmentDate;
-      document.getElementById('appointment-time').textContent = data.appointmentTime;
-      document.getElementById('therapist').textContent = data.therapist;
-      document.getElementById('location').textContent = data.location;
-      document.getElementById('service-amount').textContent = `Rp ${data.serviceAmount.toLocaleString('id-ID')}`;
-      document.getElementById('tax-amount').textContent = `Rp ${data.tax.toLocaleString('id-ID')}`;
-      document.getElementById('total-amount').textContent = `Rp ${data.totalAmount.toLocaleString('id-ID')}`;
-      document.getElementById('payment-method').textContent = data.paymentMethod;
-    }
-
-    // Example usage
-    // populateEmail({
-    //   customerName: "Ibu Sarah",
-    //   reservationId: "RSV-12345",
-    //   serviceName: "Pijat Bayi",
-    //   childName: "Aditya",
-    //   appointmentDate: "28 April 2025",
-    //   appointmentTime: "10:00 - 11:00",
-    //   location: "Cabang Utama - Jl. Sudirman No. 123",
-    //   serviceAmount: 250000,
-    //   tax: 27500,
-    //   totalAmount: 277500,
-    //   paymentMethod: "Transfer Bank"
-    // });
-  </script>
 </body>
+</html>
 </html>
