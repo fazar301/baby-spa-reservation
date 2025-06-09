@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ReservationResource\Pages;
-use App\Filament\Resources\ReservationResource\RelationManagers;
-use App\Models\Reservation;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\Reservation;
+use Illuminate\Support\Carbon;
+use Filament\Resources\Resource;
+use Illuminate\Contracts\View\View;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\Contracts\View\View;
+use App\Filament\Resources\ReservationResource\Pages;
+use App\Filament\Resources\ReservationResource\RelationManagers;
 
 class ReservationResource extends Resource
 {
@@ -108,6 +109,50 @@ class ReservationResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('tanggal_reservasi')
                     ->date('d M Y')
+                    ->searchable(query: function (Builder $query, string $search) {
+                        $query->where(function (Builder $subQuery) use ($search) {
+                            // 1. Cek apakah search adalah format "d M" (contoh: "25 Jan")
+                            try {
+                                $parsedDate = Carbon::createFromFormat('d M', $search);
+                                $subQuery->whereDay('tanggal_reservasi', $parsedDate->day)
+                                          ->whereMonth('tanggal_reservasi', $parsedDate->month);
+                            } catch (\Exception $e) {
+                                // 2. Jika bukan "d M", cek apakah search mengandung nama bulan (Indonesia)
+                                $monthMap = [
+                                    'jan' => 1, 'januari' => 1,
+                                    'feb' => 2, 'februari' => 2,
+                                    'mar' => 3, 'maret' => 3,
+                                    'apr' => 4, 'april' => 4,
+                                    'mei' => 5,
+                                    'jun' => 6, 'juni' => 6,
+                                    'jul' => 7, 'juli' => 7,
+                                    'agu' => 8, 'agustus' => 8,
+                                    'sep' => 9, 'september' => 9,
+                                    'okt' => 10, 'oktober' => 10,
+                                    'nov' => 11, 'november' => 11,
+                                    'des' => 12, 'desember' => 12,
+                                ];
+                
+                                $searchLower = strtolower($search);
+                                $foundMonth = null;
+                
+                                // Cek apakah search adalah nama bulan (full atau singkatan)
+                                foreach ($monthMap as $monthName => $monthNumber) {
+                                    if (str_contains($searchLower, $monthName)) {
+                                        $foundMonth = $monthNumber;
+                                        break;
+                                    }
+                                }
+                
+                                if ($foundMonth) {
+                                    $subQuery->whereMonth('tanggal_reservasi', $foundMonth);
+                                } else {
+                                    // 3. Fallback: Pencarian biasa (angka atau format default)
+                                    $subQuery->orWhere('tanggal_reservasi', 'LIKE', "%{$search}%");
+                                }
+                            }
+                        });
+                    })                
                     ->sortable(),
                 Tables\Columns\TextColumn::make('sesi.jam')
                     ->label('Waktu Reservasi')
