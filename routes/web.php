@@ -183,7 +183,7 @@ Route::get('/reservasi/pending', [ReservationController::class, 'pending'])->nam
 Route::post('/payment/set-pending', [PaymentController::class, 'setPendingStatus'])->name('payment.set-pending');
 
 Route::get('/test-template', function(){
-    return view('templates.email');
+    return view('templates.invoice-2');
 });
 
 Route::get('/test-notification', function(){

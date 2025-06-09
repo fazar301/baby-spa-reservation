@@ -28,6 +28,10 @@
                                 <span class="text-gray-700">Subtotal</span>
                                 <span class="font-medium">{{ 'Rp ' . number_format($reservation->harga, 0, ',', '.') }}</span>
                             </div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-700">PPN (11%)</span>
+                                <span class="font-medium">{{ 'Rp ' . number_format($reservation->harga * 0.11, 0, ',', '.') }}</span>
+                            </div>
                         </div>
                         
                         <!-- Voucher Code Input -->
@@ -77,7 +81,7 @@
                         <form action="{{ route('payment.process') }}" method="POST">
                             @csrf
                             <input type="hidden" name="reservation_id" value="{{ $reservation->id }}">
-                            <input type="hidden" name="amount" id="payment-amount" value="{{ $reservation->harga }}">
+                            <input type="hidden" name="amount" id="payment-amount" value="{{ $reservation->harga * 1.11 }}">
                             <input type="hidden" name="voucher_code" id="applied-voucher-code" value="">
                             <input type="hidden" name="discount_amount" id="discount-amount-input" value="0">
                             
@@ -178,13 +182,17 @@
                                 <span class="text-gray-700">Subtotal</span>
                                 <span class="font-medium">{{ 'Rp ' . number_format($reservation->harga, 0, ',', '.') }}</span>
                             </div>
+                            <div class="flex justify-between mb-2">
+                                <span class="text-gray-700">PPN (11%)</span>
+                                <span class="font-medium" id="sidebar-tax-amount">{{ 'Rp ' . number_format($reservation->harga * 0.11, 0, ',', '.') }}</span>
+                            </div>
                             <div class="flex justify-between mb-2 text-green-600 hidden" id="discount-row">
                                 <span>Diskon Voucher</span>
                                 <span id="discount-amount">-Rp 0</span>
                             </div>
                             <div class="flex justify-between pt-2 border-t border-gray-200 mt-2">
                                 <span class="font-medium text-gray-700">Total</span>
-                                <span class="font-bold text-pink-600" id="sidebar-total">{{ 'Rp ' . number_format($reservation->harga, 0, ',', '.') }}</span>
+                                <span class="font-bold text-pink-600" id="sidebar-total">{{ 'Rp ' . number_format($reservation->harga * 1.11, 0, ',', '.') }}</span>
                             </div>
                         </div>
                         
@@ -214,49 +222,98 @@ document.addEventListener('DOMContentLoaded', function() {
     const reservationId = document.querySelector('input[name="reservation_id"]').value;
     const paymentForm = document.querySelector('form[action="{{ route('payment.process') }}"]');
 
-    voucherForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        const code = voucherCodeInput.value.trim();
-        if (!code) return;
-        fetch(`/reservations/${reservationId}/apply-voucher`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
-            },
-            body: JSON.stringify({ voucher_code: code })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                voucherMessage.className = 'mt-2 text-sm text-green-600';
-                voucherMessage.textContent = `Voucher berhasil diterapkan! Diskon: Rp ${parseInt(data.discount).toLocaleString('id-ID')}`;
-                voucherMessage.classList.remove('hidden');
-                discountRow.classList.remove('hidden');
-                discountAmount.textContent = `-Rp ${parseInt(data.discount).toLocaleString('id-ID')}`;
-                totalAmount.textContent = `Rp ${parseInt(data.final_amount).toLocaleString('id-ID')}`;
-                sidebarTotal.textContent = `Rp ${parseInt(data.final_amount).toLocaleString('id-ID')}`;
-                paymentAmountInput.value = data.final_amount;
-                discountAmountInput.value = data.discount;
-                appliedVoucherCode.value = code;
-            } else {
-                voucherMessage.className = 'mt-2 text-sm text-red-600';
-                voucherMessage.textContent = data.message || 'Voucher tidak valid.';
-                voucherMessage.classList.remove('hidden');
-                discountRow.classList.add('hidden');
-                discountAmount.textContent = '-Rp 0';
-                totalAmount.textContent = paymentAmountInput.value;
-                sidebarTotal.textContent = paymentAmountInput.value;
-                discountAmountInput.value = 0;
-                appliedVoucherCode.value = '';
-            }
-        })
-        .catch(() => {
-            voucherMessage.className = 'mt-2 text-sm text-red-600';
-            voucherMessage.textContent = 'Terjadi kesalahan saat memproses voucher.';
-            voucherMessage.classList.remove('hidden');
+    // Set initial values with PPN
+    const initialSubtotal = {{ $reservation->harga }};
+    const initialTax = initialSubtotal * 0.11;
+    const initialTotal = initialSubtotal + initialTax;
+    
+    if (totalAmount) totalAmount.textContent = `Rp ${parseInt(initialTotal).toLocaleString('id-ID')}`;
+    if (sidebarTotal) sidebarTotal.textContent = `Rp ${parseInt(initialTotal).toLocaleString('id-ID')}`;
+    if (paymentAmountInput) paymentAmountInput.value = initialTotal;
+
+    if (voucherForm) {
+        voucherForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const code = voucherCodeInput.value.trim();
+            if (!code) return;
+
+            fetch(`/reservations/${reservationId}/apply-voucher`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+                },
+                body: JSON.stringify({ voucher_code: code })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const subtotal = data.final_amount;
+                    const tax = subtotal * 0.11;
+                    const total = subtotal + tax;
+
+                    if (voucherMessage) {
+                        voucherMessage.className = 'mt-2 text-sm text-green-600';
+                        voucherMessage.textContent = `Voucher berhasil diterapkan! Diskon: Rp ${parseInt(data.discount).toLocaleString('id-ID')}`;
+                        voucherMessage.classList.remove('hidden');
+                    }
+                    if (discountRow) {
+                        discountRow.classList.remove('hidden');
+                    }
+                    if (discountAmount) {
+                        discountAmount.textContent = `-Rp ${parseInt(data.discount).toLocaleString('id-ID')}`;
+                    }
+                    
+                    // Update tax and total amounts
+                    const taxAmount = document.getElementById('tax-amount');
+                    const sidebarTaxAmount = document.getElementById('sidebar-tax-amount');
+                    if (taxAmount) taxAmount.textContent = `Rp ${parseInt(tax).toLocaleString('id-ID')}`;
+                    if (sidebarTaxAmount) sidebarTaxAmount.textContent = `Rp ${parseInt(tax).toLocaleString('id-ID')}`;
+                    if (totalAmount) totalAmount.textContent = `Rp ${parseInt(total).toLocaleString('id-ID')}`;
+                    if (sidebarTotal) sidebarTotal.textContent = `Rp ${parseInt(total).toLocaleString('id-ID')}`;
+                    
+                    if (paymentAmountInput) paymentAmountInput.value = total;
+                    if (discountAmountInput) discountAmountInput.value = data.discount;
+                    if (appliedVoucherCode) appliedVoucherCode.value = code;
+                } else {
+                    const subtotal = initialSubtotal;
+                    const tax = subtotal * 0.11;
+                    const total = subtotal + tax;
+
+                    if (voucherMessage) {
+                        voucherMessage.className = 'mt-2 text-sm text-red-600';
+                        voucherMessage.textContent = data.message || 'Voucher tidak valid.';
+                        voucherMessage.classList.remove('hidden');
+                    }
+                    if (discountRow) {
+                        discountRow.classList.add('hidden');
+                    }
+                    if (discountAmount) {
+                        discountAmount.textContent = '-Rp 0';
+                    }
+                    
+                    // Reset tax and total amounts
+                    const taxAmount = document.getElementById('tax-amount');
+                    const sidebarTaxAmount = document.getElementById('sidebar-tax-amount');
+                    if (taxAmount) taxAmount.textContent = `Rp ${parseInt(tax).toLocaleString('id-ID')}`;
+                    if (sidebarTaxAmount) sidebarTaxAmount.textContent = `Rp ${parseInt(tax).toLocaleString('id-ID')}`;
+                    if (totalAmount) totalAmount.textContent = `Rp ${parseInt(total).toLocaleString('id-ID')}`;
+                    if (sidebarTotal) sidebarTotal.textContent = `Rp ${parseInt(total).toLocaleString('id-ID')}`;
+                    
+                    if (paymentAmountInput) paymentAmountInput.value = total;
+                    if (discountAmountInput) discountAmountInput.value = 0;
+                    if (appliedVoucherCode) appliedVoucherCode.value = '';
+                }
+            })
+            .catch(() => {
+                if (voucherMessage) {
+                    voucherMessage.className = 'mt-2 text-sm text-red-600';
+                    voucherMessage.textContent = 'Terjadi kesalahan saat memproses voucher.';
+                    voucherMessage.classList.remove('hidden');
+                }
+            });
         });
-    });
+    }
 
     // Handle payment form submission
     paymentForm.addEventListener('submit', function(e) {
