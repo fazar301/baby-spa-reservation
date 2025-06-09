@@ -349,7 +349,7 @@ class ReservationController extends Controller
         $pdf = Pdf::loadView('templates.invoice', compact('reservation', 'payment'));
 
         // Download the PDF
-        return $pdf->download('invoice_' . $reservation->id . '.pdf');
+        return $pdf->download('invoice_' . $reservation->kode . '.pdf');
     }
 
     public function showPayment(Reservation $reservation)

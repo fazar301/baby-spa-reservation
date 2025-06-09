@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Invoice - Baby Spa Blade</title>
+    <title>Invoice - Baby Spa</title>
     <style>
         * {
             margin: 0;
@@ -293,9 +293,9 @@
     <div class="invoice-container">
         <!-- Invoice Header -->
         <div class="invoice-header">
-            <div class="company-info">
-                <img src="/images/baby-spa-logo.png" alt="Baby Spa Blade Logo" class="company-logo">
-                <div class="company-name">Baby Spa Blade</div>
+            <div class="company-info" style="float: left">
+                <img src="/images/baby-spa-logo.png" alt="Baby Spa Logo" class="company-logo">
+                <div class="company-name">Baby Spa</div>
                 <div class="company-tagline">Perawatan Terbaik untuk Si Kecil</div>
                 <div class="company-details">
                     Jl. Kemang Raya No. 123, Jakarta Selatan 12560<br>
@@ -305,9 +305,10 @@
             </div>
             <div class="invoice-meta">
                 <div class="invoice-title">INVOICE</div>
-                <div class="invoice-number">#{{ str_pad($payment->id, 6, '0', STR_PAD_LEFT) }}</div>
+                <div class="invoice-number">{{ $reservation->kode }}</div>
                 <div class="invoice-date">{{ $payment->created_at->format('d F Y') }}</div>
-                <div class="invoice-status {{ $payment->status === 'paid' ? 'status-paid' : ($payment->status === 'pending' ? 'status-pending' : 'status-cancelled') }}">
+                <div class="" style="clear: both"></div>
+                <div style="margin-top: -40px" class="invoice-status {{ $payment->status === 'paid' ? 'status-paid' : ($payment->status === 'pending' ? 'status-pending' : 'status-cancelled') }}">
                     {{ $payment->status === 'paid' ? 'LUNAS' : ($payment->status === 'pending' ? 'MENUNGGU PEMBAYARAN' : 'DIBATALKAN') }}
                 </div>
             </div>
@@ -358,7 +359,6 @@
                             <div class="item-description">{{ $reservation->service_name }}</div>
                             <div class="item-details">
                                 Lokasi: Jl. Kemang Raya No. 123, Jakarta Selatan 12560<br>
-                                Terapis: {{ $reservation->therapist_name ?? 'Akan ditentukan' }}
                             </div>
                         </td>
                         <td>
@@ -379,17 +379,17 @@
                 </div>
                 @if($payment->discount_amount > 0)
                     <div class="summary-row">
-                        <span>Diskon ({{ $payment->voucher_code }}):</span>
+                        <span>Diskon :</span>
                         <span>-{{ 'Rp ' . number_format($payment->discount_amount, 0, ',', '.') }}</span>
                     </div>
                 @endif
                 <div class="summary-row">
                     <span>PPN (11%):</span>
-                    <span>{{ 'Rp ' . number_format(($payment->amount - ($payment->discount_amount ?? 0)) * 0.11, 0, ',', '.') }}</span>
+                    <span>{{ 'Rp ' . number_format(($payment->jumlah - ($payment->discount_amount ?? 0)) * 0.11, 0, ',', '.') }}</span>
                 </div>
                 <div class="summary-row total">
                     <span>Total:</span>
-                    <span>{{ 'Rp ' . number_format($payment->amount, 0, ',', '.') }}</span>
+                    <span>{{ 'Rp ' . number_format($payment->jumlah, 0, ',', '.') }}</span>
                 </div>
             </div>
         </div>
@@ -399,10 +399,10 @@
             <div class="notes-title">Informasi Pembayaran</div>
             <div class="notes-content">
                 <strong>Metode Pembayaran:</strong> 
-                {{ $payment->payment_method === 'cash' ? 'Tunai di Tempat' : 'Transfer Online (Midtrans)' }}<br>
+                {{ strtoupper($payment->payment_method) }}<br>
                 
                 @if($payment->payment_method === 'cash')
-                    <strong>Status:</strong> Pembayaran akan dilakukan saat kedatangan di Baby Spa Blade.<br>
+                    <strong>Status:</strong> Pembayaran akan dilakukan saat kedatangan di Baby Spa.<br>
                 @else
                     <strong>Status:</strong> {{ $payment->status === 'paid' ? 'Pembayaran telah diterima' : 'Menunggu konfirmasi pembayaran' }}<br>
                 @endif
@@ -419,7 +419,7 @@
         <div class="invoice-notes" style="background: #fef7ff; border-left-color: #ec4899;">
             <div class="notes-title" style="color: #ec4899;">Syarat dan Ketentuan</div>
             <div class="notes-content">
-                1. Pembayaran tunai dilakukan saat kedatangan di Baby Spa Blade.<br>
+                1. Pembayaran tunai dilakukan saat kedatangan di Baby Spa.<br>
                 2. Pembatalan reservasi dapat dilakukan maksimal 24 jam sebelum jadwal.<br>
                 3. Keterlambatan lebih dari 15 menit dapat mengakibatkan pembatalan otomatis.<br>
                 4. Harap membawa perlengkapan bayi yang diperlukan (popok, baju ganti).<br>
@@ -429,9 +429,9 @@
 
         <!-- Invoice Footer -->
         <div class="invoice-footer">
-            <div class="footer-thanks">Terima kasih telah mempercayai Baby Spa Blade!</div>
+            <div class="footer-thanks">Terima kasih telah mempercayai Baby Spa!</div>
             <p>Invoice ini dibuat secara otomatis dan sah tanpa tanda tangan.</p>
-            <p>Baby Spa Blade - Perawatan Terbaik untuk Si Kecil</p>
+            <p>Baby Spa - Perawatan Terbaik untuk Si Kecil</p>
         </div>
     </div>
 

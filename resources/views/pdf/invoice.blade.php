@@ -179,33 +179,25 @@
                  @elseif($reservation->payment_method === 'cash')
                      <p>Status: Belum dibayar (Tunai di tempat)</p>
                  @endif
-                 {{-- Add bank details if payment is via transfer and recorded --}}
-                 {{-- <p>Nama: Salford & Co.</p> --}}
-                 {{-- <p>No Rek: +123-456-7890</p> --}}
              </div>
              <div class="right total-summary">
                  <div>
                      <span class="label">SUB TOTAL :</span>
-                     <span class="value">{{ 'Rp ' . number_format($reservation->harga ?? 0, 0, ',', '.') }}</span>
+                     <span class="value">{{ 'Rp ' . number_format($reservation->service_price, 0, ',', '.') }}</span>
                  </div>
-                 @php
-                     $discount = $reservation->discount_amount ?? 0;
-                     $finalTotal = $reservation->final_amount ?? $reservation->harga ?? 0; // Use final_amount if available, else fallback to harga
-                 @endphp
-                 @if($discount > 0)
                  <div>
-                     <span class="label">Diskon Voucher :</span>
-                     <span class="value text-green-600">-Rp {{ number_format($discount, 0, ',', '.') }}</span>
+                     <span class="label">PPN (11%) :</span>
+                     <span class="value">{{ 'Rp ' . number_format($reservation->ppn, 0, ',', '.') }}</span>
+                 </div>
+                 @if($reservation->discount > 0)
+                 <div>
+                     <span class="label">Diskon :</span>
+                     <span class="value text-green-600">-Rp {{ number_format($reservation->discount, 0, ',', '.') }}</span>
                  </div>
                  @endif
-                 {{-- Assuming no separate tax is shown in your system based on pembayaran.blade.php --}}
-                 {{-- <div>
-                     <span class="label">PAJAK :</span>
-                     <span class="value">Rp 80,000</span>
-                 </div> --}}
                  <div class="total">
                      <span class="label">TOTAL :</span>
-                     <span class="value">{{ 'Rp ' . number_format($finalTotal, 0, ',', '.') }}</span>
+                     <span class="value">{{ 'Rp ' . number_format($reservation->total, 0, ',', '.') }}</span>
                  </div>
              </div>
          </div>
