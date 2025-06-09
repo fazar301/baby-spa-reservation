@@ -399,9 +399,9 @@
             <div class="notes-title">Informasi Pembayaran</div>
             <div class="notes-content">
                 <strong>Metode Pembayaran:</strong> 
-                {{ strtoupper($payment->payment_method) }}<br>
+                {{ strtoupper($payment->metode) }}<br>
                 
-                @if($payment->payment_method === 'cash')
+                @if($payment->metode === 'cash')
                     <strong>Status:</strong> Pembayaran akan dilakukan saat kedatangan di Baby Spa.<br>
                 @else
                     <strong>Status:</strong> {{ $payment->status === 'paid' ? 'Pembayaran telah diterima' : 'Menunggu konfirmasi pembayaran' }}<br>

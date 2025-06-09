@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Notification as LaravelNotification;
 use App\Notifications\ReservationNotification;
+use App\Notifications\PaymentSuccessNotification;
 
 class PaymentController extends Controller
 {
@@ -58,6 +59,9 @@ class PaymentController extends Controller
                         'Reservasi baby spa untuk anak Anda telah dikonfirmasi',
                         'success'
                     ));
+
+                    // Send payment success email
+                    $customer->notify(new PaymentSuccessNotification($reservation, $transaction));
                 }
             } else {
                 $transaction->status = $result['transaction_status'];
