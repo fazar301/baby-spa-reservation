@@ -15,6 +15,46 @@ namespace App\Models{
 /**
  * 
  *
+ * @property int $id
+ * @property string $judul
+ * @property string $slug
+ * @property int $kategori_id
+ * @property string $konten
+ * @property string|null $thumbnail
+ * @property string|null $meta_description
+ * @property string|null $meta_keywords
+ * @property string $status
+ * @property \Illuminate\Support\Carbon|null $published_at
+ * @property int $user_id
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\User $author
+ * @property-read \App\Models\KategoriArtikel $kategori
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel published()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel whereJudul($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel whereKategoriId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel whereKonten($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel whereMetaDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel whereMetaKeywords($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel wherePublishedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel whereThumbnail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Artikel whereUserId($value)
+ */
+	class Artikel extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
  * @property-read mixed $age
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Reservation> $reservations
  * @property-read int|null $reservations_count
@@ -106,6 +146,33 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Kategori whereUpdatedAt($value)
  */
 	class Kategori extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * 
+ *
+ * @property int $id
+ * @property string $nama
+ * @property string $slug
+ * @property string|null $deskripsi
+ * @property bool $is_active
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Artikel> $artikels
+ * @property-read int|null $artikels_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KategoriArtikel newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KategoriArtikel newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KategoriArtikel query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KategoriArtikel whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KategoriArtikel whereDeskripsi($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KategoriArtikel whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KategoriArtikel whereIsActive($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KategoriArtikel whereNama($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KategoriArtikel whereSlug($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|KategoriArtikel whereUpdatedAt($value)
+ */
+	class KategoriArtikel extends \Eloquent {}
 }
 
 namespace App\Models{

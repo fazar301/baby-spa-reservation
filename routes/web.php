@@ -17,6 +17,7 @@ use Filament\Notifications\Notification;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\UlasanController;
+use App\Http\Controllers\ArtikelController;
 
 Route::get('/', function () {
     $layanans = Layanan::limit(3)->get();
@@ -183,7 +184,7 @@ Route::get('/reservasi/pending', [ReservationController::class, 'pending'])->nam
 Route::post('/payment/set-pending', [PaymentController::class, 'setPendingStatus'])->name('payment.set-pending');
 
 Route::get('/test-template', function(){
-    return view('templates.email');
+    return view('front.artikel');
 });
 
 Route::get('/test-notification', function(){
@@ -203,5 +204,8 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/notifications/delete-all', [NotificationController::class, 'deleteAll'])->name('notifications.deleteAll');
     Route::delete('/notifications/{id}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
 });
+
+Route::get('/artikel', [ArtikelController::class, 'index'])->name('artikel.index');
+Route::get('/artikel/{slug}', [ArtikelController::class, 'show'])->name('artikel.show');
 
 require __DIR__.'/auth.php';

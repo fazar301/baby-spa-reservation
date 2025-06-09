@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\LayananApiController;
+use App\Http\Controllers\Api\ArtikelController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,4 +24,6 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::prefix('v1')->group(function () {
     Route::get('/layanan', [LayananApiController::class, 'index']);
     Route::get('/layanan/{id}', [LayananApiController::class, 'show']);
-}); 
+});
+
+Route::get('/artikel', [ArtikelController::class, 'index']); 

@@ -19,38 +19,41 @@
             <div class="hidden lg:flex lg:w-auto lg:order-1" id="desktop-menu">
                 <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
                     <li>
-                        <a href="/#" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Beranda</a>
+                        <a href="/" class="block py-2 pr-4 pl-3 {{ request()->is('/') ? 'text-pink-500 font-semibold' : 'text-gray-700' }} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Beranda</a>
                     </li>
                     <li>
-                        <a href="/layanan" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Layanan</a>
+                        <a href="/layanan" class="block py-2 pr-4 pl-3 {{ request()->is('layanan*') ? 'text-pink-500 font-semibold' : 'text-gray-700' }} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Layanan</a>
                     </li>
                     <li>
-                        <a href="/#benefits" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Manfaat</a>
+                        <a href="/#benefits" class="block py-2 pr-4 pl-3 {{ request()->is('#benefits') ? 'text-pink-500 font-semibold' : 'text-gray-700' }} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Manfaat</a>
                     </li>
                     <li>
+                        <a href="/artikel" class="block py-2 pr-4 pl-3 {{ request()->is('artikel*') ? 'text-pink-500 font-semibold' : 'text-gray-700' }} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Artikel</a>
+                    </li>
+                    {{-- <li>
                         <a href="/#testimonials" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Testimoni</a>
-                    </li>
+                    </li> --}}
                     <li>
-                        <a href="/#contact" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Kontak</a>
+                        <a href="/#contact" class="block py-2 pr-4 pl-3 {{ request()->is('#contact') ? 'text-pink-500 font-semibold' : 'text-gray-700' }} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Kontak</a>
                     </li>
                 </ul>
             </div>
             <div class="hidden w-full lg:hidden lg:w-auto lg:order-1" id="mobile-menu">
                 <ul class="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
                     <li>
-                        <a href="/#" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Beranda</a>
+                        <a href="/" class="block py-2 pr-4 pl-3 {{ request()->is('/') ? 'text-pink-500 font-semibold' : 'text-gray-700' }} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Beranda</a>
                     </li>
                     <li>
-                        <a href="/layanan" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Layanan</a>
+                        <a href="/layanan" class="block py-2 pr-4 pl-3 {{ request()->is('layanan*') ? 'text-pink-500 font-semibold' : 'text-gray-700' }} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Layanan</a>
                     </li>
                     <li>
-                        <a href="/#benefits" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Manfaat</a>
+                        <a href="/#benefits" class="block py-2 pr-4 pl-3 {{ request()->is('#benefits') ? 'text-pink-500 font-semibold' : 'text-gray-700' }} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Manfaat</a>
                     </li>
                     <li>
-                        <a href="/#testimonials" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Testimoni</a>
+                        <a href="/artikel" class="block py-2 pr-4 pl-3 {{ request()->is('artikel*') ? 'text-pink-500 font-semibold' : 'text-gray-700' }} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Artikel</a>
                     </li>
                     <li>
-                        <a href="/#contact" class="block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Kontak</a>
+                        <a href="/#contact" class="block py-2 pr-4 pl-3 {{ request()->is('#contact') ? 'text-pink-500 font-semibold' : 'text-gray-700' }} border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-pink-500 lg:p-0 transition-colors duration-200">Kontak</a>
                     </li>
                 </ul>
             </div>

@@ -94,6 +94,10 @@ class ReservationResource extends Resource
                     ->label('Nama Pelanggan')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('user.noHP')
+                    ->label('No. Telepon')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('bayi.nama')
                     ->label('Nama Bayi')
                     ->searchable()
@@ -159,11 +163,11 @@ class ReservationResource extends Resource
                     })
             ])
             ->actions([
-                Tables\Actions\ViewAction::make()
-                    ->modalContent(fn (Reservation $record): View => view(
-                        'filament.resources.reservation-resource.pages.view-reservation',
-                        ['reservation' => $record]
-                    )),
+                // Tables\Actions\ViewAction::make()
+                //     ->modalContent(fn (Reservation $record): View => view(
+                //         'filament.resources.reservation-resource.pages.view-reservation',
+                //         ['reservation' => $record]
+                //     )),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
