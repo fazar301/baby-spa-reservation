@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Layanan;
-use App\Models\PaketLayanan;
-use App\Models\Reservation;
-use App\Models\Transaksi;
+use DB;
+use Carbon\Carbon;
 use App\Models\Bayi;
+use App\Models\Layanan;
+use App\Models\Transaksi;
+use App\Models\Reservation;
+use App\Models\PaketLayanan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -58,6 +59,7 @@ class DashboardController extends Controller
         // Get upcoming reservations
         $upcomingReservations = Reservation::where('user_id', $user->id)
         ->where('status', 'confirmed')
+        ->orWhere('status', 'pending')
         ->with(['layanan', 'bayi', 'sesi'])
         ->get()
         ->filter(function ($reservation) {
@@ -84,7 +86,7 @@ class DashboardController extends Controller
             ->leftJoin('reservasis', 'bayis.id', '=', 'reservasis.bayi_id') // Assuming 'bayi_id' foreign key in reservasis
             ->select(
                 'bayis.*', // Select all original bayi columns
-                \DB::raw('COUNT(reservasis.id) as total_sessions'), // Count reservasis
+                DB::raw('COUNT(reservasis.id) as total_sessions'), // Count reservasis
                 \DB::raw('MAX(reservasis.tanggal_reservasi) as last_visit_date') // Get the latest reservation date
             )
             ->groupBy('bayis.id', 'bayis.user_id', 'bayis.berat_lahir', 'bayis.berat_sekarang', 'bayis.nama', 'bayis.tanggal_lahir', 'bayis.jenis_kelamin', 'bayis.is_temporary', 'bayis.created_at', 'bayis.updated_at') // Group by all original bayi columns

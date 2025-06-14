@@ -42,6 +42,7 @@ class DatabaseSeeder extends Seeder
             DefaultUserSeeder::class,
             KategoriSeeder::class,
             KategoriArtikelSeeder::class,
+            ArtikelSeeder::class,
             LayananSeeder::class,
             PaketLayananSeeder::class,
         ]);

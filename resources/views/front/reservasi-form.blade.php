@@ -183,7 +183,7 @@
                             <div id="new-baby-section">
                                 <div class="mb-4">
                                     <label for="nama_bayi" class="block text-sm font-medium text-gray-700 mb-1">Nama Bayi <span class="text-red-500">*</span></label>
-                                    <input type="text" id="nama_bayi" name="nama_bayi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required>
+                                    <input type="text" id="nama_bayi" name="nama_bayi" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required autocomplete="off">
                                 </div>
                                 
                                 <div class="mb-4">

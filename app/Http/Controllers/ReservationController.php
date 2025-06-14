@@ -244,23 +244,30 @@ class ReservationController extends Controller
             $reservation->harga = $harga;
             $reservation->catatan = $request->catatan;
 
-            // Always create a baby record, but only set user_id if save_baby_data is checked
-            $bayi = new Bayi();
-            if ($request->save_baby_data) {
-                $bayi->user_id = Auth::user()->id;
+            // Handle baby data based on selection
+            if ($request->baby_data_option === 'existing' && $request->existing_baby) {
+                // Use existing baby
+                $bayi = Bayi::findOrFail($request->existing_baby);
+                $reservation->bayi_id = $bayi->id;
             } else {
-                // Set a temporary user_id for the reservation
-                $bayi->user_id = Auth::user()->id;
-                $bayi->is_temporary = true;
-            }
-            $bayi->nama = $request->nama_bayi;
-            $bayi->tanggal_lahir = $request->tanggal_lahir;
-            $bayi->jenis_kelamin = $request->jenis_kelamin;
-            $bayi->berat_lahir = $request->berat_lahir;
-            $bayi->berat_sekarang = $request->berat_sekarang;
-            $bayi->save();
+                // Create new baby record
+                $bayi = new Bayi();
+                if ($request->save_baby_data) {
+                    $bayi->user_id = Auth::user()->id;
+                } else {
+                    // Set a temporary user_id for the reservation
+                    $bayi->user_id = Auth::user()->id;
+                    $bayi->is_temporary = true;
+                }
+                $bayi->nama = $request->nama_bayi;
+                $bayi->tanggal_lahir = $request->tanggal_lahir;
+                $bayi->jenis_kelamin = $request->jenis_kelamin;
+                $bayi->berat_lahir = $request->berat_lahir;
+                $bayi->berat_sekarang = $request->berat_sekarang;
+                $bayi->save();
 
-            $reservation->bayi_id = $bayi->id;
+                $reservation->bayi_id = $bayi->id;
+            }
             $reservation->save();
 
             // Create a default transaction with status pending and method midtrans
