@@ -438,4 +438,86 @@ class ReservationController extends Controller
             'available_sessions' => $availableSessions->pluck('id')->toArray()
         ]);
     }
+
+    public function getMinimumAge(Request $request){
+        try {
+            $request->validate([
+                'idLayanan' => 'required',
+                'type' => 'required|in:layanan,paket',
+                'tanggal_lahir' => 'required|date|before_or_equal:today'
+            ]);
+
+            // Get service based on type
+            if ($request->type === 'layanan') {
+                $service = Layanan::with('kategori')->findOrFail($request->idLayanan);
+            } else {
+                $service = PaketLayanan::with('kategori')->findOrFail($request->idLayanan);
+            }
+
+            // Calculate baby's age
+            $tanggal_lahir = \Carbon\Carbon::parse($request->tanggal_lahir);
+            $umur_bayi = $tanggal_lahir->age;
+            $umur_bayi_bulan = $tanggal_lahir->diffInMonths(now());
+
+            // Check age requirement based on service category
+            $is_valid_age = false;
+            $error_message = '';
+            $min_age = '';
+            $max_age = '';
+
+            if ($service->kategori) {
+                switch ($service->kategori->nama_kategori) {
+                    case 'Baby':
+                        $min_age = '0 bulan';
+                        $max_age = '12 bulan';
+                        if ($umur_bayi_bulan <= 12) {
+                            $is_valid_age = true;
+                        } else {
+                            $error_message = 'Layanan ini hanya untuk bayi usia 0-12 bulan. Usia bayi Anda: ' . $umur_bayi_bulan . ' bulan.';
+                        }
+                        break;
+                    case 'Kids':
+                        $min_age = '1 tahun';
+                        $max_age = '3 tahun';
+                        if ($umur_bayi >= 1 && $umur_bayi <= 3) {
+                            $is_valid_age = true;
+                        } else {
+                            $error_message = 'Layanan ini hanya untuk anak usia 1-3 tahun. Usia bayi Anda: ' . $umur_bayi . ' tahun ' . ($umur_bayi_bulan % 12) . ' bulan.';
+                        }
+                        break;
+                    case 'Children':
+                        $min_age = '3 tahun';
+                        $max_age = 'Tidak ada batas maksimal';
+                        if ($umur_bayi >= 3) {
+                            $is_valid_age = true;
+                        } else {
+                            $error_message = 'Layanan ini hanya untuk anak usia 3 tahun ke atas. Usia bayi Anda: ' . $umur_bayi . ' tahun ' . ($umur_bayi_bulan % 12) . ' bulan.';
+                        }
+                        break;
+                    default:
+                        $is_valid_age = true; // No age restriction
+                        break;
+                }
+            } else {
+                $is_valid_age = true; // No category means no age restriction
+            }
+
+            return response()->json([
+                'success' => true,
+                'is_valid_age' => $is_valid_age,
+                'error_message' => $error_message,
+                'baby_age_years' => $umur_bayi,
+                'baby_age_months' => $umur_bayi_bulan,
+                'service_category' => $service->kategori ? $service->kategori->nama_kategori : 'Tidak ada kategori',
+                'min_age' => $min_age,
+                'max_age' => $max_age
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat memvalidasi usia: ' . $e->getMessage()
+            ], 500);
+        }
+    }
 } 

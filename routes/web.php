@@ -154,6 +154,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/api/available-sessions', [ReservationController::class, 'getAvailableSessions'])
         ->name('api.available-sessions');
 
+    // API endpoint for checking minimum age requirement
+    Route::post('/get-age-minimum', [ReservationController::class, 'getMinimumAge'])
+        ->name('api.get-minimum-age');
+
     Route::get('/reservations/{reservation}/invoice', [ReservationController::class, 'downloadInvoice'])->name('reservasi.invoice');
     // Payment related routes (now handled by TransaksiController)
     Route::get('/reservations/{reservation}/payment', [TransaksiController::class, 'showPayment'])

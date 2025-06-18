@@ -1,6 +1,85 @@
 <x-main-layout>
-
+<style>
+    #errorModalPanel, #successModalPanel {
+    transform: scale(0.95);
+    opacity: 0;
+    transition: all 0.2s ease-out;
+    }
+</style>
 <div class="bg-pink-50 py-10">
+    <!-- Error Modal -->
+    <div id="errorModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" id="errorModalOverlay"></div>
+
+            <!-- Modal positioning -->
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <!-- Modal panel -->
+            <div class="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6" id="errorModalPanel">
+                <div class="sm:flex sm:items-start">
+                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                            Oops! Ada Kesalahan
+                        </h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500" id="errorMessage">
+                                Terjadi kesalahan dalam proses reservasi.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-pink-600 text-base font-medium text-white hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors duration-200" id="closeErrorModal">
+                        Mengerti
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <!-- Background overlay -->
+            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" id="successModalOverlay"></div>
+
+            <!-- Modal positioning -->
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+            <!-- Modal panel -->
+            <div class="relative inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6" id="successModalPanel">
+                <div class="sm:flex sm:items-start">
+                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <svg class="h-6 w-6 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            Berhasil!
+                        </h3>
+                        <div class="mt-2">
+                            <p class="text-sm text-gray-500" id="successMessage">
+                                Operasi berhasil dilakukan.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-5 sm:mt-4 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 sm:ml-3 sm:w-auto sm:text-sm transition-colors duration-200" id="closeSuccessModal">
+                        OK
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
     <div class="container mx-auto px-4">
         <!-- Hero Section -->
         <div class="text-center mb-8">
@@ -193,6 +272,20 @@
                                     <div class="mt-2 text-sm text-gray-700">
                                         <span>Usia: </span><span id="calculated-age">-</span>
                                     </div>
+                                    <!-- Service requirement info -->
+                                    <div class="mt-1 text-xs text-blue-600">
+                                        @if($service->kategori)
+                                            @if($service->kategori->nama_kategori == 'Baby')
+                                                <span>Persyaratan: Usia 0-12 bulan</span>
+                                            @elseif($service->kategori->nama_kategori == 'Kids')
+                                                <span>Persyaratan: Usia 1-3 tahun</span>
+                                            @elseif($service->kategori->nama_kategori == 'Children')
+                                                <span>Persyaratan: Usia 3+ tahun</span>
+                                            @endif
+                                        @endif
+                                    </div>
+                                    <!-- Age validation error message -->
+                                    <div id="age-validation-error" class="mt-2 text-sm text-red-600 hidden"></div>
                                 </div>
                                 
                                 <div class="grid grid-cols-2 gap-4 mb-4">
@@ -461,6 +554,56 @@
     </div>
 </div>
 <script>
+    function showErrorModal(message) {
+        document.getElementById('errorMessage').textContent = message;
+        document.getElementById('errorModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        
+        // Add animation
+        setTimeout(() => {
+            document.getElementById('errorModalPanel').style.transform = 'scale(1)';
+            document.getElementById('errorModalPanel').style.opacity = '1';
+        }, 10);
+    }
+
+    function hideErrorModal() {
+        document.getElementById('errorModalPanel').style.transform = 'scale(0.95)';
+        document.getElementById('errorModalPanel').style.opacity = '0';
+        
+        setTimeout(() => {
+            document.getElementById('errorModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }, 200);
+    }
+
+    function showSuccessModal(message) {
+        document.getElementById('successMessage').textContent = message;
+        document.getElementById('successModal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+        
+        // Add animation
+        setTimeout(() => {
+            document.getElementById('successModalPanel').style.transform = 'scale(1)';
+            document.getElementById('successModalPanel').style.opacity = '1';
+        }, 10);
+    }
+
+    function hideSuccessModal() {
+        document.getElementById('successModalPanel').style.transform = 'scale(0.95)';
+        document.getElementById('successModalPanel').style.opacity = '0';
+        
+        setTimeout(() => {
+            document.getElementById('successModal').classList.add('hidden');
+            document.body.style.overflow = 'auto';
+        }, 200);
+    }
+
+    // Modal event listeners
+    document.getElementById('closeErrorModal').addEventListener('click', hideErrorModal);
+    document.getElementById('errorModalOverlay').addEventListener('click', hideErrorModal);
+    document.getElementById('closeSuccessModal').addEventListener('click', hideSuccessModal);
+    document.getElementById('successModalOverlay').addEventListener('click', hideSuccessModal);
+
 document.addEventListener('DOMContentLoaded', function() {
     // Declare all variables only once at the top
     const form = document.getElementById('reservation-form');
@@ -477,6 +620,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Handle form submission
     form.addEventListener('submit', function(e) {
         e.preventDefault();
+        
+        // Check if there's an age validation error
+        const ageValidationError = document.getElementById('age-validation-error');
+        if (!ageValidationError.classList.contains('hidden')) {
+            showErrorModal('Mohon perbaiki usia bayi sesuai dengan persyaratan layanan yang dipilih.');
+            document.getElementById('tanggal_lahir').focus();
+            return;
+        }
         
         // Validate all required fields
         const requiredFields = form.querySelectorAll('[required]');
@@ -596,7 +747,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const babyGender = document.querySelector('input[name="jenis_kelamin"]:checked');
         
         if (!parentName || !phone || !babyName || !babyBirthdate || !babyGender) {
-            alert('Mohon lengkapi semua field yang wajib diisi.');
+            showErrorModal('Mohon lengkapi semua field yang wajib diisi.');
+            return;
+        }
+        
+        // Check if there's an age validation error
+        const ageValidationError = document.getElementById('age-validation-error');
+        if (!ageValidationError.classList.contains('hidden')) {
+            showErrorModal('Mohon perbaiki usia bayi sesuai dengan persyaratan layanan yang dipilih.');
+            document.getElementById('tanggal_lahir').focus();
             return;
         }
         
@@ -619,7 +778,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedSession = sessionSelect.options[sessionSelect.selectedIndex];
         
         if (!appointmentDate || !sessionSelect.value) {
-            alert('Mohon pilih jadwal untuk reservasi.');
+            showErrorModal('Mohon pilih jadwal untuk reservasi.');
             return;
         }
         
@@ -797,7 +956,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Trigger the birthdate change event to calculate age
+            // Trigger the birthdate change event to calculate age and validate
             const event = new Event('change');
             document.getElementById('tanggal_lahir').dispatchEvent(event);
             
@@ -813,6 +972,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 radio.checked = false;
             });
             document.getElementById('calculated-age').textContent = '-';
+            // Hide age validation error
+            document.getElementById('age-validation-error').classList.add('hidden');
         }
     });
 
@@ -824,13 +985,13 @@ document.addEventListener('DOMContentLoaded', function() {
     birthWeightInput.addEventListener('change', function() {
         const birthWeight = parseFloat(this.value);
         if (isNaN(birthWeight) || birthWeight <= 0) {
-            alert('Berat lahir harus lebih dari 0 kg.');
+            showErrorModal('Berat lahir harus lebih dari 0 kg.');
             this.value = '';
             return;
         }
 
         if (birthWeight > 6) {
-            alert('Berat lahir tidak boleh lebih dari 6 kg.');
+            showErrorModal('Berat lahir tidak boleh lebih dari 6 kg.');
             this.value = '';
             return;
         }
@@ -838,7 +999,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check if current weight is already entered
         const currentWeight = parseFloat(currentWeightInput.value);
         if (currentWeight && birthWeight > currentWeight) {
-            alert('Berat lahir tidak boleh lebih besar dari berat sekarang.');
+            showErrorModal('Berat lahir tidak boleh lebih besar dari berat sekarang.');
             this.value = '';
         }
     });
@@ -847,13 +1008,13 @@ document.addEventListener('DOMContentLoaded', function() {
     currentWeightInput.addEventListener('change', function() {
         const currentWeight = parseFloat(this.value);
         if (isNaN(currentWeight) || currentWeight <= 0) {
-            alert('Berat sekarang harus lebih dari 0 kg.');
+            showErrorModal('Berat sekarang harus lebih dari 0 kg.');
             this.value = '';
             return;
         }
 
         if (currentWeight > 20) {
-            alert('Berat sekarang tidak boleh lebih dari 20 kg.');
+            showErrorModal('Berat sekarang tidak boleh lebih dari 20 kg.');
             this.value = '';
             return;
         }
@@ -861,7 +1022,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Check if birth weight is already entered
         const birthWeight = parseFloat(birthWeightInput.value);
         if (birthWeight && birthWeight > currentWeight) {
-            alert('Berat sekarang harus lebih besar dari berat lahir.');
+            showErrorModal('Berat sekarang harus lebih besar dari berat lahir.');
             this.value = '';
         }
     });
@@ -917,6 +1078,63 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.error('Error fetching available sessions:', error);
             });
     });
+
+    babyBirthdateInput.addEventListener('change', function(){
+        const birthdate = this.value;
+        const service = @json($service);
+        const serviceType = '{{ $type }}';
+        const nextBtn = document.querySelector('#next-to-step-2')
+        
+        if (!birthdate) {
+            document.getElementById('age-validation-error').classList.add('hidden');
+            return;
+        }
+        
+        // Call the age validation API
+        fetch('/get-age-minimum', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': document.querySelector('input[name="_token"]').value
+            },
+            body: JSON.stringify({ 
+                idLayanan: service.id,
+                type: serviceType,
+                tanggal_lahir: birthdate
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            const errorDiv = document.getElementById('age-validation-error');
+            
+            if (data.success) {
+                if (!data.is_valid_age) {
+                    // Show error message
+                    errorDiv.textContent = data.error_message;
+                    nextBtn.disabled = true;
+                    nextBtn.style = 'background: rgb(236 72 153 / 71%);'
+                    errorDiv.classList.remove('hidden');
+                    // Add red border to input
+                    this.classList.add('border-red-500');
+                    this.classList.remove('border-gray-300');
+
+                } else {
+                    // Hide error message
+                    errorDiv.classList.add('hidden');
+                    nextBtn.disabled = false;
+                    nextBtn.style = 'background: rgb(236 72 153 / var(--tw-bg-opacity, 1));'
+                    // Remove red border from input
+                    this.classList.remove('border-red-500');
+                    this.classList.add('border-gray-300');
+                }
+            } else {
+                console.error('API Error:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    })
 });
 </script>
 </x-main-layout>

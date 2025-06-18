@@ -1,4 +1,9 @@
 <x-main-layout>
+    <style>
+        ul{
+            list-style: inherit;
+        }
+    </style>
     <!-- Article Content -->
     <article class="pt-24 pb-16">
         <div class="container mx-auto px-4 max-w-4xl">
