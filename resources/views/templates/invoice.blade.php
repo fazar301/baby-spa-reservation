@@ -383,10 +383,10 @@
                         <span>-{{ 'Rp ' . number_format($payment->discount_amount, 0, ',', '.') }}</span>
                     </div>
                 @endif
-                <div class="summary-row">
+                {{-- <div class="summary-row">
                     <span>PPN (11%):</span>
                     <span>{{ 'Rp ' . number_format(($payment->jumlah - ($payment->discount_amount ?? 0)) * 0.11, 0, ',', '.') }}</span>
-                </div>
+                </div> --}}
                 <div class="summary-row total">
                     <span>Total:</span>
                     <span>{{ 'Rp ' . number_format($payment->jumlah, 0, ',', '.') }}</span>
