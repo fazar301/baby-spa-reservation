@@ -44,7 +44,7 @@ jobs:
           restore-keys: ${{ runner.os }}-php-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress
+        run: composer install --prefer-dist --no-progress --no-interaction
 
       - name: Copy environment file
         run: cp .env.example .env
@@ -66,7 +66,7 @@ jobs:
 
       - name: Upload Laravel Pint results
         if: always()
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: pint-results
           path: |
