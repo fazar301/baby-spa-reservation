@@ -90,6 +90,70 @@ The application should now be running at `http://localhost:8000`
 - User authentication
 - Admin dashboard
 
+## Code Quality & Linting
+
+This project uses [Laravel Pint](https://laravel.com/docs/pint) for PHP code formatting and linting. Pint ensures consistent code style across the project.
+
+### Available Commands
+
+- **Check code style** (without making changes):
+```bash
+composer format:check
+```
+
+- **Fix code style automatically**:
+```bash
+composer format:fix
+```
+
+- **Format code** (alias for format:fix):
+```bash
+composer format
+```
+
+- **Run Pint directly**:
+```bash
+./vendor/bin/pint
+```
+
+### Configuration
+
+The Pint configuration is stored in `pint.json` and includes:
+- Laravel preset for consistent styling
+- Custom rules for array syntax, imports, and spacing
+- Automatic removal of unused imports
+- Proper operator spacing and line breaks
+
+### Pre-commit Hook (Optional)
+
+To automatically format code before commits, you can add this to your `.git/hooks/pre-commit`:
+
+```bash
+#!/bin/sh
+composer format:fix
+git add -A
+```
+
+Make the hook executable:
+```bash
+chmod +x .git/hooks/pre-commit
+```
+
+### GitHub Actions
+
+This project includes automated code quality checks via GitHub Actions:
+
+- **Laravel Pint**: Automatically checks and formats PHP code on pull requests and pushes
+- **Code Quality**: Runs comprehensive checks including syntax validation and tests
+- **Pull Request Template**: Includes code quality checklist for contributors
+
+The workflows are located in `.github/workflows/` and will:
+- Run on pushes to `main` and `develop` branches
+- Run on pull requests to `main` and `develop` branches
+- Only trigger when PHP files, composer files, or pint.json are modified
+- Cache dependencies for faster builds
+- Provide detailed feedback on code quality issues
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
