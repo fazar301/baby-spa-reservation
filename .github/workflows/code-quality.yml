@@ -3,18 +3,8 @@ name: Code Quality
 on:
   push:
     branches: [ main, develop ]
-    paths:
-      - '**.php'
-      - 'composer.json'
-      - 'composer.lock'
-      - 'pint.json'
   pull_request:
     branches: [ main, develop ]
-    paths:
-      - '**.php'
-      - 'composer.json'
-      - 'composer.lock'
-      - 'pint.json'
 
 jobs:
   code-quality:
