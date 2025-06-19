@@ -1,4 +1,9 @@
 <x-main-layout>
+    <style>
+        .article-content ul{
+            list-style: inherit;
+        }
+    </style>
     <!-- Article Content -->
     <article class="pt-24 pb-16">
         <div class="container mx-auto px-4 max-w-4xl">
@@ -64,7 +69,7 @@
             </div>
 
             <!-- Article Content -->
-            <div class="prose prose-lg max-w-none mb-12" style="line-height: 1.8; font-size: 1.1rem;">
+            <div class="article-content prose prose-lg max-w-none mb-12" style="line-height: 1.8; font-size: 1.1rem;">
                 {!! $artikel->konten !!}
             </div>
 

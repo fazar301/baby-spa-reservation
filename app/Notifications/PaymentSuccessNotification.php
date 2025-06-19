@@ -39,7 +39,7 @@ class PaymentSuccessNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         $serviceAmount = $this->reservation->harga;
-        $tax = round($serviceAmount * 0.11);
+        $tax = round($serviceAmount * 0);
         $discount = $this->payment->discount_amount ?? 0;
         $totalAmount = $serviceAmount + $tax - $discount;
 

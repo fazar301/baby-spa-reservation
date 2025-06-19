@@ -28,10 +28,10 @@
                                 <span class="text-gray-700">Subtotal</span>
                                 <span class="font-medium">{{ 'Rp ' . number_format($reservation->harga, 0, ',', '.') }}</span>
                             </div>
-                            <div class="flex justify-between mb-2">
+                            {{-- <div class="flex justify-between mb-2">
                                 <span class="text-gray-700">PPN (11%)</span>
                                 <span class="font-medium">{{ 'Rp ' . number_format($reservation->harga * 0.11, 0, ',', '.') }}</span>
-                            </div>
+                            </div> --}}
                         </div>
                         
                         <!-- Voucher Code Input -->
@@ -182,10 +182,10 @@
                                 <span class="text-gray-700">Subtotal</span>
                                 <span class="font-medium">{{ 'Rp ' . number_format($reservation->harga, 0, ',', '.') }}</span>
                             </div>
-                            <div class="flex justify-between mb-2">
+                            {{-- <div class="flex justify-between mb-2">
                                 <span class="text-gray-700">PPN (11%)</span>
                                 <span class="font-medium" id="sidebar-tax-amount">{{ 'Rp ' . number_format($reservation->harga * 0.11, 0, ',', '.') }}</span>
-                            </div>
+                            </div> --}}
                             <div class="flex justify-between mb-2 text-green-600 hidden" id="discount-row">
                                 <span>Diskon Voucher</span>
                                 <span id="discount-amount">-Rp 0</span>
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Set initial values with PPN
     const initialSubtotal = {{ $reservation->harga }};
-    const initialTax = initialSubtotal * 0.11;
+    const initialTax = initialSubtotal * 0;
     const initialTotal = initialSubtotal + initialTax;
     
     if (totalAmount) totalAmount.textContent = `Rp ${parseInt(initialTotal).toLocaleString('id-ID')}`;
@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 if (data.success) {
                     const subtotal = data.final_amount;
-                    const tax = subtotal * 0.11;
+                    const tax = subtotal * 0;
                     const total = subtotal + tax;
 
                     if (voucherMessage) {
@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (appliedVoucherCode) appliedVoucherCode.value = code;
                 } else {
                     const subtotal = initialSubtotal;
-                    const tax = subtotal * 0.11;
+                    const tax = subtotal * 0;
                     const total = subtotal + tax;
 
                     if (voucherMessage) {

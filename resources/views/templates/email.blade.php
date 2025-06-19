@@ -213,10 +213,10 @@
           <span class="detail-value">Rp {{ number_format($serviceAmount, 0, ',', '.') }}</span>
         </div>
         
-        <div class="detail-row">
+        {{-- <div class="detail-row">
           <span class="detail-label">PPN (11%)</span>
           <span class="detail-value">Rp {{ number_format($tax, 0, ',', '.') }}</span>
-        </div>
+        </div> --}}
         
         @if($discount > 0)
         <div class="detail-row">
