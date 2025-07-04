@@ -452,9 +452,9 @@
                                 <div>
                                     <h4 class="font-semibold text-gray-900 mb-1">Alamat</h4>
                                     <p class="text-gray-600">
-                                        Jl. Bayi Sehat No. 123<br />
-                                        Kebayoran Baru, Jakarta Selatan<br />
-                                        Jakarta 12560
+                                        Jl. Perjuangan Baru No.2<br>
+                                        Gn. Pangilun, Kec. Padang Utara<br>
+                                        Kota Padang, Sumatera Barat
                                     </p>
                                 </div>
                             </div>
@@ -470,8 +470,7 @@
                                 <div>
                                     <h4 class="font-semibold text-gray-900 mb-1">Telepon</h4>
                                     <p class="text-gray-600">
-                                        +62 812 3456 7890<br />
-                                        +62 21 1234 5678
+                                        +62 812 1293 3442
                                     </p>
                                 </div>
                             </div>
@@ -487,8 +486,7 @@
                                 <div>
                                     <h4 class="font-semibold text-gray-900 mb-1">Email</h4>
                                     <p class="text-gray-600">
-                                        info@babyspa.com<br />
-                                        reservasi@babyspa.com
+                                        latumi@gmail.com
                                     </p>
                                 </div>
                             </div>
@@ -504,8 +502,9 @@
                                 <div>
                                     <h4 class="font-semibold text-gray-900 mb-1">Jam Operasional</h4>
                                     <div class="text-gray-600 space-y-1">
-                                        <p>Senin - Jumat: 09:00 - 18:00</p>
-                                        <p>Sabtu - Minggu: 08:00 - 17:00</p>
+                                        <p>Senin - Kamis: 09:00 - 18:00</p>
+                                        <p>Jumat : 14:00 - 18:00</p>
+                                        <p>Sabtu - Minggu: 09:00 - 17:00</p>
                                         <p class="text-sm text-orange-600">Reservasi diperlukan</p>
                                     </div>
                                 </div>

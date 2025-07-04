@@ -9,6 +9,7 @@ use Flowframe\Trend\TrendValue;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Filament\Support\RawJs;
+use Filament\Forms\Components\DatePicker;
 
 class RevenueChart extends ChartWidget
 {
@@ -17,8 +18,23 @@ class RevenueChart extends ChartWidget
     protected static ?string $maxHeight = '300px';
     protected int | string | array $columnSpan = 'half';
 
+    public ?string $from = null;
+    public ?string $to = null;
+
+    public function getFormSchema(): array
+    {
+        return [
+            DatePicker::make('from')->label('Dari')->default(now()->startOfMonth()),
+            DatePicker::make('to')->label('Sampai')->default(now()),
+        ];
+    }
+
     protected function getData(): array
     {
+        $from = $this->from ?? now()->startOfMonth()->toDateString();
+        $to = $this->to ?? now()->toDateString();
+        $data = Reservation::whereBetween('tanggal_reservasi', [$from, $to])->get();
+
         // Generate array of all months in current year
         $months = collect(range(1, 12))->map(function ($month) {
             return [
@@ -35,6 +51,7 @@ class RevenueChart extends ChartWidget
             )
             ->whereYear('tanggal_reservasi', now()->year)
             ->where('status', '!=', 'cancelled')
+            ->where('status', '!=', 'pending')
             ->groupBy('month')
             ->orderBy('month')
             ->get()

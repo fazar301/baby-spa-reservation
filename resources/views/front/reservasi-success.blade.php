@@ -12,7 +12,7 @@
                 
                 <h1 class="text-3xl font-bold text-gray-800 mb-4">Reservasi Berhasil!</h1>
                 <p class="text-lg text-gray-600 mb-8">
-                    Terima kasih telah melakukan reservasi di Baby Spa. Detail reservasi telah dikirim ke email dan WhatsApp Anda.
+                    Terima kasih telah melakukan reservasi di Baby Spa. Detail reservasi telah dikirim ke email Anda.
                 </p>
                 
                 <div class="space-y-4">

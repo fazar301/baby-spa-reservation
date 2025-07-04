@@ -9,7 +9,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class LayananController extends Controller
-{
+{   
+    
     public function index(Request $request)
     {
         // Start with base queries for both models
@@ -96,5 +97,115 @@ class LayananController extends Controller
         $kategoris = Kategori::all();
 
         return view('front.layanan', compact('layanans', 'kategoris'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
+    {
+        $kategoris = Kategori::all();
+        return view('admin.layanan.create', compact('kategoris'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_layanan' => 'required|string|max:255',
+            'harga_layanan' => 'required|numeric',
+            'deskripsi' => 'required|string',
+            'image' => 'nullable|image',
+            'kategori_id' => 'required|exists:kategoris,id',
+        ]);
+
+        $data = $request->except('image');
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('layanan-images', 'public');
+        }
+
+        Layanan::create($data);
+
+        return redirect()->route('layanan.index')->with('success', 'Layanan created successfully.');
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  \App\Models\Layanan  $layanan
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Layanan $layanan)
+    {
+        return view('admin.layanan.show', compact('layanan'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Layanan  $layanan
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Layanan $layanan)
+    {
+        $kategoris = Kategori::all();
+        return view('admin.layanan.edit', compact('layanan', 'kategoris'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Layanan  $layanan
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, Layanan $layanan)
+    {
+        $request->validate([
+            'nama_layanan' => 'required|string|max:255',
+            'harga_layanan' => 'required|numeric',
+            'deskripsi' => 'required|string',
+            'image' => 'nullable|image',
+            'kategori_id' => 'required|exists:kategoris,id',
+        ]);
+
+        $data = $request->except('image');
+
+        if ($request->hasFile('image')) {
+            // Optional: delete old image
+            // if ($layanan->image) {
+            //     Storage::disk('public')->delete($layanan->image);
+            // }
+            $data['image'] = $request->file('image')->store('layanan-images', 'public');
+        }
+
+        $layanan->update($data);
+
+        return redirect()->route('layanan.index')->with('success', 'Layanan updated successfully.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Layanan  $layanan
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Layanan $layanan)
+    {
+        // Optional: delete image from storage
+        // if ($layanan->image) {
+        //     Storage::disk('public')->delete($layanan->image);
+        // }
+        $layanan->delete();
+
+        return redirect()->route('layanan.index')->with('success', 'Layanan deleted successfully.');
     }
 } 

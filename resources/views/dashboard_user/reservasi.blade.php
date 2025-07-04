@@ -88,7 +88,12 @@
                 </div>
                 <div class="flex justify-end mt-4 space-x-2">
                     @if($reservation->status === 'confirmed')
-                    <button class="px-3 py-1.5 text-sm border border-gray-300 rounded-md">
+                    <button class="ubah-jadwal-btn px-3 py-1.5 text-sm border border-gray-300 rounded-md"
+                        data-kode="{{ $reservation->kode }}"
+                        data-service="{{ $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket }}"
+                        data-date="{{ $reservation->tanggal_reservasi->format('d F Y') }}"
+                        data-time="{{ Str::substr($reservation->sesi->jam,0,5) }}"
+                        data-baby="{{ $reservation->bayi->nama }}">
                         Ubah Jadwal
                     </button>
                     {{-- <button class="px-3 py-1.5 text-sm bg-red-500 text-white rounded-md">
@@ -556,6 +561,22 @@
                     const [type, slug] = select.value.split(':');
                     const url = `/reservasi/create/${type}/${slug}`;
                     window.location.href = url;
+                }
+            });
+
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('ubah-jadwal-btn')) {
+                    const btn = e.target;
+                    const kode = btn.getAttribute('data-kode');
+                    const service = btn.getAttribute('data-service');
+                    const date = btn.getAttribute('data-date');
+                    const time = btn.getAttribute('data-time');
+                    const baby = btn.getAttribute('data-baby');
+                    // WhatsApp number from footer, format: 6281212933442
+                    const waNumber = '6281212933442';
+                    const message = `Halo Admin, saya ingin mengubah jadwal reservasi dengan detail berikut:%0A%0AKode Reservasi: ${kode}%0ALayanan: ${service}%0ATanggal: ${date}%0AJam: ${time}%0ANama Bayi: ${baby}%0A%0AMohon bantuannya. Terima kasih.`;
+                    const waUrl = `https://wa.me/${waNumber}?text=${message}`;
+                    window.open(waUrl, '_blank');
                 }
             });
         });

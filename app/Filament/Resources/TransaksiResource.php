@@ -76,6 +76,7 @@ class TransaksiResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->defaultSort('tanggal', 'desc')
             ->columns([
                 // Tables\Columns\TextColumn::make('id')
@@ -86,6 +87,9 @@ class TransaksiResource extends Resource
                 ->searchable(),
                 Tables\Columns\TextColumn::make('reservasi.user.name')
                     ->label('Nama Pelanggan')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('reservasi.user.noHP')
+                    ->label('No. Telepon')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('reservasi.layanan.nama_layanan')
                     ->label('Layanan')
@@ -136,22 +140,22 @@ class TransaksiResource extends Resource
                         'midtrans' => 'Midtrans',
                         'cash' => 'Cash',
                     ]),
-                Tables\Filters\Filter::make('tanggal')
+                Tables\Filters\Filter::make('Rentang Tanggal')
                     ->form([
-                        Forms\Components\DatePicker::make('created_from'),
-                        Forms\Components\DatePicker::make('created_until'),
+                        Forms\Components\DatePicker::make('from')->label('Dari'),
+                        Forms\Components\DatePicker::make('to')->label('Sampai'),
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
                             ->when(
-                                $data['created_from'],
+                                $data['from'],
                                 fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '>=', $date),
                             )
                             ->when(
-                                $data['created_until'],
+                                $data['to'],
                                 fn (Builder $query, $date): Builder => $query->whereDate('tanggal', '<=', $date),
                             );
-                    })
+                    }),
             ])
             ->actions([
                 // Tables\Actions\ViewAction::make(),

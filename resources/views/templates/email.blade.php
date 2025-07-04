@@ -257,18 +257,18 @@
 
     <!-- Footer -->
     <div class="footer">
-      <p><strong>BabySpa - Spa & Perawatan Bayi Terpercaya</strong></p>
+      <p><strong>Latumi - Perawatan Bayi Terpercaya</strong></p>
       
       <div class="contact-info">
         📍 Jl. Perjuangan Baru No.2, Gn. Pangilun<br>
-        📞 +62 21 1234 5678<br>
-        📧 info@babyspa.com<br>
-        🌐 www.babyspa.com
+        📞 +62 812 1293 3442<br>
+        📧 latumi@gmail.com<br>
+        🌐 www.latumi.com
       </div>
       
       <p style="margin-top: 16px; font-size: 12px;">
         Email ini dikirim otomatis. Mohon tidak membalas email ini.<br>
-        © {{ date('Y') }} BabySpa. Semua hak dilindungi.
+        © {{ date('Y') }} Latumi. Semua hak dilindungi.
       </p>
     </div>
   </div>

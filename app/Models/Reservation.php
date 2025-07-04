@@ -80,7 +80,11 @@ class Reservation extends Model
         parent::boot();
 
         static::creating(function ($reservasi) {
-            $reservasi->kode = 'RSV-' . strtoupper(Str::random(4));
+            do {
+                $random = strtoupper(Str::random(6));
+                $kode = 'RSV-' . $random;
+            } while (self::where('kode', $kode)->exists());
+            $reservasi->kode = $kode;
         });
     }
 } 

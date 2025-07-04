@@ -86,6 +86,7 @@ class ReservationResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(null)
             ->defaultSort('tanggal_reservasi', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('kode')
@@ -205,7 +206,17 @@ class ReservationResource extends Resource
                                 $data['sesi_id'],
                                 fn (Builder $query, $sesi_id): Builder => $query->where('sesi_id', $sesi_id),
                             );
-                    })
+                    }),
+                Tables\Filters\Filter::make('tanggal_reservasi')
+                    ->form([
+                        Forms\Components\DatePicker::make('from')->label('Dari'),
+                        Forms\Components\DatePicker::make('to')->label('Sampai'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when($data['from'], fn ($query, $date) => $query->whereDate('tanggal_reservasi', '>=', $date))
+                            ->when($data['to'], fn ($query, $date) => $query->whereDate('tanggal_reservasi', '<=', $date));
+                    }),
             ])
             ->actions([
                 // Tables\Actions\ViewAction::make()
