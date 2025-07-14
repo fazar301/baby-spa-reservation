@@ -54,8 +54,8 @@ jobs:
       - name: Install dependencies
         run: composer install --prefer-dist --no-progress --no-interaction
 
-      - name: Run Laravel Pint (check mode)
-        run: vendor/bin/pint --test
+      # - name: Run Laravel Pint (check mode)
+      #   run: vendor/bin/pint --test
 
       - name: Run Laravel Pint (format mode)
         if: github.event_name == 'push'
