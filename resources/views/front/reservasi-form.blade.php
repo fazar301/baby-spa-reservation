@@ -268,7 +268,7 @@
                                 <div class="mb-4">
                                     <label for="tanggal_lahir" class="block text-sm font-medium text-gray-700 mb-1">Tanggal Lahir Bayi <span class="text-red-500">*</span></label>
                                     <input type="date" id="tanggal_lahir" name="tanggal_lahir" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500 pink-focus" required max="{{ date('Y-m-d') }}">
-                                    <p class="text-xs text-gray-500 mt-1">Usia bayi akan dihitung otomatis</p>
+                                    <p class="text-xs text-gray-500 mt-1">Usia akan dihitung otomatis</p>
                                     <div class="mt-2 text-sm text-gray-700">
                                         <span>Usia: </span><span id="calculated-age">-</span>
                                     </div>
@@ -1110,7 +1110,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 if (!data.is_valid_age) {
                     // Show error message
-                    errorDiv.textContent = data.error_message;
+                    errorDiv.innerHTML = data.error_message;
                     nextBtn.disabled = true;
                     nextBtn.style = 'background: rgb(236 72 153 / 71%);'
                     errorDiv.classList.remove('hidden');

@@ -2,9 +2,9 @@
     <div class="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl my-8">
         <div class="p-8">
             <!-- Header with Baby Spa Logo -->
-            <div class="flex justify-center">
+            {{-- <div class="flex justify-center">
                 <img src="{{ asset('images/logo.png') }}" alt="Baby Spa Logo" class="h-16">
-            </div>
+            </div> --}}
             
             <!-- Decorative Baby Elements -->
             {{-- <div class="flex justify-between mb-6">

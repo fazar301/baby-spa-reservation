@@ -224,8 +224,7 @@ class ReservationResource extends Resource
                 //         'filament.resources.reservation-resource.pages.view-reservation',
                 //         ['reservation' => $record]
                 //     )),
-                Tables\Actions\EditAction::make(),
-            ])
+                Tables\Actions\EditAction::make()->visible(fn (Reservation $record) => $record->tanggal_reservasi->isFuture() || $record->tanggal_reservasi->isToday()),])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),

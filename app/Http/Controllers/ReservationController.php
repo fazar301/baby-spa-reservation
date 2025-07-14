@@ -119,7 +119,7 @@ class ReservationController extends Controller
             // Calculate baby's age
             $tanggal_lahir = \Carbon\Carbon::parse($request->tanggal_lahir);
             $umur_bayi = $tanggal_lahir->age;
-            $umur_bayi_bulan = $tanggal_lahir->diffInMonths(now());
+            $umur_bayi_bulan = (int) $tanggal_lahir->diffInMonths(now());
 
             // Get service and validate age
             if ($request->type === 'layanan') {
@@ -344,7 +344,7 @@ class ReservationController extends Controller
         $reservation->email = $reservation->user->email;
         $reservation->phone = $reservation->user->noHP;
         $reservation->baby_name = $reservation->bayi->nama;
-        $reservation->baby_age_formatted = $reservation->bayi->tanggal_lahir->age . ' tahun ' . $reservation->bayi->tanggal_lahir->diffInMonths(now()) % 12 . ' bulan';
+        $reservation->baby_age_formatted = $reservation->bayi->tanggal_lahir->age . ' tahun ' . (int) $reservation->bayi->tanggal_lahir->diffInMonths(now()) % 12 . ' bulan';
         $reservation->baby_birth_weight = $reservation->bayi->berat_lahir;
         $reservation->baby_current_weight = $reservation->bayi->berat_sekarang;
         $reservation->service_name = $reservation->type === 'layanan' ? $reservation->layanan->nama_layanan : $reservation->paketLayanan->nama_paket;
@@ -457,7 +457,7 @@ class ReservationController extends Controller
             // Calculate baby's age
             $tanggal_lahir = \Carbon\Carbon::parse($request->tanggal_lahir);
             $umur_bayi = $tanggal_lahir->age;
-            $umur_bayi_bulan = $tanggal_lahir->diffInMonths(now());
+            $umur_bayi_bulan = (int) $tanggal_lahir->diffInMonths(now());
 
             // Check age requirement based on service category
             $is_valid_age = false;
@@ -473,7 +473,7 @@ class ReservationController extends Controller
                         if ($umur_bayi_bulan <= 12) {
                             $is_valid_age = true;
                         } else {
-                            $error_message = 'Layanan ini hanya untuk bayi usia 0-12 bulan. Usia bayi Anda: ' . $umur_bayi_bulan . ' bulan.';
+                            $error_message = 'Layanan ini hanya untuk anak usia 0-12 bulan. <br>Usia anak Anda: ' . $umur_bayi . ' tahun ' . ($umur_bayi_bulan % 12) . ' bulan.';
                         }
                         break;
                     case 'Kids':
@@ -482,7 +482,7 @@ class ReservationController extends Controller
                         if ($umur_bayi >= 1 && $umur_bayi <= 3) {
                             $is_valid_age = true;
                         } else {
-                            $error_message = 'Layanan ini hanya untuk anak usia 1-3 tahun. Usia bayi Anda: ' . $umur_bayi . ' tahun ' . ($umur_bayi_bulan % 12) . ' bulan.';
+                            $error_message = 'Layanan ini hanya untuk anak usia 1-3 tahun. <br>Usia anak Anda: ' . $umur_bayi . ' tahun ' . ($umur_bayi_bulan % 12) . ' bulan.';
                         }
                         break;
                     case 'Children':
@@ -491,7 +491,7 @@ class ReservationController extends Controller
                         if ($umur_bayi >= 3) {
                             $is_valid_age = true;
                         } else {
-                            $error_message = 'Layanan ini hanya untuk anak usia 3 tahun ke atas. Usia bayi Anda: ' . $umur_bayi . ' tahun ' . ($umur_bayi_bulan % 12) . ' bulan.';
+                            $error_message = 'Layanan ini hanya untuk anak usia 3 tahun ke atas. <br>Usia anak Anda: ' . $umur_bayi . ' tahun ' . ($umur_bayi_bulan % 12) . ' bulan.';
                         }
                         break;
                     default:

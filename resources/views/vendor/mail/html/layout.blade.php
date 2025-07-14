@@ -238,17 +238,11 @@ p {
                                 <!-- Body content -->
                                 <tr>
                                     <td class="content-cell">
-                                        <div class="baby-decoration">
-                                            <img src="{{ asset('images/baby-decoration-top.png') }}" alt="Baby Decoration">
-                                        </div>
                                         
                                         {{ Illuminate\Mail\Markdown::parse($slot) }}
 
                                         {{ $subcopy ?? '' }}
                                         
-                                        <div class="baby-decoration">
-                                            <img src="{{ asset('images/baby-decoration-bottom.png') }}" alt="Baby Decoration">
-                                        </div>
                                     </td>
                                 </tr>
                             </table>

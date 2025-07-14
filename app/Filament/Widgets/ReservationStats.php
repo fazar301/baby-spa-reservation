@@ -50,7 +50,7 @@ class ReservationStats extends BaseWidget
             ->groupBy('date')
             ->pluck('count', 'date');
         $cancelledTrendArr = $dates->map(fn($date) => $cancelledTrend[$date] ?? 0)->toArray();
-        $revenueTrend = Reservation::where('status', 'confirmed')
+        $revenueTrend = Reservation::whereIn('status', ['confirmed', 'completed'])
             ->whereYear('tanggal_reservasi', now()->year)
             ->whereBetween('tanggal_reservasi', [$dates->first(), $dates->last()])
             ->selectRaw('DATE(tanggal_reservasi) as date, SUM(harga) as total')
@@ -99,7 +99,7 @@ class ReservationStats extends BaseWidget
                 ]),
             
             Stat::make('Total Revenue YTD', 'Rp ' . number_format(Reservation::whereYear('tanggal_reservasi', now()->year)
-                ->where('status', 'confirmed')
+                ->whereIn('status', ['confirmed', 'completed'])
                 ->sum('harga'), 0, ',', '.'))
                 ->description('Pendapatan tahun ini')
                 ->descriptionIcon('heroicon-s-banknotes')

@@ -90,8 +90,8 @@ class VoucherResource extends Resource
                 Tables\Columns\TextColumn::make('end_date')
                     ->date(),
                 Tables\Columns\BooleanColumn::make('is_active'),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime(),
+                // Tables\Columns\TextColumn::make('created_at')
+                //     ->dateTime(),
             ])
             ->filters([
                 SelectFilter::make('discount_type')

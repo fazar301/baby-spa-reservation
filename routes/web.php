@@ -78,6 +78,7 @@ Route::get('/transaksi', function () {
         ->reservasis()
         ->with('transaksi')
         ->with('layanan')
+        ->orderBy('created_at', 'desc')
         ->get()
         ->pluck('transaksi')
         ->flatten()

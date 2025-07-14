@@ -20,12 +20,12 @@ class DashboardController extends Controller
         
         // Get total visits (completed reservations)
         $totalVisits = Reservation::where('user_id', $user->id)
-            ->where('status', 'confirmed')
+            ->whereIn('status', ['confirmed', 'completed'])
             ->count();
             
         // Get visits this month
         $visitsThisMonth = Reservation::where('user_id', $user->id)
-            ->where('status', 'confirmed')
+            ->whereIn('status', ['confirmed', 'completed'])
             ->whereMonth('tanggal_reservasi', Carbon::now()->month)
             ->count();
             
@@ -43,7 +43,7 @@ class DashboardController extends Controller
             
         // Get favorite service
         $favoriteService = Reservation::where('user_id', $user->id)
-            ->where('status', 'confirmed')
+            ->whereIn('status', ['confirmed', 'completed'])
             ->select('layanan_id', \DB::raw('count(*) as total'))
             ->groupBy('layanan_id')
             ->orderBy('total', 'desc')

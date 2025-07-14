@@ -165,7 +165,7 @@ class PaymentController extends Controller
             }
 
             // Delete the transaction
-            $transaction->delete();
+            // $transaction->delete();
 
             DB::commit();
 
