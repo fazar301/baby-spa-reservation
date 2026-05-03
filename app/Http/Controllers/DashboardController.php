@@ -17,6 +17,10 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user();
+
+        if ($user->isAdmin()) {
+            return redirect('/admin');
+        }
         
         // Get total visits (completed reservations)
         $totalVisits = Reservation::where('user_id', $user->id)

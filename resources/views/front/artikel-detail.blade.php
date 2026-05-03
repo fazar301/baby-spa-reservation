@@ -1,4 +1,4 @@
-{{-- Artikel view - Created by VionaYunitaPutri --}}
+{{-- Artikel view - Created by fazar301 --}}
 <x-main-layout>
     <style>
         .article-content ul{

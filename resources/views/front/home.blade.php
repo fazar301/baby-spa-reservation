@@ -1,4 +1,4 @@
-{{-- Home view - Created by avrielvrl --}}
+{{-- Home view - Created by fazar301 --}}
 <x-main-layout>
     <!-- Hero Section -->
     <section class="bg-gradient-to-r from-blue-50 to-pink-50 py-20">

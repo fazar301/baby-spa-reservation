@@ -1,4 +1,4 @@
-{{-- Artikel view - Created by VionaYunitaPutri --}}
+{{-- Artikel view - Created by fazar301 --}}
 <x-main-layout>
   <!-- Header Section -->
   <section class="pt-24 pb-12 bg-gradient-to-br from-babypink-50 via-white to-babyblue-50">

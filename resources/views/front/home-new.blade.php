@@ -1,4 +1,4 @@
-{{-- Home new view - Created by avrielvrl --}}
+{{-- Home new view - Created by fazar301 --}}
 <x-main-layout>
      <!-- Hero Section -->
      <section id="home" class="py-16 flex items-center bg-gradient-to-br from-babypink-50 via-white to-babyblue-50">
